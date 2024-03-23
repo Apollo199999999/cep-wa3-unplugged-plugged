@@ -1,0 +1,10 @@
+{
+    "name": "cep-wa3-client",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+      "client": "python -m http.server 8000"
+    },
+    "author": "",
+    "license": "MIT"
+  }

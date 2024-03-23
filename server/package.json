@@ -1,0 +1,15 @@
+{
+    "name": "cep-wa3-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+      "server": "nodemon server.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "socket.io": "^4.6.1"
+    }
+  }
