@@ -6,6 +6,15 @@ const io = new Server(8001, {
         origin: "*",
     },
 });
+
+// const express = require('express');
+// const app = express();
+
+// app.get('/favicon.ico', (req, res) => res.status(404));
+
+// // your other routes and middleware go here
+
+// app.listen(8001);
 const clients = new Set();
 const rooms = [];
 const TICK_DELAY = 1000 / 60;
@@ -15,6 +24,7 @@ function Client(socket) {
     this.socket = socket;
     this.position = { x: 0, y: 0 };
 }
+
 
 class Room {
     constructor(id) {
@@ -52,19 +62,45 @@ io.on("connection", (socket) => {
         client.position = { x, y };
     });
 
-    socket.on("requestCreateRoom", () => {
+    socket.on("requestCreateRoom", (ign) => {
         const roomCode = generateRandomRoomCode();
         let room = new Room(roomCode);
         room.addClient(client);
+        console.log(ign);
+        socket.emit("Log", ign);
+        try {
+            if (!ign) {
+                ign = "Guest";
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        // if (!ign) {
+        //     ign = "Guest";
+        // }
+        //console.log(ign);
+        client.ign = ign;
+        socket.emit("Log", client.ign);
         rooms.push(room);
-        socket.emit("setRoomCode", roomCode);
+        socket.emit("setRoomCode", roomCode); // Pass msg as a parameter
         socket.emit("buildMap", MAPS_DATA.myWorld);
     });
 
-    socket.on("requestJoinRoom", (code) => {
+    socket.on("requestJoinRoom", (code, ign) => {
         for (let room of rooms) {
             if (room.id === code) {
                 room.addClient(client);
+                try {
+                    if (!ign) {
+                        ign = "Guest";
+                    }
+                } catch (e) {
+                    console.log(e);
+                }
+                // if (!ign) {
+                //     ign = "Guest";
+                // }
+                client.ign = ign;
                 socket.emit("setRoomCode", code);
                 socket.emit("buildMap", MAPS_DATA.myWorld);
                 return;
@@ -84,15 +120,23 @@ io.on("connection", (socket) => {
 });
 
 function generateRandomRoomCode() {
-    return (+new Date()).toString(36).slice(-5);
+    let code = (+new Date()).toString(36).slice(-5);
+    for (let room of rooms) {
+        if (room.id === code) {
+            return generateRandomRoomCode();
+        }
+    }
+    return code;
 }
 
-function tick() {
+function tick() { 
+    //socket.emit("Log", "tick");
     for (let room of rooms) {
         let allData = [...room.clients].map((c) => {
             return {
                 position: c.position,
                 id: c.socket.id,
+                ign: c.ign,
             };
         });
         for (let c of room.clients) {

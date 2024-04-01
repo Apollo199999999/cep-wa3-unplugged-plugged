@@ -16,7 +16,8 @@ class EntityManager {
     }
 
     registerNewPlayer(data) {
-        let playerSprite = createPlayerSprite();
+        console.log(data);
+        let playerSprite = createPlayerSprite(data.ign);
         playerSprite.x = data.position.x;
         playerSprite.y = data.position.y;
         this.entities.set(data.id, {
@@ -27,6 +28,8 @@ class EntityManager {
 
     updatePlayerData(newData) {
         let currData = this.entities.get(newData.id);
+        currData.sprite.visible = true;
+        console.log(newData);
         if (!currData) return;
         currData.positionBuffer.push({
             timestamp: +new Date(),
@@ -46,8 +49,10 @@ class EntityManager {
     }
 }
 
-function createPlayerSprite() {
+function createPlayerSprite(name) {
     let ball = new Sprite();
     ball.diameter = 50;
+    ball.text = name;
+    ball.visible = true;
     return ball;
 }

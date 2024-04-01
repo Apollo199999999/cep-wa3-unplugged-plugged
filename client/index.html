@@ -14,6 +14,36 @@
     <script src="entityManager.js"></script>
     <script src="cameraManager.js"></script>
     <script src="sketch.js"></script>
+    <script src="menu.js"></script>
+     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        content: ["./*.{html,js}"],
+        mode: "jit",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#202225",
+              secondary: "#DFDDDA",
+              invertedindigo: "#b0b91a",
+              invertedgray: "#b4aa9c",
+              tertiary: "#4D4FAD",
+              quartenary: "#363969",
+              invertedquartenary: "#c9c696",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .content-auto {
+          content-visibility: auto;
+        }
+      }
+    </style>
     
 </head>
 <body>
