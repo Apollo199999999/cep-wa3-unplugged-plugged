@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { readFileSync } from "fs";
+import MapManager from "./mapManager.js"
 
 const io = new Server(8001, {
     cors: {
@@ -11,7 +12,7 @@ const io = new Server(8001, {
 const clients = new Set();
 const rooms = [];
 const TICK_DELAY = 1000 / 60;
-const MAPS_DATA = JSON.parse(readFileSync("./maps.json"));
+const mapManager = new MapManager();
 
 function Client(socket) {
     this.socket = socket;
@@ -48,6 +49,7 @@ class Room {
 
 console.log("Server running...");
 
+
 // Client specific code when a client connects
 io.on("connection", (socket) => {
     console.log("New connection!");
@@ -83,18 +85,13 @@ io.on("connection", (socket) => {
             rooms.push(room);
         }
 
-        socket.emit("buildMap", MAPS_DATA.myWorld);
+        socket.emit("buildMap", mapManager);
     });
 
 
     socket.on("disconnect", () => {
         if (client.room) {
             client.room.removeClient(client);
-        }
-
-        // Delete room if room contains no more clients
-        if (client.room.clients.length == 0) {
-            rooms.splice(rooms.indexOf(client.room), 1);
         }
 
         clients.delete(client);

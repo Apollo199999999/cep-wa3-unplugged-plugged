@@ -1,5 +1,6 @@
 let ball;
 let em;
+let mapBuilder;
 let camManager;
 let currentRoomCode = null;
 let localIGN = null;
@@ -26,21 +27,10 @@ window.onload = () => {
 };
 
 
-socket.on("buildMap", (mapData) => {
+socket.on("buildMap", (mapManager) => {
     ball = createPlayerSprite(localIGN);
     camManager.setTarget(ball);
-
-    for (const blockData of Object.values(mapData.blocks)) {
-        let group = new Group();
-        Object.assign(group, blockData);
-        new Tiles(
-            blockData.tileMap,
-            blockData.startX,
-            blockData.startY,
-            blockData.w,
-            blockData.h
-        );
-    }
+    mapBuilder.buildMap(mapManager, ball);
 
     setupComplete = true;
 });
@@ -68,6 +58,7 @@ socket.on("removeClient", (id) => {
 function setup() {
     new Canvas("fullscreen");
     em = new EntityManager();
+    mapBuilder = new MapBuilder();
     camManager = new CameraManager(camera);
 
     // p5play draws over our draw() loop, so we
@@ -86,7 +77,7 @@ function setup() {
 
 function draw() {
     if (setupComplete) {
-        background("grey");
+        background("#484848");
         move();
         interpolateOtherPlayers();
         camManager.update();
