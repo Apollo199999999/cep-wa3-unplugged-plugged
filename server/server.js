@@ -91,6 +91,12 @@ io.on("connection", (socket) => {
         if (client.room) {
             client.room.removeClient(client);
         }
+
+        // Delete room if room contains no more clients
+        if (client.room.clients.length == 0) {
+            rooms.splice(rooms.indexOf(client.room), 1);
+        }
+
         clients.delete(client);
         clients.forEach((c) => {
             c.socket.emit("removeClient", socket.id);
