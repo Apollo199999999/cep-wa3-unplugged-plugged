@@ -2,45 +2,34 @@ let ball;
 let em;
 let camManager;
 let currentRoomCode = null;
-let gamestate = 'menu';
-let menu;
+let localIGN = null;
+
+// Only start drawing stuff after the client successfully registers itself with the server
+let setupComplete = false;
 
 const socket = io.connect("ws://localhost:8001");
 
 window.onload = () => {
-    const join_option_input = prompt('Select: "CREATE" or "JOIN"', "CREATE");
-    if (join_option_input === "CREATE") {
-        //socket.emit("requestCreateRoom", 'gg');
-        console.log("creating room");
-    } else if (join_option_input === "JOIN") {
-        const room_code_input = prompt("Enter Room Code");
-        socket.emit("requestJoinRoom", room_code_input);
-    } else {
-        window.onload();
-    }
+    // Retrieve IGN and room code from url query
+    const urlParams = new URLSearchParams(
+        window.location.search,
+    );
+
+    localIGN = urlParams.get('ign');
+    Object.freeze(localIGN);
+
+    currentRoomCode = urlParams.get('roomCode');
+    Object.freeze(currentRoomCode);
+
+    // Tell the client to register itself with the server event
+    socket.emit("registerClient", localIGN, currentRoomCode);
 };
 
-socket.on("setRoomCode", (code) => {
-    currentRoomCode = code;
-    console.log(`Room Code: ${currentRoomCode}`);
-});
-
-socket.on("Log", (msg) => {
-    //let i = msg;
-    console.log(msg, "logger");
-    //console.log(msg);
-    
-});
 
 socket.on("buildMap", (mapData) => {
-    if (menu){
-        //rs
-        menu.hide();
-    }
-    gamestate = "game";
-    ball = createPlayerSprite(menu.ignInp.value());
+    ball = createPlayerSprite(localIGN);
     camManager.setTarget(ball);
-    console.log(mapData);
+
     for (const blockData of Object.values(mapData.blocks)) {
         let group = new Group();
         Object.assign(group, blockData);
@@ -52,6 +41,8 @@ socket.on("buildMap", (mapData) => {
             blockData.h
         );
     }
+
+    setupComplete = true;
 });
 
 socket.on("playerDataUpdate", (id, playerData) => {
@@ -73,20 +64,12 @@ socket.on("removeClient", (id) => {
     }
 });
 
-// function genStartScreen() {
-//     let start = createGraphics(width, height);
-//     start.push();
-//     start.background("white");
-//     start.textSize(32);
-//     start.textAlign(CENTER, CENTER);
-//     start.text("Enter Room Code", 0, 0, width, height);
-//     start.pop();
-// }
+
 function setup() {
     new Canvas("fullscreen");
     em = new EntityManager();
     camManager = new CameraManager(camera);
-    
+
     // p5play draws over our draw() loop, so we
     // have to jump thru hoops to draw our text
     // over our sprites...... by making a another
@@ -99,37 +82,16 @@ function setup() {
         textSize(32);
         text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
     };
-    menu = new Menu();
-    menu.show();
-
-    
 }
 
 function draw() {
-    if (!currentRoomCode) {
-        //allSprites.visible = false;
-        //console.log(allSprites);
-        // push();
-        // background("white");
-        // textSize(32);
-        // textAlign(CENTER, CENTER);
-        // text("Room Not Found", 0, 0, width, height);
-        // pop();
-        //return;
-    } else {
-        ball.visible = true;
-        //allSprites.visible = true;
-    }
-    
-    background("grey");
-    if (gamestate === "game") {
+    if (setupComplete) {
+        background("grey");
         move();
-    interpolateOtherPlayers();
-    camManager.update();
-    socket.emit("position", ball.pos.x, ball.pos.y);
+        interpolateOtherPlayers();
+        camManager.update();
+        socket.emit("position", ball.pos.x, ball.pos.y);
     }
-    
-    if (gamestate === "menu") menu.update();
 }
 
 function interpolateOtherPlayers() {

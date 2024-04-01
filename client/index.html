@@ -1,64 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- p5js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.min.js"></script>
-    <!-- p5play -->
-    <script src="https://p5play.org/v3/planck.min.js"></script>
-    <script src="https://p5play.org/v3/p5play.js"></script>
-    <meta charset="utf-8" />
-    <!-- socketio -->
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
-    <!-- client code -->
-    <script src="entityManager.js"></script>
-    <script src="cameraManager.js"></script>
-    <script src="sketch.js"></script>
-    <script src="menu.js"></script>
-     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        content: ["./*.{html,js}"],
-        mode: "jit",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#202225",
-              secondary: "#DFDDDA",
-              invertedindigo: "#b0b91a",
-              invertedgray: "#b4aa9c",
-              tertiary: "#4D4FAD",
-              quartenary: "#363969",
-              invertedquartenary: "#c9c696",
-            },
-          },
-        },
-      };
-    </script>
+<html lang="en" data-theme="bumblebee">
 
-    <style type="text/tailwindcss">
-      @layer utilities {
-        .content-auto {
-          content-visibility: auto;
-        }
-      }
-    </style>
-    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEP WA3</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- client backend -->
+    <script src="index.js"></script>
 </head>
+
 <body>
-    <style>
-        html, body {
-            height: 100%;
-        }
-        body {
-            overflow: hidden;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            align-items: center;
-        }
-    </style>
+    <div class="flex w-screen h-screen flex-col" id="main-div">
+        <div class="flex flex-col p-8 m-auto w-screen max-w-screen-sm bg-base-100 rounded-md drop-shadow-lg">
+            <h1 class="mx-auto my-0 mb-8 font-bold text-2xl">Saboteur Escape Room</h1>
+
+            <h1>Enter a username/IGN: </h1>
+            <input id="usernameInputBox" type="text" placeholder="Enter a username"
+                class="mt-4 input input-bordered input-primary" />
+
+            <div class="divider my-8"></div>
+
+            <h1>Enter a room code: </h1>
+            <input id="roomCodeInputBox" type="text" placeholder="Enter room code (5 characters long, case-sensitive)"
+                class="mt-4 input input-bordered input-primary" />
+            <button class="mt-4 flex-none btn btn-primary" onclick="validateCode()">Create/Join room</button>
+        </div>
+    </div>
 </body>
+
 </html>
+
+<style>
+    /* For background image */
+    #main-div::before {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: -1;
+
+        display: block;
+        background-image: url('./images/menu-bg.jpg');
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+
+        transform: scale(1.1);
+        filter: blur(5px);
+    }
+</style>
