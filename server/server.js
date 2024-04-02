@@ -88,8 +88,12 @@ io.on("connection", (socket) => {
         socket.emit("buildMap", mapManager);
     });
 
-    socket.on("mapModified", (tilePosition, tileBroken) => {
-        mapManager.updateMap(tilePosition, tileBroken);
+    socket.on("mapModified", (tileIndex, isTileBroken, tileChar) => {
+        mapManager.updateMap(tileIndex, isTileBroken, tileChar);
+
+        for (let c of client.room.clients) {
+            c.socket.emit("updateMap", mapManager);
+        }
     });
 
     socket.on("disconnect", () => {

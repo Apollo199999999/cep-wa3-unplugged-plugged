@@ -31,9 +31,14 @@ window.onload = () => {
 socket.on("buildMap", (mapManager) => {
     ball = createPlayerSprite(localIGN);
     camManager.setTarget(ball);
-    mapBuilder.buildMap(mapManager, ball);
+    mapBuilder.buildMap(mapManager);
+    mapBuilder.setStartPos(mapManager, ball);
 
     setupComplete = true;
+});
+
+socket.on("updateMap", (mapManager) => {
+    mapBuilder.buildMap(mapManager);
 });
 
 socket.on("playerDataUpdate", (id, playerData) => {
@@ -88,7 +93,7 @@ function draw() {
 
 function mouseReleased() {
     if (setupComplete && allowMapModification) {
-        mapBuilder.removeClickedTile();
+        mapBuilder.addClickedTile("x");
     }
 }
 

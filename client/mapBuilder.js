@@ -3,7 +3,13 @@ class MapBuilder {
         this.mapTiles = null;
     }
 
-    buildMap(mapManager, clientSprite) {
+    setStartPos(mapManager, clientSprite) {
+        // Spawn the client sprite inside the room
+        clientSprite.position.x = (width / 2) - (mapManager.numCols / 2);
+        clientSprite.position.y = height - mapManager.cellSize * 5;
+    }
+
+    buildMap(mapManager) {
         // Clear existing map before building
         if (this.mapTiles != null) {
             this.mapTiles.removeAll();
@@ -34,16 +40,22 @@ class MapBuilder {
         boundaryBricks.collider = 'static';
         boundaryBricks.stroke = mapManager.boundaryColor;
 
+        let emptyBricks = new Group();
+        emptyBricks.w = mapManager.cellSize;
+        emptyBricks.h = mapManager.cellSize;
+        emptyBricks.tile = "-";
+        emptyBricks.color = "#484848";
+        emptyBricks.collider = 'static';
+        emptyBricks.stroke = "#484848";
+        emptyBricks.overlaps(allSprites);
+        emptyBricks.layer = -999;
+
         // Position tiles at the bottom center of the screen
-        this.mapTiles = new Tiles(mapManager.mapTiles, 
+        this.mapTiles = new Tiles(mapManager.mapTiles,
             (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize,
             height - mapManager.numRows * mapManager.cellSize,
             mapManager.cellSize,
             mapManager.cellSize);
-
-        // Spawn the client sprite inside the room
-        clientSprite.position.x = (width / 2) - (mapManager.numCols / 2);
-        clientSprite.position.y = height - mapManager.cellSize * 5;
     }
 
     removeClickedTile() {
@@ -51,10 +63,24 @@ class MapBuilder {
         for (let i = 0; i < this.mapTiles.length; i++) {
             let currTile = this.mapTiles[i];
 
-            // Prevent the user from breaking boundary tiles
-            if (currTile.mouse.released() == true && currTile.tile != "x") {
-                // Send the location of this sprite to the server
-                socket.emit("mapModified", this.mapTiles[i].pos, true);
+            // Prevent the user from breaking boundary tiles or empty spaces
+            if (currTile.mouse.released() == true && currTile.tile != "x" && currTile.tile != "-") {
+                // Send the index of the tile to the server
+                socket.emit("mapModified", i, true, "");
+                break;
+            }
+        }
+    }
+
+    addClickedTile(tileChar) {
+        // Iterate through map tiles to retrieve the sprite that is clicked
+        for (let i = 0; i < this.mapTiles.length; i++) {
+            let currTile = this.mapTiles[i];
+
+            // Prevent the user from breaking boundary tiles or empty spaces
+            if (currTile.mouse.released() == true && currTile.tile == "-") {
+                // Send the index of the tile to the server
+                socket.emit("mapModified", i, false, tileChar);
                 break;
             }
         }
