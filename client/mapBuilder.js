@@ -45,4 +45,18 @@ class MapBuilder {
         clientSprite.position.x = (width / 2) - (mapManager.numCols / 2);
         clientSprite.position.y = height - mapManager.cellSize * 5;
     }
+
+    removeClickedTile() {
+        // Iterate through map tiles to retrieve the sprite that is clicked
+        for (let i = 0; i < this.mapTiles.length; i++) {
+            let currTile = this.mapTiles[i];
+
+            // Prevent the user from breaking boundary tiles
+            if (currTile.mouse.released() == true && currTile.tile != "x") {
+                // Send the location of this sprite to the server
+                socket.emit("mapModified", this.mapTiles[i].pos, true);
+                break;
+            }
+        }
+    }
 }

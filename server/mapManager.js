@@ -42,4 +42,7 @@ export default class MapManager {
         this.boundaryColor = "red";
     }
 
+    updateMap(tilePosition, tileBroken) {
+        
+    }
 }

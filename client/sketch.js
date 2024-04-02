@@ -4,6 +4,7 @@ let mapBuilder;
 let camManager;
 let currentRoomCode = null;
 let localIGN = null;
+let allowMapModification = true;
 
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
@@ -82,6 +83,12 @@ function draw() {
         interpolateOtherPlayers();
         camManager.update();
         socket.emit("position", ball.pos.x, ball.pos.y);
+    }
+}
+
+function mouseReleased() {
+    if (setupComplete && allowMapModification) {
+        mapBuilder.removeClickedTile();
     }
 }
 
