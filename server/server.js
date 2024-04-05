@@ -92,7 +92,7 @@ io.on("connection", (socket) => {
         mapManager.updateMap(tileIndex, isTileBroken, tileChar);
         if (client.room){
             for (let c of client.room.clients) {
-                c.socket.emit("updateMap", mapManager, tileIndex);
+                c.socket.emit("updateMap", mapManager, tileIndex, tileChar);
             }
         }
         

@@ -5,6 +5,7 @@ let camManager;
 let currentRoomCode = null;
 let localIGN = null;
 let allowMapModification = true;
+let wallEditorMode = '*'; //for future use
 
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
@@ -38,7 +39,7 @@ socket.on("buildMap", (mapManager) => {
 });
 
 socket.on("updateMap", (mapManager, tileIndex) => {
-    mapBuilder.updateClickedTile(mapManager, tileIndex);
+    mapBuilder.updateClickedTile(mapManager, tileIndex, wallEditorMode);
     //mapBuilder.buildMap(mapManager);
 });
 
@@ -102,7 +103,7 @@ function draw() {
 
 function mouseReleased() {
     if (setupComplete && allowMapModification) {
-        mapBuilder.addClickedTile("x");
+        mapBuilder.addClickedTile(wallEditorMode);
     }
 }
 
@@ -152,5 +153,12 @@ function move() {
     }
     if (kb.pressing("d")) {
         ball.pos.x += SPEED;
+    }
+    if (kb.pressing("1")) {
+        wallEditorMode = "*";
+    } else if (kb.pressing("2")) {
+        wallEditorMode = "=";
+    } else if (kb.pressing("3")) {
+        wallEditorMode = "-";
     }
 }

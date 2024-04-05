@@ -58,54 +58,48 @@ class MapBuilder {
             mapManager.cellSize);
     }
 
-    updateClickedTile(mapManager, tileIndex) {
+    updateClickedTile(mapManager, tileIndex, tileTarget) {
         if (tileIndex != null) {
             console.log("Tile index: " + tileIndex, this.mapTiles[tileIndex]);
             let currTile = this.mapTiles[tileIndex];
             let rowNum = Math.floor((tileIndex + 1) / mapManager.numCols);
             let colNum =  (tileIndex + 1) - (rowNum) * mapManager.numCols ;
-            console.log(currTile.position.x, currTile.position.y, mapManager.mapTiles[rowNum][colNum], rowNum, colNum);
+            console.log(currTile.position.x, currTile.position.y, mapManager.mapTiles[rowNum][colNum], rowNum, colNum, tileTarget);
             //console.log(mouseX, mouseY, "mouse");
-            console.log(currTile.tile)
+            console.log(currTile.tile);
+            //mapManager.mapTiles[rowNum][colNum] = tileTarget;
+            this.mapTiles[tileIndex].tile = tileTarget;
+            this.mapTiles[tileIndex].w = mapManager.cellSize;
+            this.mapTiles[tileIndex].h = mapManager.cellSize;
+            this.mapTiles[tileIndex].collider = 'static';
+            if (tileTarget == "x"){ //collision is suspicious
+                //this.mapTiles[tileIndex].tile = "x";
                 
-            if (mapManager.mapTiles[rowNum][colNum] == "x"){ //collision is suspicious
-                this.mapTiles[tileIndex].tile = "x";
-                this.mapTiles[tileIndex].w = mapManager.cellSize;
-                this.mapTiles[tileIndex].h = mapManager.cellSize;
                 this.mapTiles[tileIndex].color = mapManager.boundaryColor;
-                this.mapTiles[tileIndex].collider = 'static';
                 this.mapTiles[tileIndex].stroke = mapManager.boundaryColor;
                 this.mapTiles[tileIndex].layer = 1;
                 this.mapTiles[tileIndex].collides(allSprites);
-            } else if (mapManager.mapTiles[rowNum][colNum] == "*"){
-                this.mapTiles[tileIndex].tile = "*";
-                this.mapTiles[tileIndex].w = mapManager.cellSize;
-                this.mapTiles[tileIndex].h = mapManager.cellSize;
+            } else if (tileTarget == "*"){
+                //this.mapTiles[tileIndex].tile = "*";
                 this.mapTiles[tileIndex].color = mapManager.pathColor;
-                this.mapTiles[tileIndex].collider = 'static';
                 this.mapTiles[tileIndex].stroke = mapManager.pathColor;
                 this.mapTiles[tileIndex].layer = 1;
-                this.mapTiles[tileIndex].collides(allSprites);
-            } else if (mapManager.mapTiles[rowNum][colNum] == "="){
-                this.mapTiles[tileIndex].tile = "=";
-                this.mapTiles[tileIndex].w = mapManager.cellSize;
-                this.mapTiles[tileIndex].h = mapManager.cellSize;
+                this.mapTiles[tileIndex].overlaps(allSprites);
+                //this.mapTiles[tileIndex].collides(allSprites);
+            } else if (tileTarget == "="){
+                //this.mapTiles[tileIndex].tile = "=";
                 this.mapTiles[tileIndex].color = mapManager.wallColor;
-                this.mapTiles[tileIndex].collider = 'static';
                 this.mapTiles[tileIndex].stroke = mapManager.wallColor;
                 this.mapTiles[tileIndex].layer = 1;
                 this.mapTiles[tileIndex].collides(allSprites);
-            } else if (mapManager.mapTiles[rowNum][colNum] == "-"){
-                this.mapTiles[tileIndex].tile = "-";
-                this.mapTiles[tileIndex].w = mapManager.cellSize;
-                this.mapTiles[tileIndex].h = mapManager.cellSize;
+            } else if (tileTarget == "-"){
+                //this.mapTiles[tileIndex].tile = "-";
                 this.mapTiles[tileIndex].color = "#484848";
-                this.mapTiles[tileIndex].collider = 'static';
                 this.mapTiles[tileIndex].overlaps(allSprites);
                 this.mapTiles[tileIndex].layer = -999;
                 this.mapTiles[tileIndex].stroke = "#484848";
             }
-            console.log(this.mapTiles[tileIndex], "new tile")
+            console.log(this.mapTiles[tileIndex], this.mapTiles[tileIndex].tile, "new tile")
 
             //currTile.tile = mapManager.mapTiles[rowNum][colNum];
         }
