@@ -9,16 +9,16 @@ class MapBuilder {
         clientSprite.position.y = height - mapManager.cellSize * 5;
     }
 
-    buildMap(mapManager) {
+    buildMap(mapManager, tileIndex) {
         // Clear existing map before building
         if (this.mapTiles != null) {
             this.mapTiles.removeAll();
         }
-
+        
         // Construct map based on mapmanager from server side
         let wallBricks = new Group();
-        wallBricks.w = mapManager.cellSize;
-        wallBricks.h = mapManager.cellSize;
+        wallBricks.w = mapManager.cellSize; // Width of each brick
+        wallBricks.h = mapManager.cellSize; // Height of each brick
         wallBricks.tile = "=";
         wallBricks.color = mapManager.wallColor;
         wallBricks.collider = 'static';
@@ -51,11 +51,64 @@ class MapBuilder {
         emptyBricks.layer = -999;
 
         // Position tiles at the bottom center of the screen
-        this.mapTiles = new Tiles(mapManager.mapTiles,
-            (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize,
-            height - mapManager.numRows * mapManager.cellSize,
+        this.mapTiles = new Tiles(mapManager.mapTiles, // 2D array of tiles
+            (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize, // x to centralise map
+            height - mapManager.numRows * mapManager.cellSize, // y to position at top
             mapManager.cellSize,
             mapManager.cellSize);
+    }
+
+    updateClickedTile(mapManager, tileIndex) {
+        if (tileIndex != null) {
+            console.log("Tile index: " + tileIndex, this.mapTiles[tileIndex]);
+            let currTile = this.mapTiles[tileIndex];
+            let rowNum = Math.floor((tileIndex + 1) / mapManager.numCols);
+            let colNum =  (tileIndex + 1) - (rowNum) * mapManager.numCols ;
+            console.log(currTile.position.x, currTile.position.y, mapManager.mapTiles[rowNum][colNum], rowNum, colNum);
+            //console.log(mouseX, mouseY, "mouse");
+            console.log(currTile.tile)
+                
+            if (mapManager.mapTiles[rowNum][colNum] == "x"){ //collision is suspicious
+                this.mapTiles[tileIndex].tile = "x";
+                this.mapTiles[tileIndex].w = mapManager.cellSize;
+                this.mapTiles[tileIndex].h = mapManager.cellSize;
+                this.mapTiles[tileIndex].color = mapManager.boundaryColor;
+                this.mapTiles[tileIndex].collider = 'static';
+                this.mapTiles[tileIndex].stroke = mapManager.boundaryColor;
+                this.mapTiles[tileIndex].layer = 1;
+                this.mapTiles[tileIndex].collides(allSprites);
+            } else if (mapManager.mapTiles[rowNum][colNum] == "*"){
+                this.mapTiles[tileIndex].tile = "*";
+                this.mapTiles[tileIndex].w = mapManager.cellSize;
+                this.mapTiles[tileIndex].h = mapManager.cellSize;
+                this.mapTiles[tileIndex].color = mapManager.pathColor;
+                this.mapTiles[tileIndex].collider = 'static';
+                this.mapTiles[tileIndex].stroke = mapManager.pathColor;
+                this.mapTiles[tileIndex].layer = 1;
+                this.mapTiles[tileIndex].collides(allSprites);
+            } else if (mapManager.mapTiles[rowNum][colNum] == "="){
+                this.mapTiles[tileIndex].tile = "=";
+                this.mapTiles[tileIndex].w = mapManager.cellSize;
+                this.mapTiles[tileIndex].h = mapManager.cellSize;
+                this.mapTiles[tileIndex].color = mapManager.wallColor;
+                this.mapTiles[tileIndex].collider = 'static';
+                this.mapTiles[tileIndex].stroke = mapManager.wallColor;
+                this.mapTiles[tileIndex].layer = 1;
+                this.mapTiles[tileIndex].collides(allSprites);
+            } else if (mapManager.mapTiles[rowNum][colNum] == "-"){
+                this.mapTiles[tileIndex].tile = "-";
+                this.mapTiles[tileIndex].w = mapManager.cellSize;
+                this.mapTiles[tileIndex].h = mapManager.cellSize;
+                this.mapTiles[tileIndex].color = "#484848";
+                this.mapTiles[tileIndex].collider = 'static';
+                this.mapTiles[tileIndex].overlaps(allSprites);
+                this.mapTiles[tileIndex].layer = -999;
+                this.mapTiles[tileIndex].stroke = "#484848";
+            }
+            console.log(this.mapTiles[tileIndex], "new tile")
+
+            //currTile.tile = mapManager.mapTiles[rowNum][colNum];
+        }
     }
 
     removeClickedTile() {

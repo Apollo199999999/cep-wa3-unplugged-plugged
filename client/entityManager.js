@@ -29,7 +29,6 @@ class EntityManager {
     updatePlayerData(newData) {
         let currData = this.entities.get(newData.id);
         currData.sprite.visible = true;
-        console.log(newData);
         if (!currData) return;
         currData.positionBuffer.push({
             timestamp: +new Date(),

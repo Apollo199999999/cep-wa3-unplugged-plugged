@@ -90,10 +90,12 @@ io.on("connection", (socket) => {
 
     socket.on("mapModified", (tileIndex, isTileBroken, tileChar) => {
         mapManager.updateMap(tileIndex, isTileBroken, tileChar);
-
-        for (let c of client.room.clients) {
-            c.socket.emit("updateMap", mapManager);
+        if (client.room){
+            for (let c of client.room.clients) {
+                c.socket.emit("updateMap", mapManager, tileIndex);
+            }
         }
+        
     });
 
     socket.on("disconnect", () => {

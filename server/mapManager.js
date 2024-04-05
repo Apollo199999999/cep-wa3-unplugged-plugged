@@ -43,10 +43,12 @@ export default class MapManager {
     }
 
     updateMap(tileIndex, isTileBroken, tileChar) {
-        console.log("d")
+        //console.log("d")
+        console.log(tileIndex)
         // Find which char in this.mapTiles to update
         let rowNum = Math.floor((tileIndex + 1) / this.numCols);
-        let colNum =  (tileIndex + 1) - rowNum * this.numCols;
+        let colNum =  (tileIndex + 1) - (rowNum) * this.numCols;
+        console.log(colNum, rowNum)
 
         if (isTileBroken) {
             let newRow = "";
@@ -62,7 +64,7 @@ export default class MapManager {
             this.mapTiles[rowNum] = newRow;
         }
         else {
-            //console.log("d")
+            console.log("d", tileChar)
             let newRow = "";
             for (let i = 0; i < this.numCols; i++) {
                 if (i != colNum - 1) {

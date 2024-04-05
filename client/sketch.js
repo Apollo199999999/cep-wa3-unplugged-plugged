@@ -37,8 +37,9 @@ socket.on("buildMap", (mapManager) => {
     setupComplete = true;
 });
 
-socket.on("updateMap", (mapManager) => {
-    mapBuilder.buildMap(mapManager);
+socket.on("updateMap", (mapManager, tileIndex) => {
+    mapBuilder.updateClickedTile(mapManager, tileIndex);
+    //mapBuilder.buildMap(mapManager);
 });
 
 socket.on("playerDataUpdate", (id, playerData) => {
@@ -58,6 +59,14 @@ socket.on("removeClient", (id) => {
         playerData.sprite.remove();
         em.delete(id);
     }
+});
+
+// used as a replacement for console.log on server side to log messages to client
+socket.on("Log", (msg) => {
+    //let i = msg;
+    console.log(msg, "logger");
+    //console.log(msg);
+
 });
 
 
