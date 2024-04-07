@@ -50,17 +50,29 @@ class EntityManager {
 
 function createPlayerSprite(name) {
     let playerSprite = new Sprite(0, 0, 32, 32);
-    playerSprite.text = name;
     playerSprite.visible = true;
 
     // Load sprite sheet
     playerSprite.spriteSheet = "./images/textures/dwarf-sprite-sheet.png";
+    playerSprite.anis.offset.y = -4;
     playerSprite.anis.frameDelay = 2;
     playerSprite.addAnis({
         idle: {row: 0, frames: 5, w: 64, h: 32},
         run: {row: 1, frames: 8, w: 64, h: 32},
     });
     playerSprite.anis.scale = 2;
+
+    // Manually draw the ign by overriding the draw function
+    // Taking reference from https://github.com/quinton-ashley/p5play/blob/main/p5play.js
+    playerSprite.draw = () => {
+        fill("black");
+        textAlign(CENTER, CENTER);
+        textSize(16);
+        text(name, 0, -35);
+
+        playerSprite.ani.draw(playerSprite.offset.x, playerSprite.offset.y, 0, playerSprite.scale.x, playerSprite.scale.y);
+    }
+
 
     return playerSprite;
 }

@@ -91,7 +91,7 @@ function setup() {
         textSize(32);
         text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
     };
-    
+
     let minimap = new Sprite();
     minimap.visible = false;
     minimap.collider = "none";
@@ -157,25 +157,38 @@ function interpolateOtherPlayers() {
 
 function move() {
     const SPEED = 10;
+
+    // Play running animation when moving
+    // Invert animation where necessary
     if (kb.pressing("w")) {
         playerSprite.changeAni('run');
-        playerSprite.mirror.x = false;
+        playerSprite.scale.x = 1;
         playerSprite.pos.y -= SPEED;
     }
     if (kb.pressing("a")) {
         playerSprite.changeAni('run');
-        playerSprite.mirror.x = true;
+        playerSprite.scale.x = -1;
         playerSprite.pos.x -= SPEED;
     }
     if (kb.pressing("s")) {
         playerSprite.changeAni('run');
-        playerSprite.mirror.x = true;
+        playerSprite.scale.x = 1;
         playerSprite.pos.y += SPEED;
     }
     if (kb.pressing("d")) {
         playerSprite.changeAni('run');
-        playerSprite.mirror.x = false;
+        playerSprite.scale.x = 1;
         playerSprite.pos.x += SPEED;
+    }
+
+    // Reset animation after player stops moving
+    if (kb.released("w") || kb.released("s") || kb.released("d")) {
+        playerSprite.scale.x = 1;
+        playerSprite.changeAni('idle');
+    }
+    else if (kb.released("a")) {
+        playerSprite.scale.x = -1;
+        playerSprite.changeAni('idle');
     }
 
 
