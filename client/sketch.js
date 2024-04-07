@@ -108,6 +108,8 @@ function draw() {
         interpolateOtherPlayers();
         camManager.update();
         socket.emit("position", playerSprite.pos.x, playerSprite.pos.y);
+
+        // Prevent playersprite from becoming rotated on collision
         playerSprite.rotation = 0;
 
         // Map diagram display shouldnt be bound by any conditions
@@ -130,6 +132,10 @@ function interpolateOtherPlayers() {
         if (id == socket.id || playerData.positionBuffer.length < 2) {
             continue;
         }
+        
+        // Prevent sprite from becoming rotated on collision
+        playerData.sprite.rotation = 0;
+
         while (
             playerData.positionBuffer.length > 2 &&
             playerData.positionBuffer[1].timestamp <= est_render_timestamp
