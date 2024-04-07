@@ -42,40 +42,21 @@ export default class MapManager {
         this.boundaryColor = "red";
     }
 
-    updateMap(tileIndex, isTileBroken, tileChar) {
-        //console.log("d")
-        console.log(tileIndex)
+    updateMap(tileIndex, tileChar) {
         // Find which char in this.mapTiles to update
         let rowNum = Math.floor((tileIndex + 1) / this.numCols);
-        let colNum =  (tileIndex + 1) - (rowNum) * this.numCols;
-        console.log(colNum, rowNum)
+        let colNum = (tileIndex + 1) - (rowNum) * this.numCols;
 
-        if (isTileBroken) {
-            let newRow = "";
-            for (let i = 0; i < this.numCols; i++) {
-                if (i != colNum - 1) {
-                    newRow += this.mapTiles[rowNum][i];
-                }
-                else {
-                    newRow += '-';
-                }
+        let newRow = "";
+        for (let i = 0; i < this.numCols; i++) {
+            if (i != colNum - 1) {
+                newRow += this.mapTiles[rowNum][i];
             }
-
-            this.mapTiles[rowNum] = newRow;
-        }
-        else {
-            console.log("d", tileChar)
-            let newRow = "";
-            for (let i = 0; i < this.numCols; i++) {
-                if (i != colNum - 1) {
-                    newRow += this.mapTiles[rowNum][i];
-                }
-                else {
-                    newRow += tileChar;
-                }
+            else {
+                newRow += tileChar;
             }
-
-            this.mapTiles[rowNum] = newRow;
         }
+
+        this.mapTiles[rowNum] = newRow;
     }
 }

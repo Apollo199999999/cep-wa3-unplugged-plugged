@@ -12,7 +12,6 @@ const io = new Server(8001, {
 const clients = new Set();
 const rooms = [];
 const TICK_DELAY = 1000 / 60;
-const mapManager = new MapManager();
 
 function Client(socket) {
     this.socket = socket;
@@ -26,6 +25,7 @@ class Room {
     constructor(id) {
         this.clients = [];
         this.id = id;
+        this.mapManager = new MapManager();
     }
 
     addClient(c) {
@@ -85,14 +85,14 @@ io.on("connection", (socket) => {
             rooms.push(room);
         }
 
-        socket.emit("buildMap", mapManager);
+        socket.emit("buildMap", client.room.mapManager);
     });
 
-    socket.on("mapModified", (tileIndex, isTileBroken, tileChar) => {
-        mapManager.updateMap(tileIndex, isTileBroken, tileChar);
+    socket.on("mapModified", (tileIndex, tileChar) => {
+        client.room.mapManager.updateMap(tileIndex, tileChar);
         if (client.room){
             for (let c of client.room.clients) {
-                c.socket.emit("updateMap", mapManager, tileIndex, tileChar);
+                c.socket.emit("updateMap", tileIndex, tileChar);
             }
         }
         

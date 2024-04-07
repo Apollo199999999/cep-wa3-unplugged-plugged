@@ -7,6 +7,13 @@ class MapBuilder {
         this.h = 2;
         this.numCols = 0;
         this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
+
+        // Create sprite groups based on the different tiles available in the map
+        this.wallBricks = new Group(); 
+        this.pathBricks = new Group();
+        this.boundaryBricks = new Group();
+        this.emptyBricks = new Group();
+
     }
 
     setStartPos(mapManager, clientSprite) {
@@ -15,50 +22,46 @@ class MapBuilder {
         clientSprite.position.y = height - mapManager.cellSize * 5;
     }
 
-    buildMap(mapManager, tileIndex) {
+    buildMap(mapManager) {
         // Clear existing map before building
         if (this.mapTiles != null) {
             this.mapTiles.removeAll();
         }
+
         this.numCols = mapManager.numCols;
         this.numRows = mapManager.numRows;
         this.mapDiagram = createGraphics(this.numCols * this.w, this.numRows * this.h);
+
         // Construct map based on mapmanager from server side
-        let wallBricks = new Group();
-        wallBricks.w = mapManager.cellSize; // Width of each brick
-        wallBricks.h = mapManager.cellSize; // Height of each brick
-        wallBricks.tile = "=";
-        wallBricks.color = mapManager.wallColor;
-        wallBricks.collider = 'static';
-        wallBricks.stroke = mapManager.wallColor;
+        this.wallBricks.w = mapManager.cellSize; // Width of each brick
+        this.wallBricks.h = mapManager.cellSize; // Height of each brick
+        this.wallBricks.tile = "=";
+        this.wallBricks.color = mapManager.wallColor;
+        this.wallBricks.collider = 'static';
+        this.wallBricks.stroke = mapManager.wallColor;
 
-        let pathBricks = new Group();
-        pathBricks.w = mapManager.cellSize;
-        pathBricks.h = mapManager.cellSize;
-        pathBricks.tile = "*";
-        pathBricks.color = mapManager.pathColor;
-        pathBricks.collider = 'static';
-        pathBricks.overlaps(allSprites);
-        pathBricks.layer = 1;
-        pathBricks.stroke = mapManager.pathColor;
+        this.pathBricks.w = mapManager.cellSize;
+        this.pathBricks.h = mapManager.cellSize;
+        this.pathBricks.tile = "*";
+        this.pathBricks.color = mapManager.pathColor;
+        this.pathBricks.collider = 'static';
+        this.pathBricks.stroke = mapManager.pathColor;
 
-        let boundaryBricks = new Group();
-        boundaryBricks.w = mapManager.cellSize;
-        boundaryBricks.h = mapManager.cellSize;
-        boundaryBricks.tile = "x";
-        boundaryBricks.color = mapManager.boundaryColor;
-        boundaryBricks.collider = 'static';
-        boundaryBricks.stroke = mapManager.boundaryColor;
+        this.boundaryBricks.w = mapManager.cellSize;
+        this.boundaryBricks.h = mapManager.cellSize;
+        this.boundaryBricks.tile = "x";
+        this.boundaryBricks.color = mapManager.boundaryColor;
+        this.boundaryBricks.collider = 'static';
+        this.boundaryBricks.stroke = mapManager.boundaryColor;
 
-        let emptyBricks = new Group();
-        emptyBricks.w = mapManager.cellSize;
-        emptyBricks.h = mapManager.cellSize;
-        emptyBricks.tile = "-";
-        emptyBricks.color = "#484848";
-        emptyBricks.collider = 'static';
-        emptyBricks.stroke = "#484848";
-        emptyBricks.overlaps(allSprites);
-        emptyBricks.layer = -999;
+        this.emptyBricks.w = mapManager.cellSize;
+        this.emptyBricks.h = mapManager.cellSize;
+        this.emptyBricks.tile = "-";
+        this.emptyBricks.color = "#484848";
+        this.emptyBricks.collider = 'static';
+        this.emptyBricks.stroke = "#484848";
+        this.emptyBricks.overlaps(allSprites);
+        this.emptyBricks.layer = -999;
 
         // Position tiles at the bottom center of the screen
         this.mapTiles = new Tiles(mapManager.mapTiles, // 2D array of tiles
@@ -68,50 +71,33 @@ class MapBuilder {
             mapManager.cellSize);
     }
 
-    updateClickedTile(mapManager, tileIndex, tileTarget) {
-        if (tileIndex != null) {
-            console.log("Tile index: " + tileIndex, this.mapTiles[tileIndex]);
-            let currTile = this.mapTiles[tileIndex];
-            let rowNum = Math.floor((tileIndex + 1) / mapManager.numCols);
-            let colNum =  (tileIndex + 1) - (rowNum) * mapManager.numCols ;
-            console.log(currTile.position.x, currTile.position.y, mapManager.mapTiles[rowNum][colNum], rowNum, colNum, tileTarget);
-            //console.log(mouseX, mouseY, "mouse");
-            console.log(currTile.tile);
-            //mapManager.mapTiles[rowNum][colNum] = tileTarget;
-            this.mapTiles[tileIndex].tile = tileTarget;
-            this.mapTiles[tileIndex].w = mapManager.cellSize;
-            this.mapTiles[tileIndex].h = mapManager.cellSize;
-            this.mapTiles[tileIndex].collider = 'static';
-            if (tileTarget == "x"){ //collision is suspicious
-                //this.mapTiles[tileIndex].tile = "x";
-                
-                this.mapTiles[tileIndex].color = mapManager.boundaryColor;
-                this.mapTiles[tileIndex].stroke = mapManager.boundaryColor;
-                this.mapTiles[tileIndex].layer = 1;
-                this.mapTiles[tileIndex].collides(allSprites);
-            } else if (tileTarget == "*"){
-                //this.mapTiles[tileIndex].tile = "*";
-                this.mapTiles[tileIndex].color = mapManager.pathColor;
-                this.mapTiles[tileIndex].stroke = mapManager.pathColor;
-                this.mapTiles[tileIndex].layer = 1;
-                this.mapTiles[tileIndex].overlaps(allSprites);
-                //this.mapTiles[tileIndex].collides(allSprites);
-            } else if (tileTarget == "="){
-                //this.mapTiles[tileIndex].tile = "=";
-                this.mapTiles[tileIndex].color = mapManager.wallColor;
-                this.mapTiles[tileIndex].stroke = mapManager.wallColor;
-                this.mapTiles[tileIndex].layer = 1;
-                this.mapTiles[tileIndex].collides(allSprites);
-            } else if (tileTarget == "-"){
-                //this.mapTiles[tileIndex].tile = "-";
-                this.mapTiles[tileIndex].color = "#484848";
-                this.mapTiles[tileIndex].overlaps(allSprites);
-                this.mapTiles[tileIndex].layer = -999;
-                this.mapTiles[tileIndex].stroke = "#484848";
-            }
-            console.log(this.mapTiles[tileIndex], this.mapTiles[tileIndex].tile, "new tile")
+    updateClickedTile(tileIndex, tileTarget) {
+        let currTile = this.mapTiles[tileIndex];
 
-            //currTile.tile = mapManager.mapTiles[rowNum][colNum];
+        if (tileIndex != null) {
+            if (tileTarget == "x") { 
+                let newTile =  new this.boundaryBricks.Sprite();
+                newTile.x = currTile.x;
+                newTile.y = currTile.y;
+                this.mapTiles[tileIndex] = newTile;
+            } else if (tileTarget == "*") {
+                let newTile =  new this.pathBricks.Sprite();
+                newTile.x = currTile.x;
+                newTile.y = currTile.y;
+                this.mapTiles[tileIndex] = newTile;
+            } else if (tileTarget == "=") {
+                let newTile =  new this.wallBricks.Sprite();
+                newTile.x = currTile.x;
+                newTile.y = currTile.y;
+                this.mapTiles[tileIndex] = newTile;
+            } else if (tileTarget == "-") {
+                let newTile =  new this.emptyBricks.Sprite();
+                newTile.x = currTile.x;
+                newTile.y = currTile.y;
+                this.mapTiles[tileIndex] = newTile;
+            }
+
+            this.mapTiles.update();
         }
     }
 
@@ -123,7 +109,8 @@ class MapBuilder {
             // Prevent the user from breaking boundary tiles or empty spaces
             if (currTile.mouse.released() == true && currTile.tile != "x" && currTile.tile != "-") {
                 // Send the index of the tile to the server
-                socket.emit("mapModified", i, true, "");
+                // Notice how when we removed a clicked tile, we are actually just adding an empty tile '-'
+                socket.emit("mapModified", i,  "-");
                 break;
             }
         }
@@ -134,14 +121,15 @@ class MapBuilder {
         for (let i = 0; i < this.mapTiles.length; i++) {
             let currTile = this.mapTiles[i];
 
-            // Prevent the user from breaking boundary tiles or empty spaces
-            if (currTile.mouse.released() == true && currTile.tile != "x") {
+            // Tiles can only be added in empty spaces
+            if (currTile.mouse.released() == true && currTile.tile == "-") {
                 // Send the index of the tile to the server
-                socket.emit("mapModified", i, false, tileChar);
+                socket.emit("mapModified", i, tileChar);
                 break;
             }
         }
     }
+
     generateMapDiagram() {
         // Generate the map diagram
         push();
@@ -149,8 +137,8 @@ class MapBuilder {
         this.mapDiagram.stroke(0);
         this.mapDiagram.strokeWeight(0);
         for (let i = 0; i < this.mapTiles.length; i++) {
-            let rowNum = Math.floor((i ) / this.numCols);
-            let colNum =  (i) - (rowNum) * this.numCols;
+            let rowNum = Math.floor((i) / this.numCols);
+            let colNum = (i) - (rowNum) * this.numCols;
             let currTile = this.mapTiles[i];
             this.mapDiagram.fill(currTile.color);
             this.mapDiagram.rect((colNum) * this.w, rowNum * this.h, this.w, this.h);

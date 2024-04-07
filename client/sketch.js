@@ -39,10 +39,9 @@ socket.on("buildMap", (mapManager) => {
     setupComplete = true;
 });
 
-socket.on("updateMap", (mapManager, tileIndex) => {
-    mapBuilder.updateClickedTile(mapManager, tileIndex, wallEditorMode);
+socket.on("updateMap", (tileIndex, tileChar) => {
+    mapBuilder.updateClickedTile(tileIndex, tileChar);
     mapBuilder.generateMapDiagram();
-    //mapBuilder.buildMap(mapManager);
 });
 
 socket.on("playerDataUpdate", (id, playerData) => {
@@ -95,11 +94,7 @@ function setup() {
     minimap.visible = false;
     minimap.collider = "none";
     minimap.update = () => {
-        if (allowMapModification){
-            mapBuilder.displayMapDiagram();
-        }
-        
-
+        mapBuilder.displayMapDiagram();
     }
     minimap.layer = 999;
 }
@@ -111,9 +106,9 @@ function draw() {
         interpolateOtherPlayers();
         camManager.update();
         socket.emit("position", ball.pos.x, ball.pos.y);
-        if (mouseIsPressed && allowMapModification) {
-            mapBuilder.displayMapDiagram();
-        }
+
+        // Map diagram display shouldnt be bound by any conditions
+        mapBuilder.displayMapDiagram();
     }
 
 }
@@ -176,6 +171,6 @@ function move() {
     } else if (kb.pressing("2") && allowMapModification) {
         wallEditorMode = "=";
     } else if (kb.pressing("3") && allowMapModification) {
-        wallEditorMode = "-";
+        wallEditorMode = "x";
     }
 }
