@@ -33,6 +33,7 @@ socket.on("buildMap", (mapManager) => {
     ball = createPlayerSprite(localIGN);
     camManager.setTarget(ball);
     mapBuilder.buildMap(mapManager);
+    mapBuilder.generateMapDiagram();
     mapBuilder.setStartPos(mapManager, ball);
 
     setupComplete = true;
@@ -40,6 +41,7 @@ socket.on("buildMap", (mapManager) => {
 
 socket.on("updateMap", (mapManager, tileIndex) => {
     mapBuilder.updateClickedTile(mapManager, tileIndex, wallEditorMode);
+    mapBuilder.generateMapDiagram();
     //mapBuilder.buildMap(mapManager);
 });
 
@@ -89,6 +91,17 @@ function setup() {
         textSize(32);
         text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
     };
+    let minimap = new Sprite();
+    minimap.visible = false;
+    minimap.collider = "none";
+    minimap.update = () => {
+        if (allowMapModification){
+            mapBuilder.displayMapDiagram();
+        }
+        
+
+    }
+    minimap.layer = 999;
 }
 
 function draw() {
@@ -98,7 +111,11 @@ function draw() {
         interpolateOtherPlayers();
         camManager.update();
         socket.emit("position", ball.pos.x, ball.pos.y);
+        if (mouseIsPressed && allowMapModification) {
+            mapBuilder.displayMapDiagram();
+        }
     }
+
 }
 
 function mouseReleased() {
@@ -154,11 +171,11 @@ function move() {
     if (kb.pressing("d")) {
         ball.pos.x += SPEED;
     }
-    if (kb.pressing("1")) {
+    if (kb.pressing("1") && allowMapModification) {
         wallEditorMode = "*";
-    } else if (kb.pressing("2")) {
+    } else if (kb.pressing("2") && allowMapModification) {
         wallEditorMode = "=";
-    } else if (kb.pressing("3")) {
+    } else if (kb.pressing("3") && allowMapModification) {
         wallEditorMode = "-";
     }
 }

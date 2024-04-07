@@ -1,6 +1,12 @@
 class MapBuilder {
     constructor() {
         this.mapTiles = null;
+        this.diagramw = 200;
+        this.diagramh = 200;
+        this.w = 2;
+        this.h = 2;
+        this.numCols = 0;
+        this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
     }
 
     setStartPos(mapManager, clientSprite) {
@@ -14,7 +20,9 @@ class MapBuilder {
         if (this.mapTiles != null) {
             this.mapTiles.removeAll();
         }
-        
+        this.numCols = mapManager.numCols;
+        this.numRows = mapManager.numRows;
+        this.mapDiagram = createGraphics(this.numCols * this.w, this.numRows * this.h);
         // Construct map based on mapmanager from server side
         let wallBricks = new Group();
         wallBricks.w = mapManager.cellSize; // Width of each brick
@@ -30,6 +38,8 @@ class MapBuilder {
         pathBricks.tile = "*";
         pathBricks.color = mapManager.pathColor;
         pathBricks.collider = 'static';
+        pathBricks.overlaps(allSprites);
+        pathBricks.layer = 1;
         pathBricks.stroke = mapManager.pathColor;
 
         let boundaryBricks = new Group();
@@ -125,11 +135,31 @@ class MapBuilder {
             let currTile = this.mapTiles[i];
 
             // Prevent the user from breaking boundary tiles or empty spaces
-            if (currTile.mouse.released() == true && currTile.tile == "-") {
+            if (currTile.mouse.released() == true && currTile.tile != "x") {
                 // Send the index of the tile to the server
                 socket.emit("mapModified", i, false, tileChar);
                 break;
             }
         }
+    }
+    generateMapDiagram() {
+        // Generate the map diagram
+        push();
+        this.mapDiagram.background(255);
+        this.mapDiagram.stroke(0);
+        this.mapDiagram.strokeWeight(0);
+        for (let i = 0; i < this.mapTiles.length; i++) {
+            let rowNum = Math.floor((i ) / this.numCols);
+            let colNum =  (i) - (rowNum) * this.numCols;
+            let currTile = this.mapTiles[i];
+            this.mapDiagram.fill(currTile.color);
+            this.mapDiagram.rect((colNum) * this.w, rowNum * this.h, this.w, this.h);
+        }
+        pop();
+    }
+
+    displayMapDiagram() {
+        // Display the map diagram on the console
+        image(this.mapDiagram, 100, height - 100);
     }
 }
