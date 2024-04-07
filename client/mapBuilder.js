@@ -105,31 +105,25 @@ class MapBuilder {
         }
     }
 
-    removeClickedTile() {
-        // Iterate through map tiles to retrieve the sprite that is clicked
-        for (let i = 0; i < this.mapTiles.length; i++) {
-            let currTile = this.mapTiles[i];
-
-            // Prevent the user from breaking boundary tiles or empty spaces
-            if (currTile.mouse.released() == true && currTile.tile != "x" && currTile.tile != "-") {
-                // Send the index of the tile to the server
-                // Notice how when we removed a clicked tile, we are actually just adding an empty tile '-'
-                socket.emit("mapModified", i,  "-");
-                break;
-            }
-        }
-    }
-
-    addClickedTile(tileChar) {
+    editClickedTile(tileChar) {
         // Iterate through map tiles to retrieve the sprite that is clicked
         for (let i = 0; i < this.mapTiles.length; i++) {
             let currTile = this.mapTiles[i];
 
             // Tiles can only be added in empty spaces
-            if (currTile.mouse.released() == true && currTile.tile == "-") {
+            if (currTile.mouse.released() == true) {
+                // Prevent the user from breaking boundary tiles
+                if (currTile.tile == "-" && tileChar != "-") {
+                    socket.emit("mapModified", i, tileChar);
+                    break;
+                }
+                // Prevent the user from adding a tile in a non-empty space
+                if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-") {
+                    socket.emit("mapModified", i,  "-");
+                    break;
+                }
                 // Send the index of the tile to the server
-                socket.emit("mapModified", i, tileChar);
-                break;
+                
             }
         }
     }

@@ -120,7 +120,7 @@ function draw() {
 
 function mouseReleased() {
     if (setupComplete && allowMapModification) {
-        mapBuilder.removeClickedTile();
+        mapBuilder.editClickedTile(wallEditorMode);
     }
 }
 
@@ -162,7 +162,7 @@ function interpolateOtherPlayers() {
 }
 
 function move() {
-    const SPEED = 10;
+    const SPEED = 8;
 
     // Play running animation when moving
     // Invert animation where necessary
@@ -205,5 +205,7 @@ function move() {
         wallEditorMode = "=";
     } else if (kb.pressing("3") && allowMapModification) {
         wallEditorMode = "x";
+    } else if (kb.pressing("backspace") && allowMapModification) {
+        wallEditorMode = "-";
     }
 }
