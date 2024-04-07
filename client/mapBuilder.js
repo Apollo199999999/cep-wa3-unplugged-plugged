@@ -39,6 +39,7 @@ class MapBuilder {
         this.wallBricks.color = mapManager.wallColor;
         this.wallBricks.collider = 'static';
         this.wallBricks.stroke = mapManager.wallColor;
+        this.wallBricks.img = "./images/textures/wall.png";
 
         this.pathBricks.w = mapManager.cellSize;
         this.pathBricks.h = mapManager.cellSize;
@@ -46,6 +47,7 @@ class MapBuilder {
         this.pathBricks.color = mapManager.pathColor;
         this.pathBricks.collider = 'static';
         this.pathBricks.stroke = mapManager.pathColor;
+        this.pathBricks.img = "./images/textures/path.png";
 
         this.boundaryBricks.w = mapManager.cellSize;
         this.boundaryBricks.h = mapManager.cellSize;
@@ -53,6 +55,7 @@ class MapBuilder {
         this.boundaryBricks.color = mapManager.boundaryColor;
         this.boundaryBricks.collider = 'static';
         this.boundaryBricks.stroke = mapManager.boundaryColor;
+        this.boundaryBricks.img = "./images/textures/boundary.png";
 
         this.emptyBricks.w = mapManager.cellSize;
         this.emptyBricks.h = mapManager.cellSize;
@@ -62,6 +65,7 @@ class MapBuilder {
         this.emptyBricks.stroke = "#484848";
         this.emptyBricks.overlaps(allSprites);
         this.emptyBricks.layer = -999;
+        this.emptyBricks.img = "./images/textures/empty.png";
 
         // Position tiles at the bottom center of the screen
         this.mapTiles = new Tiles(mapManager.mapTiles, // 2D array of tiles
@@ -96,7 +100,7 @@ class MapBuilder {
                 newTile.y = currTile.y;
                 this.mapTiles[tileIndex] = newTile;
             }
-
+            currTile.remove();
             this.mapTiles.update();
         }
     }

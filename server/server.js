@@ -1,5 +1,4 @@
 import { Server } from "socket.io";
-import { readFileSync } from "fs";
 import MapManager from "./mapManager.js"
 
 const io = new Server(8001, {

@@ -101,7 +101,7 @@ function setup() {
 
 function draw() {
     if (setupComplete) {
-        background("#484848");
+        background("#000000");
         move();
         interpolateOtherPlayers();
         camManager.update();
@@ -115,7 +115,7 @@ function draw() {
 
 function mouseReleased() {
     if (setupComplete && allowMapModification) {
-        mapBuilder.addClickedTile(wallEditorMode);
+        mapBuilder.removeClickedTile();
     }
 }
 
