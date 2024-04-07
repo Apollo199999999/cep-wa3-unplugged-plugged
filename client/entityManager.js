@@ -49,9 +49,18 @@ class EntityManager {
 }
 
 function createPlayerSprite(name) {
-    let ball = new Sprite();
-    ball.diameter = 50;
-    ball.text = name;
-    ball.visible = true;
-    return ball;
+    let playerSprite = new Sprite(0, 0, 32, 32);
+    playerSprite.text = name;
+    playerSprite.visible = true;
+
+    // Load sprite sheet
+    playerSprite.spriteSheet = "./images/textures/dwarf-sprite-sheet.png";
+    playerSprite.anis.frameDelay = 2;
+    playerSprite.addAnis({
+        idle: {row: 0, frames: 5, w: 64, h: 32},
+        run: {row: 1, frames: 8, w: 64, h: 32},
+    });
+    playerSprite.anis.scale = 2;
+
+    return playerSprite;
 }

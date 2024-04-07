@@ -1,4 +1,4 @@
-let ball;
+let playerSprite;
 let em;
 let mapBuilder;
 let camManager;
@@ -30,12 +30,13 @@ window.onload = () => {
 
 
 socket.on("buildMap", (mapManager) => {
-    ball = createPlayerSprite(localIGN);
-    camManager.setTarget(ball);
+    playerSprite = createPlayerSprite(localIGN);
+    camManager.setTarget(playerSprite);
     mapBuilder.buildMap(mapManager);
     mapBuilder.generateMapDiagram();
-    mapBuilder.setStartPos(mapManager, ball);
+    mapBuilder.setStartPos(mapManager, playerSprite);
 
+    playerSprite.changeAni('idle');
     setupComplete = true;
 });
 
@@ -90,6 +91,7 @@ function setup() {
         textSize(32);
         text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
     };
+    
     let minimap = new Sprite();
     minimap.visible = false;
     minimap.collider = "none";
@@ -105,7 +107,8 @@ function draw() {
         move();
         interpolateOtherPlayers();
         camManager.update();
-        socket.emit("position", ball.pos.x, ball.pos.y);
+        socket.emit("position", playerSprite.pos.x, playerSprite.pos.y);
+        playerSprite.rotation = 0;
 
         // Map diagram display shouldnt be bound by any conditions
         mapBuilder.displayMapDiagram();
@@ -155,17 +158,28 @@ function interpolateOtherPlayers() {
 function move() {
     const SPEED = 10;
     if (kb.pressing("w")) {
-        ball.pos.y -= SPEED;
+        playerSprite.changeAni('run');
+        playerSprite.mirror.x = false;
+        playerSprite.pos.y -= SPEED;
     }
     if (kb.pressing("a")) {
-        ball.pos.x -= SPEED;
+        playerSprite.changeAni('run');
+        playerSprite.mirror.x = true;
+        playerSprite.pos.x -= SPEED;
     }
     if (kb.pressing("s")) {
-        ball.pos.y += SPEED;
+        playerSprite.changeAni('run');
+        playerSprite.mirror.x = true;
+        playerSprite.pos.y += SPEED;
     }
     if (kb.pressing("d")) {
-        ball.pos.x += SPEED;
+        playerSprite.changeAni('run');
+        playerSprite.mirror.x = false;
+        playerSprite.pos.x += SPEED;
     }
+
+
+
     if (kb.pressing("1") && allowMapModification) {
         wallEditorMode = "*";
     } else if (kb.pressing("2") && allowMapModification) {

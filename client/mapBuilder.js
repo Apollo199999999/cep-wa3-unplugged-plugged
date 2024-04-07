@@ -152,6 +152,6 @@ class MapBuilder {
 
     displayMapDiagram() {
         // Display the map diagram on the console
-        image(this.mapDiagram, 100, height - 100);
+        image(this.mapDiagram, 50, height - 100);
     }
 }
