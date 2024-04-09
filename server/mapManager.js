@@ -53,19 +53,19 @@ export default class MapManager {
         this.numRows = this.mapTiles.length;
         this.wallColor = "grey";
         this.pathColor = "black";
-        
+
         this.boundaryColor = "red";
     }
     generateMapWithCenterRoom(width, height, roomAttempts, roomSizes) {
         // Initialize the map with "*" for the outside area.
-        let map = Array.from({length: height}, () => Array(width).fill('*'));
+        let map = Array.from({ length: height }, () => Array(width).fill('*'));
 
         // Set the outer boundary of the map as "x".
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-            if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
-                map[y][x] = 'x';
-            }
+                if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
+                    map[y][x] = 'x';
+                }
             }
         }
 
@@ -74,11 +74,11 @@ export default class MapManager {
         // Helper function to check if a room can be placed.
         function canPlaceRoom(topLeftX, topLeftY, roomWidth, roomHeight) {
             if (topLeftX + roomWidth + 1 >= width || topLeftY + roomHeight + 1 >= height || topLeftX < 1 || topLeftY < 1) {
-            return false; // Room goes out of the boundary or touches the boundary edge.
+                return false; // Room goes out of the boundary or touches the boundary edge.
             }
 
             return rooms.every(room => {
-            return topLeftX + roomWidth < room.x || topLeftX > room.x + room.width ||
+                return topLeftX + roomWidth < room.x || topLeftX > room.x + room.width ||
                     topLeftY + roomHeight < room.y || topLeftY > room.y + room.height;
             });
         }
@@ -86,19 +86,19 @@ export default class MapManager {
         // Helper function to place a room on the map.
         function placeRoom(topLeftX, topLeftY, roomWidth, roomHeight) {
             for (let y = topLeftY; y < topLeftY + roomHeight; y++) {
-            for (let x = topLeftX; x < topLeftX + roomWidth; x++) {
-                if (y === topLeftY || y === topLeftY + roomHeight - 1 || x === topLeftX || x === topLeftX + roomWidth - 1) {
-                map[y][x] = '='; // Place wall
-                } else {
-                map[y][x] = '-'; // Place path inside the room
+                for (let x = topLeftX; x < topLeftX + roomWidth; x++) {
+                    if (y === topLeftY || y === topLeftY + roomHeight - 1 || x === topLeftX || x === topLeftX + roomWidth - 1) {
+                        map[y][x] = '='; // Place wall
+                    } else {
+                        map[y][x] = '-'; // Place path inside the room
+                    }
                 }
             }
-            }
-            rooms.push({x: topLeftX, y: topLeftY, width: roomWidth, height: roomHeight});
+            rooms.push({ x: topLeftX, y: topLeftY, width: roomWidth, height: roomHeight });
         }
 
         // Ensure a central room is always placed first.
-        const [centralRoomWidth, centralRoomHeight] = [10,8]
+        const [centralRoomWidth, centralRoomHeight] = [10, 8]
         const centralRoomLocation = {
             x: Math.floor((width - centralRoomWidth) / 2),
             y: Math.floor((height - centralRoomHeight) / 2)
@@ -113,7 +113,7 @@ export default class MapManager {
             const topLeftY = Math.floor(Math.random() * (height - roomHeight - 1)) + 1;
 
             if (canPlaceRoom(topLeftX, topLeftY, roomWidth, roomHeight)) {
-            placeRoom(topLeftX, topLeftY, roomWidth, roomHeight);
+                placeRoom(topLeftX, topLeftY, roomWidth, roomHeight);
             }
         }
 

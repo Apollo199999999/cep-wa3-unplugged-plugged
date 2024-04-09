@@ -5,7 +5,7 @@ let camManager;
 let currentRoomCode = null;
 let localIGN = null;
 let allowMapModification = true;
-let wallEditorMode = '*'; //for future use
+let wallEditorMode = '-'; //for future use
 
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
