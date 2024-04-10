@@ -98,7 +98,7 @@ export default class MapManager {
         }
 
         // Ensure a central room is always placed first.
-        const [centralRoomWidth, centralRoomHeight] = [10, 8]
+        const [centralRoomWidth, centralRoomHeight] = [14, 12]
         const centralRoomLocation = {
             x: Math.floor((width - centralRoomWidth) / 2),
             y: Math.floor((height - centralRoomHeight) / 2)
@@ -112,7 +112,7 @@ export default class MapManager {
             const topLeftX = Math.floor(Math.random() * (width - roomWidth - 1)) + 1;
             const topLeftY = Math.floor(Math.random() * (height - roomHeight - 1)) + 1;
 
-            if (canPlaceRoom(topLeftX, topLeftY, roomWidth, roomHeight)) {
+            if (canPlaceRoom(topLeftX, topLeftY, roomWidth, roomHeight) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth)**2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight)**2 > 100){
                 placeRoom(topLeftX, topLeftY, roomWidth, roomHeight);
             }
         }
