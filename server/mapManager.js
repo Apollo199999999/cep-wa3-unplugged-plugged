@@ -1,6 +1,7 @@
 export default class MapManager {
     constructor() {
         // = means room walls, * means places where players can break to create new paths, x means boundary, - means empty space
+        // The following is how a map tileset should look like (even though maps are randomly generated currently)
         this.mapTiles =
             [
                 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
@@ -47,7 +48,7 @@ export default class MapManager {
                 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
             ]
 
-        this.mapTiles = this.generateMapWithCenterRoom(60, 60, 15, [[7, 9], [10, 15], [15, 8]]);
+        this.mapTiles = this.generateMapWithCenterRoom(60, 60, 7, 9);
         this.cellSize = 32;
         this.numCols = this.mapTiles[0].length;
         this.numRows = this.mapTiles.length;
@@ -56,14 +57,15 @@ export default class MapManager {
 
         this.boundaryColor = "red";
     }
-    generateMapWithCenterRoom(width, height, roomAttempts, roomSizes) {
+
+    generateMapWithCenterRoom(mapWidth, mapHeight, treasureRoomWidth, treasureRoomHeight) {
         // Initialize the map with "*" for the outside area.
-        let map = Array.from({ length: height }, () => Array(width).fill('*'));
+        let map = Array.from({ length: mapHeight }, () => Array(mapWidth).fill('*'));
 
         // Set the outer boundary of the map as "x".
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
+        for (let y = 0; y < mapHeight; y++) {
+            for (let x = 0; x < mapWidth; x++) {
+                if (x === 0 || y === 0 || x === mapWidth - 1 || y === mapHeight - 1) {
                     map[y][x] = 'x';
                 }
             }
@@ -73,7 +75,7 @@ export default class MapManager {
 
         // Helper function to check if a room can be placed.
         function canPlaceRoom(topLeftX, topLeftY, roomWidth, roomHeight) {
-            if (topLeftX + roomWidth + 1 >= width || topLeftY + roomHeight + 1 >= height || topLeftX < 1 || topLeftY < 1) {
+            if (topLeftX + roomWidth + 1 >= mapWidth || topLeftY + roomHeight + 1 >= mapHeight || topLeftX < 1 || topLeftY < 1) {
                 return false; // Room goes out of the boundary or touches the boundary edge.
             }
 
@@ -97,23 +99,26 @@ export default class MapManager {
             rooms.push({ x: topLeftX, y: topLeftY, width: roomWidth, height: roomHeight });
         }
 
-        // Ensure a central room is always placed first.
-        const [centralRoomWidth, centralRoomHeight] = [14, 12]
+        // Ensure a central room is always placed first. Its location is fixed
+        const [centralRoomWidth, centralRoomHeight] = [40, 12]
+
+        // Minus 2 to avoid touching boundary walls
+        // Minus additional 4 from mapHeight to ensure the  center room is slightly above the boundary edge
         const centralRoomLocation = {
-            x: Math.floor((width - centralRoomWidth) / 2),
-            y: Math.floor((height - centralRoomHeight) / 2)
+            x: Math.floor((mapWidth - centralRoomWidth - 2) / 2),
+            y: Math.floor((mapHeight - centralRoomHeight - 2 - 4) / 2)
         };
-        placeRoom(centralRoomLocation.x, centralRoomLocation.y + (height - 12) / 2, centralRoomWidth, centralRoomHeight);
+        placeRoom(centralRoomLocation.x, centralRoomLocation.y + (mapHeight - 12) / 2, centralRoomWidth, centralRoomHeight);
 
-        // Attempt to place other rooms on the map.
-        for (let attempt = 0; attempt < roomAttempts; attempt++) {
-            const roomIndex = Math.floor(Math.random() * roomSizes.length);
-            const [roomWidth, roomHeight] = roomSizes[roomIndex];
-            const topLeftX = Math.floor(Math.random() * (width - roomWidth - 1)) + 1;
-            const topLeftY = Math.floor(Math.random() * (height - roomHeight - 1)) + 1;
+        // Attempt to place 3 other treasure rooms on the map.
+        let numTreasureRooms = 0;
+        while (numTreasureRooms < 3) {
+            const topLeftX = Math.floor(Math.random() * (mapWidth - treasureRoomWidth - 1)) + 1;
+            const topLeftY = Math.floor(Math.random() * (mapHeight - treasureRoomHeight - 1)) + 1;
 
-            if (canPlaceRoom(topLeftX, topLeftY, roomWidth, roomHeight) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth)**2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight)**2 > 100){
-                placeRoom(topLeftX, topLeftY, roomWidth, roomHeight);
+            if (canPlaceRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth)**2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight)**2 > 200){
+                placeRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight);
+                numTreasureRooms += 1;
             }
         }
 
