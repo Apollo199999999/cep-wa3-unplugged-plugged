@@ -122,6 +122,19 @@ export default class MapManager {
             }
         }
 
+        let coinroomw = 10;
+        let coinroomh = 10;
+        let numCoinRooms = 0;
+        while (numCoinRooms < 2) {
+            const topLeftX = Math.floor(Math.random() * (mapWidth - coinroomw - 1)) + 1;
+            const topLeftY = Math.floor(Math.random() * (mapHeight - coinroomh - 1)) + 1;
+
+            if (canPlaceRoom(topLeftX, topLeftY, coinroomw, coinroomh) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth)**2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight)**2 > 25){
+                placeRoom(topLeftX, topLeftY, coinroomw, coinroomh);
+                numCoinRooms += 1;
+            }
+        }
+
         return map.map(row => row.join(''));
     }
 
