@@ -13,6 +13,20 @@ class MapBuilder {
         this.pathBricks = new Group();
         this.boundaryBricks = new Group();
         this.emptyBricks = new Group();
+        this.coingroup = new Group();
+        this.coins = [];
+
+        this.coingroup.w = 60//mapManager.coinWidth;
+        this.coingroup.h = 60//mapManager.coinHeight;
+        this.coingroup.tile = "c";
+        this.coingroup.layer = 999;
+        this.coingroup.spriteSheet = "./images/textures/coin4_16x16.png";
+        this.coingroup.addAnis({
+            idle: {row: 0, frames: 9, w: 16, h: 16},
+        });
+        this.coingroup.anis.frameDelay = 2;
+        this.coingroup.anis.scale = 4;
+        this.coingroup.anis.rotation = 0;
 
     }
 
@@ -147,5 +161,62 @@ class MapBuilder {
     displayMapDiagram() {
         // Display the map diagram on the console
         image(this.mapDiagram, 50, height - 200);
+    }
+
+    displayCoins(mapManager, coinanimation) {
+        // Generate coins on the map
+        for (let i = 0; i < this.coins.length; i++) {
+            if (this.coins[i] != null){
+                this.coins[i].remove();
+            }
+        }
+        this.coins = [];
+        //console.log(mapManager.coinarr, "displaying coins")
+        let coinCount = 0;
+        for (let i = 0; i < mapManager.coinarr.length; i++) {
+            this.createCoin(mapManager.coinarr[i].x, mapManager.coinarr[i].y, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
+        }
+        console.log(this.coins)
+    }
+
+    createCoin(posx, posy, coinWidth, coinHeight) {
+        let coin = new this.coingroup.Sprite();
+        coin.x = posx;
+        coin.y = posy;
+        coin.rotation = 0;
+        coin.width = coinWidth;
+        coin.height = coinHeight;
+        coin.scale = {x: 1.5, y: 1.5};
+        coin.draw = () => {
+            coin.ani.draw(0, 0, 0, coin.scale.x, coin.scale.y);
+        }
+        // coin.spriteSheet = "./images/textures/coin4_16x16.png";
+        // coin.visible = true;
+        // coin.layer = 999;
+        // // coin.color = "#FFD700";
+        // coin.rotation = 0;
+        // //coin.addAnimation("idle", coinanimation);
+        // coin.addAnis({
+        //     idle: {row: 0, frames: 9, w: 16, h: 16},
+        // });
+        // coin.anis.frameDelay = 2;
+        // coin.anis.scale = 2;
+        // coin.anis.rotation = 0;
+        // coin.changeAni('idle');
+        // coin.draw = () => {
+        //     coin.ani.draw(0, 0, 0, coin.scale.x, coin.scale.y);
+        // }
+        // //coinCount++;
+        this.coins.push(coin);
+    }
+
+    updateCoins(playerSprite) {
+        // Check if player has collected a coin
+        for (let i = 0; i < this.coins.length; i++) {
+            if (playerSprite.overlap(this.coins[i])) {
+                socket.emit("collectCoin", i);
+                console.log("Coin collected");
+            }
+        }
     }
 }

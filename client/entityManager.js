@@ -23,12 +23,14 @@ class EntityManager {
         this.entities.set(data.id, {
             sprite: playerSprite,
             positionBuffer: [],
+            coins: data.coins,
         });
     }
 
     updatePlayerData(newData) {
         let currData = this.entities.get(newData.id);
         currData.sprite.visible = true;
+        currData.coins = newData.coins;
         if (!currData) return;
         currData.positionBuffer.push({
             timestamp: +new Date(),
@@ -50,6 +52,7 @@ class EntityManager {
 
 function createPlayerSprite(name) {
     let playerSprite = new Sprite(0, 0, 32, 32);
+    playerSprite.layer = 1000;
     playerSprite.visible = true;
 
     // Load sprite sheet

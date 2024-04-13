@@ -17,6 +17,7 @@ function Client(socket) {
     this.ign = null;
     this.room = null;
     this.position = { x: 0, y: 0 };
+    this.coins = 0;
 }
 
 
@@ -62,6 +63,11 @@ io.on("connection", (socket) => {
         client.position = { x, y };
     });
 
+    // Update the client's coins server-side
+    // socket.on("coins", (coins) => {
+    //     client.coins = coins;
+    // });
+
     // Client registers itself with the server
     socket.on("registerClient", (ign, roomCode) => {
         client.ign = ign;
@@ -97,6 +103,27 @@ io.on("connection", (socket) => {
         
     });
 
+    socket.on("collectCoin", (coinIndex) => {
+        if (client.room == null) return;
+        client.coins += client.room.mapManager.coinarr[coinIndex].value;
+        let result = client.room.mapManager.collectCoin(coinIndex); // index in array
+        if (!result) return;
+        //console.log(client.room.mapManager.coinarr[coinIndex].value, client.coins)
+        
+        console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex]);
+        
+        for (let c of client.room.clients) {
+            c.socket.emit("updateCoins", client.room.mapManager, coinIndex);
+        }
+    });
+
+    socket.on("generateCoins", () => {
+        client.room.mapManager.generateCoins();
+        for (let c of client.room.clients) {
+            c.socket.emit("updateCoins", client.room.mapManager, null);
+        }
+    });
+
     socket.on("disconnect", () => {
         if (client.room) {
             client.room.removeClient(client);
@@ -117,6 +144,7 @@ function tick() {
                 position: c.position,
                 id: c.socket.id,
                 ign: c.ign,
+                coins: c.coins,
             };
         });
         for (let c of room.clients) {

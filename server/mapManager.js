@@ -56,6 +56,9 @@ export default class MapManager {
         this.pathColor = "black";
 
         this.boundaryColor = "red";
+        this.coinarr = [];
+        this.coinWidth = 30;
+        this.coinHeight = 30;
     }
 
     generateMapWithCenterRoom(mapWidth, mapHeight, treasureRoomWidth, treasureRoomHeight) {
@@ -154,5 +157,58 @@ export default class MapManager {
         }
 
         this.mapTiles[rowNum] = newRow;
+    }
+
+    collectCoin(coinIndex) {
+        if (coinIndex != null) {
+            this.coinarr.splice(coinIndex, 1);
+            return true;
+        } else return false;
+    }
+    
+
+    generateCoins() {
+        //this.coinarr = [];
+        let number = 0;
+
+        function random(min, max) {
+            let rand;
+
+           rand = Math.random();
+            if (typeof min === 'undefined') {
+                return rand;
+            } else if (typeof max === 'undefined') {
+                if (Array.isArray(min)) {
+                return min[Math.floor(rand * min.length)];
+                } else {
+                return rand * min;
+                }
+            } else {
+                if (min > max) {
+                const tmp = min;
+                min = max;
+                max = tmp;
+                }
+
+                return rand * (max - min) + min;
+            }
+        };
+        while (number < 5) {
+            let x = random(0, this.numCols * this.cellSize);//Math.floor(Math.random() * this.numCols) * this.cellSize;
+            let y = random(0, this.numRows * this.cellSize);
+            if (this.mapTiles[Math.floor(y / this.cellSize)][Math.floor(x / this.cellSize)] == '-') {
+                this.coinarr.push(new Coin(x, y));
+                number++;
+            }
+        }
+    }
+}
+
+
+class Coin {
+    constructor(x, y, value = 1) {
+        this.x = x;
+        this.y = y;
+        this.value = 1;
     }
 }
