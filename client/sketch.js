@@ -126,6 +126,9 @@ function draw() {
 
         // Check if players are within range of coins
         mapBuilder.checkPlayerCollectedCoins(playerSprite);
+
+        // Check if players are inside the real treasure room
+        mapBuilder.checkPlayerInTreasureRoom(playerSprite);
     }
 
 }

@@ -7,16 +7,22 @@ class MapBuilder {
         this.h = 2;
         this.numCols = 0;
         this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
+        this.mapCellSize;
+        this.mapBuilt = false;
 
         // Store position of map tileset
         this.mapX;
         this.mapY;
 
+        // Store the location of the real treasure room
+        this.realTreasureRoom = [];
+
         // Create sprite groups based on the different tiles available in the map
-        this.wallBricks = new Group(); 
+        this.wallBricks = new Group();
         this.pathBricks = new Group();
         this.boundaryBricks = new Group();
         this.emptyBricks = new Group();
+        this.goldBricks = new Group();
         this.coingroup = new Group();
 
         // Stores the coins received from server-side
@@ -28,7 +34,7 @@ class MapBuilder {
         this.coingroup.layer = 999;
         this.coingroup.spriteSheet = "./images/textures/coin4_16x16.png";
         this.coingroup.addAnis({
-            idle: {row: 0, frames: 9, w: 16, h: 16},
+            idle: { row: 0, frames: 9, w: 16, h: 16 },
         });
         this.coingroup.anis.frameDelay = 2;
         this.coingroup.anis.scale = 4;
@@ -77,6 +83,16 @@ class MapBuilder {
         this.boundaryBricks.stroke = mapManager.boundaryColor;
         this.boundaryBricks.img = "./images/textures/boundary.png";
 
+        this.goldBricks.w = mapManager.cellSize;
+        this.goldBricks.h = mapManager.cellSize;
+        this.goldBricks.tile = "G";
+        this.goldBricks.color = mapManager.goldColor;
+        this.goldBricks.collider = 'static';
+        this.goldBricks.stroke = mapManager.goldColor;
+        this.goldBricks.overlaps(allSprites);
+        this.goldBricks.layer = -999;
+        this.goldBricks.img = "./images/textures/gold.png";
+
         this.emptyBricks.w = mapManager.cellSize;
         this.emptyBricks.h = mapManager.cellSize;
         this.emptyBricks.tile = "-";
@@ -96,29 +112,35 @@ class MapBuilder {
 
         this.mapX = (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize;
         this.mapY = height - mapManager.numRows * mapManager.cellSize;
+
+        // Obtain the real treasure room
+        this.realTreasureRoom = mapManager.realTreasureRoom;
+        this.mapCellSize = mapManager.cellSize;
+
+        this.mapBuilt = true;
     }
 
     updateClickedTile(tileIndex, tileTarget) {
         let currTile = this.mapTiles[tileIndex];
 
         if (tileIndex != null) {
-            if (tileTarget == "x") { 
-                let newTile =  new this.boundaryBricks.Sprite();
+            if (tileTarget == "x") {
+                let newTile = new this.boundaryBricks.Sprite();
                 newTile.x = currTile.x;
                 newTile.y = currTile.y;
                 this.mapTiles[tileIndex] = newTile;
             } else if (tileTarget == "*") {
-                let newTile =  new this.pathBricks.Sprite();
+                let newTile = new this.pathBricks.Sprite();
                 newTile.x = currTile.x;
                 newTile.y = currTile.y;
                 this.mapTiles[tileIndex] = newTile;
             } else if (tileTarget == "=") {
-                let newTile =  new this.wallBricks.Sprite();
+                let newTile = new this.wallBricks.Sprite();
                 newTile.x = currTile.x;
                 newTile.y = currTile.y;
                 this.mapTiles[tileIndex] = newTile;
             } else if (tileTarget == "-") {
-                let newTile =  new this.emptyBricks.Sprite();
+                let newTile = new this.emptyBricks.Sprite();
                 newTile.x = currTile.x;
                 newTile.y = currTile.y;
                 this.mapTiles[tileIndex] = newTile;
@@ -135,18 +157,18 @@ class MapBuilder {
 
             // Tiles can only be added in empty spaces
             if (currTile.mouse.released() == true) {
-                // Prevent the user from breaking boundary tiles
+                // Prevent the user from adding a tile in a non-empty space
                 if (currTile.tile == "-" && tileChar != "-") {
                     socket.emit("mapModified", i, tileChar);
                     break;
                 }
-                // Prevent the user from adding a tile in a non-empty space
-                if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-") {
-                    socket.emit("mapModified", i,  "-");
+                // Prevent the user from breaking boundary tiles/gold tiles
+                if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-" && currTile.tile != 'G') {
+                    socket.emit("mapModified", i, "-");
                     break;
                 }
                 // Send the index of the tile to the server
-                
+
             }
         }
     }
@@ -176,7 +198,7 @@ class MapBuilder {
         // Generate coins on the map
         // Clear our current record of coins
         for (let i = 0; i < this.coins.length; i++) {
-            if (this.coins[i] != null){
+            if (this.coins[i] != null) {
                 this.coins[i].remove();
             }
         }
@@ -206,7 +228,7 @@ class MapBuilder {
         coin.rotation = 0;
         coin.width = coinWidth;
         coin.height = coinHeight;
-        coin.scale = {x: 1.5, y: 1.5};
+        coin.scale = { x: 1.5, y: 1.5 };
         coin.draw = () => {
             coin.ani.draw(0, 0, 0, coin.scale.x, coin.scale.y);
         }
@@ -220,6 +242,20 @@ class MapBuilder {
             if (playerSprite.overlap(this.coins[i])) {
                 socket.emit("collectCoin", i);
                 console.log("Coin collected");
+            }
+        }
+    }
+
+    checkPlayerInTreasureRoom(playerSprite) {
+        if (this.mapBuilt == true) {
+            // Get the dimensions of the treasure room
+            let x = this.realTreasureRoom.x * this.mapCellSize + this.mapX;
+            let y = this.realTreasureRoom.y * this.mapCellSize + this.mapY;
+            let w = this.realTreasureRoom.width * this.mapCellSize;
+            let h = this.realTreasureRoom.height * this.mapCellSize;
+
+            if (playerSprite.pos.x > x && playerSprite.pos.x < x + w && playerSprite.pos.y > y && playerSprite.pos.y < y + h) {
+                alert("in Treasure room");
             }
         }
     }
