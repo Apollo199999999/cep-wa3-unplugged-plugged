@@ -8,12 +8,18 @@ class MapBuilder {
         this.numCols = 0;
         this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
 
+        // Store position of map tileset
+        this.mapX;
+        this.mapY;
+
         // Create sprite groups based on the different tiles available in the map
         this.wallBricks = new Group(); 
         this.pathBricks = new Group();
         this.boundaryBricks = new Group();
         this.emptyBricks = new Group();
         this.coingroup = new Group();
+
+        // Stores the coins received from server-side
         this.coins = [];
 
         this.coingroup.w = 60//mapManager.coinWidth;
@@ -87,6 +93,9 @@ class MapBuilder {
             height - mapManager.numRows * mapManager.cellSize, // y to position at top
             mapManager.cellSize,
             mapManager.cellSize);
+
+        this.mapX = (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize;
+        this.mapY = height - mapManager.numRows * mapManager.cellSize;
     }
 
     updateClickedTile(tileIndex, tileTarget) {
@@ -165,17 +174,28 @@ class MapBuilder {
 
     displayCoins(mapManager, coinanimation) {
         // Generate coins on the map
+        // Clear our current record of coins
         for (let i = 0; i < this.coins.length; i++) {
             if (this.coins[i] != null){
                 this.coins[i].remove();
             }
         }
         this.coins = [];
-        //console.log(mapManager.coinarr, "displaying coins")
-        let coinCount = 0;
+
+
+        // Spawn coins on the map
         for (let i = 0; i < mapManager.coinarr.length; i++) {
-            this.createCoin(mapManager.coinarr[i].x, mapManager.coinarr[i].y, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
+            // We know which tile the coin is on
+            let coin = mapManager.coinarr[i];
+            let coinXTile = coin.x;
+            let coinYTile = coin.y;
+
+            // Calculate coinX and coinY based on the position of the map
+            let coinX = coinXTile * mapManager.cellSize + this.mapX;
+            let coinY = coinYTile * mapManager.cellSize + this.mapY;
+            this.createCoin(coinX, coinY, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
         }
+
         console.log(this.coins)
     }
 
@@ -190,27 +210,11 @@ class MapBuilder {
         coin.draw = () => {
             coin.ani.draw(0, 0, 0, coin.scale.x, coin.scale.y);
         }
-        // coin.spriteSheet = "./images/textures/coin4_16x16.png";
-        // coin.visible = true;
-        // coin.layer = 999;
-        // // coin.color = "#FFD700";
-        // coin.rotation = 0;
-        // //coin.addAnimation("idle", coinanimation);
-        // coin.addAnis({
-        //     idle: {row: 0, frames: 9, w: 16, h: 16},
-        // });
-        // coin.anis.frameDelay = 2;
-        // coin.anis.scale = 2;
-        // coin.anis.rotation = 0;
-        // coin.changeAni('idle');
-        // coin.draw = () => {
-        //     coin.ani.draw(0, 0, 0, coin.scale.x, coin.scale.y);
-        // }
-        // //coinCount++;
+
         this.coins.push(coin);
     }
 
-    updateCoins(playerSprite) {
+    checkPlayerCollectedCoins(playerSprite) {
         // Check if player has collected a coin
         for (let i = 0; i < this.coins.length; i++) {
             if (playerSprite.overlap(this.coins[i])) {

@@ -4,7 +4,7 @@ let mapBuilder;
 let camManager;
 let currentRoomCode = null;
 let localIGN = null;
-let coins = 0; // for now, coin addition is done on the client side
+let coins = 0; // for now, coin addition is done on the server side
 let allowMapModification = true;
 let wallEditorMode = '-'; //for future use
 
@@ -47,7 +47,7 @@ socket.on("updateMap", (tileIndex, tileChar) => {
     mapBuilder.generateMapDiagram();
 });
 
-socket.on("updateCoins", (mapManager, coinIndex) => {
+socket.on("updateCoins", (mapManager) => {
     mapBuilder.displayCoins(mapManager);
 });
 
@@ -88,21 +88,6 @@ function setup() {
     mapBuilder = new MapBuilder();
     camManager = new CameraManager(camera);
 
-//    const coinspriteSheet = new SpriteSheet(coinImage, [
-//     { "name": "frame1", "frame": { "x": 0 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame2", "frame": { "x": 1 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame3", "frame": { "x": 2 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame4", "frame": { "x": 3 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame5", "frame": { "x": 4 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame6", "frame": { "x": 5 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame7", "frame": { "x": 6 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame8", "frame": { "x": 7 * 16, "y": 0, "width": 16, "height": 16 } },
-//     { "name": "frame9", "frame": { "x": 8 * 16, "y": 0, "width": 16, "height": 16 } },
-//   ]);
-
-  // Load the animation from defined sprite sheet frames
-  //coinanimation = loadAnimation(coinspriteSheet);
-
     // p5play draws over our draw() loop, so we
     // have to jump thru hoops to draw our text
     // over our sprites...... by making a another
@@ -139,7 +124,8 @@ function draw() {
         // Map diagram display shouldnt be bound by any conditions
         mapBuilder.displayMapDiagram();
 
-        mapBuilder.updateCoins(playerSprite);
+        // Check if players are within range of coins
+        mapBuilder.checkPlayerCollectedCoins(playerSprite);
     }
 
 }
@@ -187,6 +173,7 @@ function interpolateOtherPlayers() {
     }
 }
 function keyPressed() {
+    // Spawn coins for npw
     console.log(mapBuilder.coins, "coins")
     if (keyCode === 32) {
         console.log("space pressed")
@@ -229,8 +216,7 @@ function move() {
         playerSprite.changeAni('idle');
     }
 
-
-
+    // Temporary, to allow the players to change the block added
     if (kb.pressing("1") && allowMapModification) {
         wallEditorMode = "*";
     } else if (kb.pressing("2") && allowMapModification) {

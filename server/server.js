@@ -108,7 +108,6 @@ io.on("connection", (socket) => {
         client.coins += client.room.mapManager.coinarr[coinIndex].value;
         let result = client.room.mapManager.collectCoin(coinIndex); // index in array
         if (!result) return;
-        //console.log(client.room.mapManager.coinarr[coinIndex].value, client.coins)
         
         console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex]);
         

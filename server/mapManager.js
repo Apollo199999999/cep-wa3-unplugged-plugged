@@ -55,7 +55,11 @@ export default class MapManager {
         this.wallColor = "grey";
         this.pathColor = "black";
 
+        // Variable to store central room location after spawning rooms
+        this.centralRoomLocation = {x: 0, y: 0};
+
         this.boundaryColor = "red";
+        // Stores Coin objects, which tell us where each coin on the map is
         this.coinarr = [];
         this.coinWidth = 30;
         this.coinHeight = 30;
@@ -111,6 +115,7 @@ export default class MapManager {
             x: Math.floor((mapWidth - centralRoomWidth - 2) / 2),
             y: Math.floor((mapHeight - centralRoomHeight - 2 - 4) / 2)
         };
+        this.centralRoomLocation = centralRoomLocation;
         placeRoom(centralRoomLocation.x, centralRoomLocation.y + (mapHeight - 12) / 2, centralRoomWidth, centralRoomHeight);
 
         // Attempt to place 3 other treasure rooms on the map.
@@ -119,7 +124,7 @@ export default class MapManager {
             const topLeftX = Math.floor(Math.random() * (mapWidth - treasureRoomWidth - 1)) + 1;
             const topLeftY = Math.floor(Math.random() * (mapHeight - treasureRoomHeight - 1)) + 1;
 
-            if (canPlaceRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth)**2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight)**2 > 200){
+            if (canPlaceRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth) ** 2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight) ** 2 > 200) {
                 placeRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight);
                 numTreasureRooms += 1;
             }
@@ -152,38 +157,41 @@ export default class MapManager {
             return true;
         } else return false;
     }
-    
+
 
     generateCoins() {
         //this.coinarr = [];
         let number = 0;
 
+        // Function to generate a random number
         function random(min, max) {
             let rand;
 
-           rand = Math.random();
+            rand = Math.random();
+
             if (typeof min === 'undefined') {
                 return rand;
             } else if (typeof max === 'undefined') {
                 if (Array.isArray(min)) {
-                return min[Math.floor(rand * min.length)];
+                    return min[Math.floor(rand * min.length)];
                 } else {
-                return rand * min;
+                    return rand * min;
                 }
             } else {
                 if (min > max) {
-                const tmp = min;
-                min = max;
-                max = tmp;
+                    const tmp = min;
+                    min = max;
+                    max = tmp;
                 }
 
                 return rand * (max - min) + min;
             }
         };
+
         while (number < 5) {
-            let x = random(0, this.numCols * this.cellSize);//Math.floor(Math.random() * this.numCols) * this.cellSize;
-            let y = random(0, this.numRows * this.cellSize);
-            if (this.mapTiles[Math.floor(y / this.cellSize)][Math.floor(x / this.cellSize)] == '-') {
+            let x = random(this.centralRoomLocation.x, this.numCols);
+            let y = random(this.centralRoomLocation.y, this.numRows);
+            if (this.mapTiles[Math.floor(y)][Math.floor(x)] == '-') {
                 this.coinarr.push(new Coin(x, y));
                 number++;
             }
@@ -194,8 +202,9 @@ export default class MapManager {
 
 class Coin {
     constructor(x, y, value = 1) {
+        // x and y here refer to which tile it is placed on
         this.x = x;
         this.y = y;
-        this.value = 1;
+        this.value = value;
     }
 }
