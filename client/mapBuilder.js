@@ -241,7 +241,7 @@ class MapBuilder {
             // Calculate coinX and coinY based on the position of the map
             let coinX = coinXTile * mapManager.cellSize + this.mapX;
             let coinY = coinYTile * mapManager.cellSize + this.mapY;
-            this.createCoin(coinX, coinY, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
+            this.createCoin(coinX, coinY, mapManager.coinWidth, mapManager.coinHeight);
         }
 
         console.log(this.coins)
