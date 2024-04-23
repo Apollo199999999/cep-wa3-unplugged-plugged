@@ -55,7 +55,7 @@ class MapBuilder {
         return createVector(x ,y);
     }
 
-    displaySelectedtTile(tileIndex, prevtileIndex){
+    displaySelectedTile(tileIndex, prevtileIndex){
         if (prevtileIndex != null){
             let prevtile = this.mapTiles[prevtileIndex];
             if (prevtile){
