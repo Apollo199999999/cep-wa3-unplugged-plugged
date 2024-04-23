@@ -55,7 +55,7 @@ socket.on("playerDataUpdate", (id, playerData) => {
     for (let data of playerData) {
         if (data.id === id) {
             coins = data.coins;
-            console.log("coins: ", coins);
+            continue;
         };
         if (!em.exists(data.id)) {
             em.registerNewPlayer(data);
