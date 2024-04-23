@@ -248,7 +248,7 @@ class MapBuilder {
         image(this.mapDiagram, 50, height - 200);
     }
 
-    displayCoins(mapManager, coinanimation) {
+    displayCoins(mapManager) {
         // Generate coins on the map
         // Clear our current record of coins
         for (let i = 0; i < this.coins.length; i++) {
@@ -261,15 +261,8 @@ class MapBuilder {
 
         // Spawn coins on the map
         for (let i = 0; i < mapManager.coinarr.length; i++) {
-            // We know which tile the coin is on
-            let coin = mapManager.coinarr[i];
-            let coinXTile = coin.x;
-            let coinYTile = coin.y;
-
-            // Calculate coinX and coinY based on the position of the map
-            let coinX = coinXTile * mapManager.cellSize + this.mapX;
-            let coinY = coinYTile * mapManager.cellSize + this.mapY;
-            this.createCoin(coinX, coinY, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
+            
+            this.createCoin(mapManager.coinarr[i].x, mapManager.coinarr[i].y, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
         }
 
         console.log(this.coins)
