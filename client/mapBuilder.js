@@ -206,11 +206,11 @@ class MapBuilder {
 
     editClickedTile(tileChar, selectedTileIndex) {
         // Iterate through map tiles to retrieve the sprite that is clicked
-        for (let i = 0; i < this.mapTiles.length; i++) {
+        for (let i = 0; i < this.mapTiles.length; i++) { //for loop is currently redundant 
             let currTile = this.mapTiles[selectedTileIndex];
 
             // Tiles can only be added in empty spaces
-            if (currTile.mouse.released() == true) {
+            //if (currTile.mouse.released() == true) {
                 // Prevent the user from adding a tile in a non-empty space
                 if (currTile.tile == "-" && tileChar != "-") {
                     socket.emit("mapModified", selectedTileIndex, tileChar);
@@ -223,7 +223,7 @@ class MapBuilder {
                 }
                 // Send the index of the tile to the server
 
-            }
+            // }
         }
     }
 
