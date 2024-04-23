@@ -57,15 +57,15 @@ class MapBuilder {
         clientSprite.position.y = height - mapManager.cellSize * 5;
     }
 
-    findMapPosition(clientSprite){
+    findMapPosition(clientSprite) {
         let x = Math.round((clientSprite.pos.x - this.mapX) / this.mapCellSize);
         let y = Math.round((clientSprite.pos.y - this.mapY) / this.mapCellSize);
 
-        return createVector(x ,y);
+        return createVector(x, y);
     }
 
-    displaySelectedTile(tileIndex){
-        if (tileIndex != -1){
+    displaySelectedTile(tileIndex) {
+        if (tileIndex != -1) {
             let currTile = this.mapTiles[tileIndex];
             this.selectedtile.pos.x = currTile.x;
             this.selectedtile.pos.y = currTile.y;
@@ -177,25 +177,15 @@ class MapBuilder {
     }
 
     editClickedTile(tileChar, selectedTileIndex) {
-        // Iterate through map tiles to retrieve the sprite that is clicked
-        for (let i = 0; i < this.mapTiles.length; i++) { //for loop is currently redundant 
-            let currTile = this.mapTiles[selectedTileIndex];
+        let currTile = this.mapTiles[selectedTileIndex];
 
-            // Tiles can only be added in empty spaces
-            //if (currTile.mouse.released() == true) {
-                // Prevent the user from adding a tile in a non-empty space
-                if (currTile.tile == "-" && tileChar != "-") {
-                    socket.emit("mapModified", selectedTileIndex, tileChar);
-                    break;
-                }
-                // Prevent the user from breaking boundary tiles/gold tiles
-                if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-" && currTile.tile != 'G') {
-                    socket.emit("mapModified", selectedTileIndex, "-");
-                    break;
-                }
-                // Send the index of the tile to the server
-
-            // }
+        // Prevent the user from adding a tile in a non-empty space
+        if (currTile.tile == "-" && tileChar != "-") {
+            socket.emit("mapModified", selectedTileIndex, tileChar);
+        }
+        // Prevent the user from breaking boundary tiles/gold tiles
+        if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-" && currTile.tile != 'G') {
+            socket.emit("mapModified", selectedTileIndex, "-");
         }
     }
 
@@ -233,7 +223,7 @@ class MapBuilder {
 
         // Spawn coins on the map
         for (let i = 0; i < mapManager.coinarr.length; i++) {
-             // We know which tile the coin is on
+            // We know which tile the coin is on
             let coin = mapManager.coinarr[i];
             let coinXTile = coin.x;
             let coinYTile = coin.y;
