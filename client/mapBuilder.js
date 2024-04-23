@@ -173,21 +173,21 @@ class MapBuilder {
         }
     }
 
-    editClickedTile(tileChar) {
+    editClickedTile(tileChar, selectedTileIndex) {
         // Iterate through map tiles to retrieve the sprite that is clicked
         for (let i = 0; i < this.mapTiles.length; i++) {
-            let currTile = this.mapTiles[i];
+            let currTile = this.mapTiles[selectedTileIndex];
 
             // Tiles can only be added in empty spaces
             if (currTile.mouse.released() == true) {
                 // Prevent the user from adding a tile in a non-empty space
                 if (currTile.tile == "-" && tileChar != "-") {
-                    socket.emit("mapModified", i, tileChar);
+                    socket.emit("mapModified", selectedTileIndex, tileChar);
                     break;
                 }
                 // Prevent the user from breaking boundary tiles/gold tiles
                 if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-" && currTile.tile != 'G') {
-                    socket.emit("mapModified", i, "-");
+                    socket.emit("mapModified", selectedTileIndex, "-");
                     break;
                 }
                 // Send the index of the tile to the server

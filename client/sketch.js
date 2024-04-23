@@ -120,9 +120,9 @@ function setup() {
 let mapPos = createVector();
 let selectedTileIndex;
 let prevSelectedTileIndex;
-
+let selectedTileIndex;
 function selectTile(){
-    let selectedTileIndex;
+    
     if (breakDir == 0){
         //up
         selectedTileIndex = (mapPos.y - 1) * mapBuilder.mapCellSize + mapPos.x; //may need 0 indexing or smth
@@ -168,7 +168,7 @@ function draw() {
 
 function mouseReleased() {
     if (setupComplete && allowMapModification) {
-        mapBuilder.editClickedTile(wallEditorMode);
+        mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
     }
 }
 
