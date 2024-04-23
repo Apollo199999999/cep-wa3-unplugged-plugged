@@ -249,13 +249,14 @@ class MapBuilder {
     checkPlayerInTreasureRoom(playerSprite) {
         if (this.mapBuilt == true) {
             // Get the dimensions of the treasure room
-            let x = this.realTreasureRoom.x * this.mapCellSize + this.mapX;
-            let y = this.realTreasureRoom.y * this.mapCellSize + this.mapY;
-            let w = this.realTreasureRoom.width * this.mapCellSize;
-            let h = this.realTreasureRoom.height * this.mapCellSize;
+            // +1 and -1 to exclude walls 
+            let x = this.realTreasureRoom.x * this.mapCellSize + this.mapX + 1;
+            let y = this.realTreasureRoom.y * this.mapCellSize + this.mapY + 1;
+            let w = this.realTreasureRoom.width * this.mapCellSize - 1;
+            let h = this.realTreasureRoom.height * this.mapCellSize - 1;
 
             if (playerSprite.pos.x > x && playerSprite.pos.x < x + w && playerSprite.pos.y > y && playerSprite.pos.y < y + h) {
-                alert("in Treasure room");
+                socket.emit("gameOver");
             }
         }
     }

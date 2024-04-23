@@ -133,6 +133,15 @@ io.on("connection", (socket) => {
             c.socket.emit("removeClient", socket.id);
         });
     });
+
+    socket.on("gameOver", () => {
+        for (let c of client.room.clients) {
+            c.socket.emit("gameOver", c.socket.id);
+            clients.delete(c)
+        }
+
+        rooms.splice(rooms.indexOf(client.room), 1);
+    });
 });
 
 
