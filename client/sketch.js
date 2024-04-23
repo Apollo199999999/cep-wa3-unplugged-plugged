@@ -122,7 +122,6 @@ function setup() {
 
 
 let selectedTileIndex = -1;
-let prevSelectedTileIndex = -1;
 
 function selectTile(){
     if (breakDir == 0){
@@ -136,8 +135,6 @@ function selectTile(){
     }
 
     selectedTileIndex = Math.round(selectedTileIndex);
-    // prevSelectedTileIndex = Math.round(prevSelectedTileIndex);
-
 }
 
 function draw() {
@@ -166,8 +163,6 @@ function draw() {
 
         // Check if players are inside the real treasure room
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
-
-        // prevSelectedTileIndex = selectedTileIndex;
     }
 
 }
