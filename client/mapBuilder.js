@@ -41,6 +41,14 @@ class MapBuilder {
         this.coingroup.anis.scale = 4;
         this.coingroup.anis.rotation = 0;
 
+        this.selectedtile = new Sprite();
+        this.selectedtile.visible = false;
+        this.selectedtile.collider = "none";
+        this.selectedtile.w = 32;
+        this.selectedtile.h = 32;
+        this.selectedtile.stroke = "yellow";
+        this.selectedtile.strokeWeight = 2;
+        this.selectedtile.img = "./images/textures/selected.png";
     }
 
     setStartPos(mapManager, clientSprite) {
@@ -56,50 +64,14 @@ class MapBuilder {
         return createVector(x ,y);
     }
 
-    displaySelectedTile(tileIndex, prevtileIndex){
-        if (prevtileIndex != -1){
-            let prevTile = this.mapTiles[prevtileIndex];
-            let prevTileTile = prevTile.tile;
-
-            let newTile;
-            if (prevTileTile == "*") {
-                newTile = new this.pathBricks.Sprite();
-            } else if (prevTileTile == "=") {
-                newTile = new this.wallBricks.Sprite();
-            } else if (prevTileTile == "-") {
-                newTile = new this.emptyBricks.Sprite();
-            }
-
-            newTile.x = prevTile.x;
-            newTile.y = prevTile.y;
-
-            this.mapTiles[prevtileIndex] = newTile;
-
-            prevTile.remove();
-        }
-
+    displaySelectedTile(tileIndex){
         if (tileIndex != -1){
             let currTile = this.mapTiles[tileIndex];
-            let currTileTile = currTile.tile;
-
-            let newTile;
-            if (currTileTile == "*") {
-                newTile = new this.pathBricks.Sprite();
-            } else if (currTileTile == "=") {
-                newTile = new this.wallBricks.Sprite();
-            } else if (currTileTile == "-") {
-                newTile = new this.emptyBricks.Sprite();
-            }
-
-            newTile.x = currTile.x;
-            newTile.y = currTile.y;
-            newTile.img = "./images/textures/gold.png";
-
-            this.mapTiles[tileIndex] = newTile;
-
-            currTile.remove();
+            this.selectedtile.pos.x = currTile.x;
+            this.selectedtile.pos.y = currTile.y;
+            this.selectedtile.visible = true;
+            this.selectedtile.layer = 999999;
         }
-        
     }
 
     buildMap(mapManager) {
@@ -261,8 +233,15 @@ class MapBuilder {
 
         // Spawn coins on the map
         for (let i = 0; i < mapManager.coinarr.length; i++) {
-            
-            this.createCoin(mapManager.coinarr[i].x, mapManager.coinarr[i].y, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
+             // We know which tile the coin is on
+            let coin = mapManager.coinarr[i];
+            let coinXTile = coin.x;
+            let coinYTile = coin.y;
+
+            // Calculate coinX and coinY based on the position of the map
+            let coinX = coinXTile * mapManager.cellSize + this.mapX;
+            let coinY = coinYTile * mapManager.cellSize + this.mapY;
+            this.createCoin(coinX, coinY, mapManager.coinWidth, mapManager.coinHeight, coinanimation);
         }
 
         console.log(this.coins)

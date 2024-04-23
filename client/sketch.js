@@ -136,7 +136,7 @@ function selectTile(){
     }
 
     selectedTileIndex = Math.round(selectedTileIndex);
-    prevSelectedTileIndex = Math.round(prevSelectedTileIndex);
+    // prevSelectedTileIndex = Math.round(prevSelectedTileIndex);
 
 }
 
@@ -159,7 +159,7 @@ function draw() {
         selectTile();
 
         console.log(selectedTileIndex);
-        mapBuilder.displaySelectedTile(selectedTileIndex, prevSelectedTileIndex);
+        mapBuilder.displaySelectedTile(selectedTileIndex);
 
         // Check if players are within range of coins
         mapBuilder.checkPlayerCollectedCoins(playerSprite);
@@ -167,7 +167,7 @@ function draw() {
         // Check if players are inside the real treasure room
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
 
-        prevSelectedTileIndex = selectedTileIndex;
+        // prevSelectedTileIndex = selectedTileIndex;
     }
 
 }
