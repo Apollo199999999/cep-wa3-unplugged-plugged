@@ -136,7 +136,7 @@ io.on("connection", (socket) => {
 
     socket.on("gameOver", () => {
         for (let c of client.room.clients) {
-            c.socket.emit("gameOver", c.socket.id);
+            c.socket.emit("gameOver", client.socket.id, c.socket.id);
             clients.delete(c)
         }
 
