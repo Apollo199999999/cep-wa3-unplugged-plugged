@@ -8,6 +8,7 @@ let coins = 0; // for now, coin addition is done on the server side
 let allowMapModification = true;
 let wallEditorMode = '-'; //for future use
 let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
+let playerMapPos;
 
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
@@ -115,24 +116,27 @@ function setup() {
         mapBuilder.displayMapDiagram();
     }
     minimap.layer = 999;
+
+    playerMapPos = createVector();
 }
 
-let mapPos = createVector();
-let selectedTileIndex;
-let prevSelectedTileIndex;
-let selectedTileIndex;
+
+let selectedTileIndex = -1;
+let prevSelectedTileIndex = -1;
+
 function selectTile(){
-    
     if (breakDir == 0){
-        //up
-        selectedTileIndex = (mapPos.y - 1) * mapBuilder.mapCellSize + mapPos.x; //may need 0 indexing or smth
+        selectedTileIndex = (playerMapPos.y - 1) * mapBuilder.numCols+ playerMapPos.x; //may need 0 indexing or smth
     } else if (breakDir == 1){
-        selectedTileIndex = mapPos.y * mapBuilder.mapCellSize + mapPos.x + 1; 
+        selectedTileIndex = playerMapPos.y * mapBuilder.numCols + playerMapPos.x - 1; 
     } else if (breakDir == 2){
-        selectedTileIndex = (mapPos.y + 1) * mapBuilder.mapCellSize + mapPos.x;
+        selectedTileIndex = (playerMapPos.y + 1) * mapBuilder.numCols + playerMapPos.x;
     } else if (breakDir == 3){
-        selectedTileIndex = mapPos.y * mapBuilder.mapCellSize + mapPos.x - 1;
+        selectedTileIndex = playerMapPos.y * mapBuilder.numCols + playerMapPos.x + 1;
     }
+
+    selectedTileIndex = Math.round(selectedTileIndex);
+    prevSelectedTileIndex = Math.round(prevSelectedTileIndex);
 
 }
 
@@ -150,9 +154,11 @@ function draw() {
         // Map diagram display shouldnt be bound by any conditions
         mapBuilder.displayMapDiagram();
 
-        mapPos = mapBuilder.findMapPosition(playerSprite);
-
+        playerMapPos = mapBuilder.findMapPosition(playerSprite);
         
+        selectTile();
+
+        console.log(selectedTileIndex);
         mapBuilder.displaySelectedTile(selectedTileIndex, prevSelectedTileIndex);
 
         // Check if players are within range of coins

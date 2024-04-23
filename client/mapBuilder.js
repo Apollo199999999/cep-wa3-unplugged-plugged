@@ -6,6 +6,7 @@ class MapBuilder {
         this.w = 2;
         this.h = 2;
         this.numCols = 0;
+        this.numRows = 0;
         this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
         this.mapCellSize;
         this.mapBuilt = false;
@@ -49,25 +50,55 @@ class MapBuilder {
     }
 
     findMapPosition(clientSprite){
-        let x = (clientSprite.pos.x - this.mapX) / this.mapCellSize;
-        let y = (clientSprite.pos.y - this.mapY) / this.mapCellSize;
-        //console.log(x,y);
+        let x = Math.round((clientSprite.pos.x - this.mapX) / this.mapCellSize);
+        let y = Math.round((clientSprite.pos.y - this.mapY) / this.mapCellSize);
+
         return createVector(x ,y);
     }
 
     displaySelectedTile(tileIndex, prevtileIndex){
-        if (prevtileIndex != null){
-            let prevtile = this.mapTiles[prevtileIndex];
-            if (prevtile){
-                prevtile.strokeWeight(0);
+        if (prevtileIndex != -1){
+            let prevTile = this.mapTiles[prevtileIndex];
+            let prevTileTile = prevTile.tile;
+
+            let newTile;
+            if (prevTileTile == "*") {
+                newTile = new this.pathBricks.Sprite();
+            } else if (prevTileTile == "=") {
+                newTile = new this.wallBricks.Sprite();
+            } else if (prevTileTile == "-") {
+                newTile = new this.emptyBricks.Sprite();
             }
+
+            newTile.x = prevTile.x;
+            newTile.y = prevTile.y;
+
+            this.mapTiles[prevtileIndex] = newTile;
+
+            prevTile.remove();
         }
-        if (tileIndex != null){
-            let selectedTile = this.mapTiles[tileIndex];
-            selectedTile.stroke('yellow'); //can configure later based on tile type 
-            selectedTile.strokeWeight(3)
+
+        if (tileIndex != -1){
+            let currTile = this.mapTiles[tileIndex];
+            let currTileTile = currTile.tile;
+
+            let newTile;
+            if (currTileTile == "*") {
+                newTile = new this.pathBricks.Sprite();
+            } else if (currTileTile == "=") {
+                newTile = new this.wallBricks.Sprite();
+            } else if (currTileTile == "-") {
+                newTile = new this.emptyBricks.Sprite();
+            }
+
+            newTile.x = currTile.x;
+            newTile.y = currTile.y;
+            newTile.img = "./images/textures/gold.png";
+
+            this.mapTiles[tileIndex] = newTile;
+
+            currTile.remove();
         }
-        
         
     }
 
