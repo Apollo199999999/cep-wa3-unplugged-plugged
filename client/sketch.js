@@ -7,6 +7,7 @@ let localIGN = null;
 let coins = 0; // for now, coin addition is done on the server side
 let allowMapModification = true;
 let wallEditorMode = '-'; //for future use
+let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
 
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
@@ -115,6 +116,25 @@ function setup() {
     minimap.layer = 999;
 }
 
+let mapPos = createVector();
+let selectedTileIndex;
+let prevSelectedTileIndex;
+
+function selectTile(){
+    let selectedTileIndex;
+    if (breakDir == 0){
+        //up
+        selectedTileIndex = (mapPos.y - 1) * mapBuilder.mapCellSize + mapPos.x; //may need 0 indexing or smth
+    } else if (breakDir == 1){
+        selectedTileIndex = mapPos.y * mapBuilder.mapCellSize + mapPos.x + 1; 
+    } else if (breakDir == 2){
+        selectedTileIndex = (mapPos.y + 1) * mapBuilder.mapCellSize + mapPos.x;
+    } else if (breakDir == 3){
+        selectedTileIndex = mapPos.y * mapBuilder.mapCellSize + mapPos.x - 1;
+    }
+
+}
+
 function draw() {
     if (setupComplete) {
         background("#000000");
@@ -129,11 +149,18 @@ function draw() {
         // Map diagram display shouldnt be bound by any conditions
         mapBuilder.displayMapDiagram();
 
+        mapPos = mapBuilder.findMapPosition(playerSprite);
+
+        
+        mapBuilder.displaySelectedTile(selectedTileIndex, prevSelectedTileIndex);
+
         // Check if players are within range of coins
         mapBuilder.checkPlayerCollectedCoins(playerSprite);
 
         // Check if players are inside the real treasure room
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
+
+        prevSelectedTileIndex = selectedTileIndex;
     }
 
 }
@@ -197,21 +224,25 @@ function move() {
         playerSprite.changeAni('run');
         playerSprite.scale.x = 1;
         playerSprite.pos.y -= SPEED;
+        breakDir = 0;
     }
     if (kb.pressing("a")) {
         playerSprite.changeAni('run');
         playerSprite.scale.x = -1;
         playerSprite.pos.x -= SPEED;
+        breakDir = 1;
     }
     if (kb.pressing("s")) {
         playerSprite.changeAni('run');
         playerSprite.scale.x = 1;
         playerSprite.pos.y += SPEED;
+        breakDir = 2;
     }
     if (kb.pressing("d")) {
         playerSprite.changeAni('run');
         playerSprite.scale.x = 1;
         playerSprite.pos.x += SPEED;
+        breakDir = 3;
     }
 
     // Reset animation after player stops moving

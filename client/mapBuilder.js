@@ -48,6 +48,29 @@ class MapBuilder {
         clientSprite.position.y = height - mapManager.cellSize * 5;
     }
 
+    findMapPosition(clientSprite){
+        let x = (clientSprite.pos.x - this.mapX) / this.mapCellSize;
+        let y = (clientSprite.pos.y - this.mapY) / this.mapCellSize;
+        //console.log(x,y);
+        return createVector(x ,y);
+    }
+
+    displaySelectedtTile(tileIndex, prevtileIndex){
+        if (prevtileIndex != null){
+            let prevtile = this.mapTiles[prevtileIndex];
+            if (prevtile){
+                prevtile.strokeWeight(0);
+            }
+        }
+        if (tileIndex != null){
+            let selectedTile = this.mapTiles[tileIndex];
+            selectedTile.stroke('yellow'); //can configure later based on tile type 
+            selectedTile.strokeWeight(3)
+        }
+        
+        
+    }
+
     buildMap(mapManager) {
         // Clear existing map before building
         if (this.mapTiles != null) {
