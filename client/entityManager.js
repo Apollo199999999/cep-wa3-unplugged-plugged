@@ -16,11 +16,11 @@ class EntityManager {
     }
 
     registerNewPlayer(data) {
-        console.log(data);
         let playerSprite = createPlayerSprite(data.ign);
         playerSprite.x = data.position.x;
         playerSprite.y = data.position.y;
         this.entities.set(data.id, {
+            ign: data.ign,
             sprite: playerSprite,
             positionBuffer: [],
             coins: data.coins,

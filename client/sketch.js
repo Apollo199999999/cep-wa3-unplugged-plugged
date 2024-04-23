@@ -74,7 +74,8 @@ socket.on("removeClient", (id) => {
 });
 
 socket.on("gameOver", (id) => {
-    window.location.href = "gameOver.html";
+    //TODO: proper gameover page
+    window.location.href = "gameOver.html?player=" + em.get(id).ign;
 });
 
 // used as a replacement for console.log on server side to log messages to client

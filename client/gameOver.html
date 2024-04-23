@@ -8,12 +8,36 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- client backend -->
-    <script src="index.js"></script>
+    <script src="gameOver.js"></script>
 </head>
 
 <body>
-   <h1>Game over</h1>
+    <div class="flex w-screen h-screen flex-col" id="main-div">
+        <div class="flex flex-col p-8 m-auto w-screen max-w-screen-sm bg-base-100 rounded-md drop-shadow-lg">
+            <h1 class="mx-auto my-0 mb-8 font-bold text-2xl">Game Over!</h1>
+            <h1 id="winText" class="mx-auto my-0">User has found the treasure room!</h1>
+        </div>
+    </div>
 </body>
 
 </html>
 
+<style>
+    /* For background image */
+    #main-div::before {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: -1;
+
+        display: block;
+        background-image: url('./images/menu-bg.jpg');
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+
+        transform: scale(1.1);
+        filter: blur(5px);
+    }
+</style>
