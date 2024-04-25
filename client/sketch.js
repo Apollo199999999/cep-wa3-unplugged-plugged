@@ -19,6 +19,10 @@ let coinSpawiningFrequency = 0.5;
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
 
+// Map cooldown variables
+let mapCooldownPeriod = 30;
+let mapCooldownLeft = 0;
+
 const socket = io.connect("ws://localhost:8001");
 
 window.onload = () => {
@@ -126,8 +130,8 @@ function setup() {
     playerMapPos = createVector();
 
     // Create an iframe to display player stats
-    playerStatsFrame = createElement('iframe').size(140, 40);
-    playerStatsFrame.position(width - 10 - 140, 10);
+    playerStatsFrame = createElement('iframe').size(250, 80);
+    playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
 }
 
@@ -179,16 +183,36 @@ function draw() {
             socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
         }
 
-        // Update coin counter (from playerStats.js)
+        // Update player stats (from playerStats.js)
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
-
+        updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
     }
-
 }
 
+let numberOfBlocksEdited = 0;
+
+// Variable to store setInterval object to do map cooldown
+let cooldownTimer;
+
 function mouseReleased() {
-    if (setupComplete && allowMapModification) {
+    if (setupComplete && allowMapModification && numberOfBlocksEdited < 5) {
         mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
+        numberOfBlocksEdited ++;
+    }
+    if (numberOfBlocksEdited >= 5) {
+        allowMapModification = false;
+        mapCooldownLeft = mapCooldownPeriod;
+        numberOfBlocksEdited = 0;
+        cooldownTimer = setInterval(function () {
+            if (mapCooldownLeft > 0) {
+                mapCooldownLeft -= 1;
+            }
+            else {
+                mapCooldownLeft = 0;
+                allowMapModification = true;
+                clearInterval(cooldownTimer);
+            }
+        }, 1000);
     }
 }
 
