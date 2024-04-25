@@ -10,6 +10,9 @@ let wallEditorMode = '-'; //for future use
 let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
 let playerMapPos;
 
+// Coin spawning variables
+let coinSpawiningFrequency = 0.5;
+
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
 
@@ -163,6 +166,11 @@ function draw() {
 
         // Check if players are inside the real treasure room
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
+
+        // Spawn coins at specified rate
+        if (frameCount % (60 / coinSpawiningFrequency) == 0) {
+            socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
+        }
     }
 
 }
@@ -209,14 +217,7 @@ function interpolateOtherPlayers() {
         }
     }
 }
-function keyPressed() {
-    // Spawn coins for npw
-    console.log(mapBuilder.coins, "coins")
-    if (keyCode === 32) {
-        console.log("space pressed")
-        socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
-    } 
-}
+
 function move() {
     const SPEED = 8;
 

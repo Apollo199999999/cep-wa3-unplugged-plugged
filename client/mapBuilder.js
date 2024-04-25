@@ -1,10 +1,13 @@
 class MapBuilder {
     constructor() {
         this.mapTiles = null;
+
+        // Map diagram variables
         this.diagramw = 200;
         this.diagramh = 200;
         this.w = 2;
         this.h = 2;
+        
         this.numCols = 0;
         this.numRows = 0;
         this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
@@ -16,7 +19,7 @@ class MapBuilder {
         this.mapY;
 
         // Store the location of the real treasure room
-        this.realTreasureRoom = [];
+        this.realTreasureRoomLocation = [];
 
         // Create sprite groups based on the different tiles available in the map
         this.wallBricks = new Group();
@@ -25,13 +28,15 @@ class MapBuilder {
         this.emptyBricks = new Group();
         this.goldBricks = new Group();
         this.coingroup = new Group();
+        this.mapOverlayAreaSprite = new Group();
 
         // Stores the coins received from server-side
         this.coins = [];
 
-        this.coingroup.w = 60//mapManager.coinWidth;
-        this.coingroup.h = 60//mapManager.coinHeight;
+        this.coingroup.w = 60
+        this.coingroup.h = 60
         this.coingroup.tile = "c";
+        this.coingroup.overlaps(allSprites);
         this.coingroup.layer = 999;
         this.coingroup.spriteSheet = "./images/textures/coin4_16x16.png";
         this.coingroup.addAnis({
@@ -41,6 +46,7 @@ class MapBuilder {
         this.coingroup.anis.scale = 4;
         this.coingroup.anis.rotation = 0;
 
+        // To indicate which tile can be edited
         this.selectedtile = new Sprite();
         this.selectedtile.visible = false;
         this.selectedtile.collider = "none";
@@ -49,6 +55,8 @@ class MapBuilder {
         this.selectedtile.stroke = "yellow";
         this.selectedtile.strokeWeight = 2;
         this.selectedtile.img = "./images/textures/selected.png";
+
+
     }
 
     setStartPos(mapManager, clientSprite) {
@@ -140,8 +148,28 @@ class MapBuilder {
         this.mapY = height - mapManager.numRows * mapManager.cellSize;
 
         // Obtain the real treasure room
-        this.realTreasureRoom = mapManager.realTreasureRoom;
+        this.realTreasureRoomLocation = mapManager.realTreasureRoomLocation;
         this.mapCellSize = mapManager.cellSize;
+
+        // Build map overlays
+        // Define props for map overlays
+        this.mapOverlayAreaSprite.collider = 'static';
+        this.mapOverlayAreaSprite.overlaps(allSprites);
+        this.mapOverlayAreaSprite.layer = 999;
+
+        // Build coin spawners
+        let coinSpawners = mapManager.coinSpawnerRooms;
+
+        for (let i = 0; i < coinSpawners.length; i++) {
+            let coinSpawnerRoom = coinSpawners[i];
+            let coinSpawnerSprite = new this.mapOverlayAreaSprite.Sprite();
+            coinSpawnerSprite.w = coinSpawnerRoom.w * this.mapCellSize;
+            coinSpawnerSprite.h = coinSpawnerRoom.h * this.mapCellSize;
+            // p5play treats position of rectangle using the center point of the rect, hence this suspicious positioning fix
+            coinSpawnerSprite.x = (coinSpawnerRoom.x * this.mapCellSize) + this.mapX + (coinSpawnerSprite.w / 2) - (this.mapCellSize / 2);
+            coinSpawnerSprite.y = (coinSpawnerRoom.y * this.mapCellSize) + this.mapY + (coinSpawnerSprite.h / 2) - (this.mapCellSize / 2);
+            coinSpawnerSprite.img = coinSpawnerRoom.img;
+        }
 
         this.mapBuilt = true;
     }
@@ -220,7 +248,6 @@ class MapBuilder {
         }
         this.coins = [];
 
-
         // Spawn coins on the map
         for (let i = 0; i < mapManager.coinarr.length; i++) {
             // We know which tile the coin is on
@@ -233,8 +260,6 @@ class MapBuilder {
             let coinY = coinYTile * mapManager.cellSize + this.mapY;
             this.createCoin(coinX, coinY, mapManager.coinWidth, mapManager.coinHeight);
         }
-
-        console.log(this.coins)
     }
 
     createCoin(posx, posy, coinWidth, coinHeight) {
@@ -266,10 +291,10 @@ class MapBuilder {
         if (this.mapBuilt == true) {
             // Get the dimensions of the treasure room
             // + and - to exclude walls
-            let x = (this.realTreasureRoom.x + 1) * this.mapCellSize + this.mapX;
-            let y = (this.realTreasureRoom.y + 1)* this.mapCellSize + this.mapY ;
-            let w = (this.realTreasureRoom.width - 2)* this.mapCellSize;
-            let h = (this.realTreasureRoom.height - 2) * this.mapCellSize;
+            let x = (this.realTreasureRoomLocation.x + 1) * this.mapCellSize + this.mapX;
+            let y = (this.realTreasureRoomLocation.y + 1) * this.mapCellSize + this.mapY;
+            let w = (this.realTreasureRoomLocation.width - 2) * this.mapCellSize;
+            let h = (this.realTreasureRoomLocation.height - 2) * this.mapCellSize;
 
             if (playerSprite.pos.x > x && playerSprite.pos.x < x + w && playerSprite.pos.y > y && playerSprite.pos.y < y + h) {
                 socket.emit("gameOver");

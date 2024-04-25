@@ -105,15 +105,20 @@ io.on("connection", (socket) => {
 
     socket.on("collectCoin", (coinIndex) => {
         if (client.room == null) return;
-        client.coins += client.room.mapManager.coinarr[coinIndex].value;
-        let result = client.room.mapManager.collectCoin(coinIndex); // index in array
-        if (!result) return;
-        
-        console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex]);
-        
-        for (let c of client.room.clients) {
-            c.socket.emit("updateCoins", client.room.mapManager, coinIndex);
+
+        // I'm guessing some sort of timing issue between client and server can sometimes cause the client side and server side coin array to mismatch, hence this check
+        if (coinIndex < client.room.mapManager.coinarr.length) {
+            client.coins += client.room.mapManager.coinarr[coinIndex].value;
+            let result = client.room.mapManager.collectCoin(coinIndex); // index in array
+            if (!result) return;
+            
+            console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex]);
+            
+            for (let c of client.room.clients) {
+                c.socket.emit("updateCoins", client.room.mapManager, coinIndex);
+            }
         }
+        
     });
 
     socket.on("generateCoins", () => {
