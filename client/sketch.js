@@ -10,6 +10,9 @@ let wallEditorMode = '-'; //for future use
 let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
 let playerMapPos;
 
+//iframe to display player stats
+let playerStatsFrame;
+
 // Coin spawning variables
 let coinSpawiningFrequency = 0.5;
 
@@ -81,7 +84,7 @@ socket.on("removeClient", (id) => {
 socket.on("gameOver", (ownId, winId) => {
     if (ownId == winId) {
         window.location.href = "gameOver.html?player=" + localIGN;
-    } 
+    }
     else {
         window.location.href = "gameOver.html?player=" + em.get(id).ign;
     }
@@ -121,19 +124,24 @@ function setup() {
     minimap.layer = 999;
 
     playerMapPos = createVector();
+
+    // Create an iframe to display player stats
+    playerStatsFrame = createElement('iframe').size(140, 40);
+    playerStatsFrame.position(width - 10 - 140, 10);
+    playerStatsFrame.attribute('src', './ui/playerStats.html');
 }
 
 
 let selectedTileIndex = -1;
 
-function selectTile(){
-    if (breakDir == 0){
-        selectedTileIndex = (playerMapPos.y - 1) * mapBuilder.numCols+ playerMapPos.x; //may need 0 indexing or smth
-    } else if (breakDir == 1){
-        selectedTileIndex = playerMapPos.y * mapBuilder.numCols + playerMapPos.x - 1; 
-    } else if (breakDir == 2){
+function selectTile() {
+    if (breakDir == 0) {
+        selectedTileIndex = (playerMapPos.y - 1) * mapBuilder.numCols + playerMapPos.x; //may need 0 indexing or smth
+    } else if (breakDir == 1) {
+        selectedTileIndex = playerMapPos.y * mapBuilder.numCols + playerMapPos.x - 1;
+    } else if (breakDir == 2) {
         selectedTileIndex = (playerMapPos.y + 1) * mapBuilder.numCols + playerMapPos.x;
-    } else if (breakDir == 3){
+    } else if (breakDir == 3) {
         selectedTileIndex = playerMapPos.y * mapBuilder.numCols + playerMapPos.x + 1;
     }
 
@@ -155,10 +163,9 @@ function draw() {
         mapBuilder.displayMapDiagram();
 
         playerMapPos = mapBuilder.findMapPosition(playerSprite);
-        
+
         selectTile();
 
-        console.log(selectedTileIndex);
         mapBuilder.displaySelectedTile(selectedTileIndex);
 
         // Check if players are within range of coins
@@ -171,6 +178,10 @@ function draw() {
         if (frameCount % (60 / coinSpawiningFrequency) == 0) {
             socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
         }
+
+        // Update coin counter (from playerStats.js)
+        updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
+
     }
 
 }
@@ -189,7 +200,7 @@ function interpolateOtherPlayers() {
         if (id == socket.id || playerData.positionBuffer.length < 2) {
             continue;
         }
-        
+
         // Prevent sprite from becoming rotated on collision
         playerData.sprite.rotation = 0;
 
