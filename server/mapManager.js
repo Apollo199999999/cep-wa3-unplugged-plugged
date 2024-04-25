@@ -226,7 +226,7 @@ export default class MapManager {
     generateCoins() {
         let number = 0;
 
-        while (number < 2) {
+        while (number < 1) {
             for (let i = 0; i < this.coinSpawnerRooms.length; i++) {
                 let coinSpawnerRoom = this.coinSpawnerRooms[i];
                 let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
