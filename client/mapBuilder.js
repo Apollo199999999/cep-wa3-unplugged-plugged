@@ -7,7 +7,7 @@ class MapBuilder {
         this.diagramh = 200;
         this.w = 2;
         this.h = 2;
-        
+
         this.numCols = 0;
         this.numRows = 0;
         this.mapDiagram = createGraphics(this.diagramw, this.diagramh); //adjusted to no of cols and rows
@@ -221,11 +221,15 @@ class MapBuilder {
         // Prevent the user from adding a tile in a non-empty space
         if (currTile.tile == "-" && tileChar != "-") {
             socket.emit("mapModified", selectedTileIndex, tileChar);
+            return true;
         }
         // Prevent the user from breaking boundary tiles/gold tiles
         if (tileChar == "-" && currTile.tile != "x" && currTile.tile != "-" && currTile.tile != 'G') {
             socket.emit("mapModified", selectedTileIndex, "-");
+            return true;
         }
+
+        return false;
     }
 
     generateMapDiagram() {
@@ -311,5 +315,53 @@ class MapBuilder {
                 socket.emit("gameOver");
             }
         }
+    }
+
+    // Check if the player is near any usable object (i.e. any map overlay that is not a coin spawner)
+    checkPlayerNearUsableObject(playerSprite) {
+        if (this.mapBuilt == true) {
+            for (let i = 0; i < this.mapOverlayAreas.length; i++) {
+                let mapOverlayArea = this.mapOverlayAreas[i];
+
+                if (mapOverlayArea.isCoinSpawner == false) {
+                    // Get the dimensions of the map overlay area
+                    // Increase the map overlay area to include the area around the overlay
+                    let areaPadding = 1.5;
+                    let x = (mapOverlayArea.x - areaPadding) * this.mapCellSize + this.mapX;
+                    let y = (mapOverlayArea.y - areaPadding) * this.mapCellSize + this.mapY;
+                    let w = (mapOverlayArea.w + areaPadding * 2) * this.mapCellSize;
+                    let h = (mapOverlayArea.h + areaPadding * 2) * this.mapCellSize;
+
+                    if (playerSprite.pos.x > x && playerSprite.pos.x < x + w && playerSprite.pos.y > y && playerSprite.pos.y < y + h) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // Function to get the map overlay that the player is closest to 
+    getPlayerUsingWhichOverlayIndex(playerSprite) {
+        if (this.mapBuilt == true) {
+            for (let i = 0; i < this.mapOverlayAreas.length; i++) {
+                let mapOverlayArea = this.mapOverlayAreas[i];
+
+                if (mapOverlayArea.isCoinSpawner == false) {
+                    // Get the dimensions of the map overlay area
+                    // Increase the map overlay area to include the area around the overlay
+                    let areaPadding = 1.5;
+                    let x = (mapOverlayArea.x - areaPadding) * this.mapCellSize + this.mapX;
+                    let y = (mapOverlayArea.y - areaPadding) * this.mapCellSize + this.mapY;
+                    let w = (mapOverlayArea.w + areaPadding * 2) * this.mapCellSize;
+                    let h = (mapOverlayArea.h + areaPadding * 2) * this.mapCellSize;
+
+                    if (playerSprite.pos.x > x && playerSprite.pos.x < x + w && playerSprite.pos.y > y && playerSprite.pos.y < y + h) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
     }
 }

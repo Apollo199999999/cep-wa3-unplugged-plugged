@@ -13,9 +13,6 @@ let playerMapPos;
 //iframe to display player stats
 let playerStatsFrame;
 
-// Coin spawning variables
-let coinSpawningFrequency = 0.5;
-
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
 
@@ -152,6 +149,7 @@ function selectTile() {
     selectedTileIndex = Math.round(selectedTileIndex);
 }
 
+let interactionBtn;
 function draw() {
     if (setupComplete) {
         background("#000000");
@@ -178,6 +176,23 @@ function draw() {
         // Check if players are inside the real treasure room
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
 
+        // Check if player is near any usable map overlay, and if so, show a button for the user to interact with the area
+        if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == true && interactionBtn == undefined) {
+            interactionBtn = createButton('Examine');
+            interactionBtn.addClass('btn btn-primary w-32');
+            interactionBtn.position(width / 2 - 64, height - 100);
+            interactionBtn.mouseClicked(examineBtnClicked);
+        }
+        else if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == false && interactionBtn != undefined) {
+            interactionBtn.remove();
+            interactionBtn = undefined;
+        }
+
+        // Spawn coins at specified rate
+        if (frameCount % (60 / coinSpawiningFrequency) == 0) {
+            socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
+        }
+
         // Update player stats (from playerStats.js)
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
@@ -191,8 +206,10 @@ let cooldownTimer;
 
 function mouseReleased() {
     if (setupComplete && allowMapModification && numberOfBlocksEdited < 5) {
-        mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
-        numberOfBlocksEdited ++;
+        let successfulEditMap = mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
+        if (successfulEditMap) {
+            numberOfBlocksEdited++;
+        }
     }
     if (numberOfBlocksEdited >= 5) {
         allowMapModification = false;
@@ -210,10 +227,36 @@ function mouseReleased() {
         }, 1000);
     }
 }
+    
+let puzzle;
+function examineBtnClicked() {
+    // Get which map overlay the player is trying to use
+    let overlayIdx = mapBuilder.getPlayerUsingWhichOverlayIndex(playerSprite);
+    let overlayArea = mapBuilder.mapOverlayAreas[overlayIdx];
 
-function keyPressed() {
-    if (key === " ") {
-        socket.emit("coinRateUp", 10);
+    if (puzzle != undefined) {
+        puzzle.remove();
+        puzzle = undefined;
+    }
+
+    // Depending on what image the overlay is using, we can deduce what type of overlay the player is trying to access
+    if (overlayArea.img == "./images/textures/cipherPuzzle.png") {
+        // Cipher puzzle
+        puzzle = createElement('iframe').size(586, 520);
+        puzzle.position((width / 2) - 586 / 2, (height / 2) - 550 / 2);
+        puzzle.attribute('src', './ui/cipherPuzzle.html');
+    }
+}
+
+function puzzleWindowClosed(puzzleSolved) {
+    // Close the puzzle window
+    puzzle.remove();
+    puzzle = undefined;
+
+    // If the puzzle has been solved, double coin spawning rates
+    if (puzzleSolved == true) {
+        alert("Puzzle solved! Coin spawning rates have been doubled.")
+        // coinSpawiningFrequency *= 2;
     }
 }
 
