@@ -20,6 +20,9 @@ let setupComplete = false;
 let mapCooldownPeriod = 30;
 let mapCooldownLeft = 0;
 
+// Stores the current overlay window that is open
+let openOverlayWindow;
+
 const socket = io.connect("ws://localhost:8001");
 
 window.onload = () => {
@@ -223,34 +226,36 @@ function mouseReleased() {
     }
 }
     
-let puzzle;
+function closeOverlayWindow() {
+    if (openOverlayWindow != undefined) {
+        openOverlayWindow.remove();
+        openOverlayWindow = undefined;
+    }
+}
+
 function examineBtnClicked() {
     // Get which map overlay the player is trying to use
     let overlayIdx = mapBuilder.getPlayerUsingWhichOverlayIndex(playerSprite);
     let overlayArea = mapBuilder.mapOverlayAreas[overlayIdx];
 
-    if (puzzle != undefined) {
-        puzzle.remove();
-        puzzle = undefined;
-    }
+    closeOverlayWindow();
 
     // Depending on what image the overlay is using, we can deduce what type of overlay the player is trying to access
     if (overlayArea.img == "./images/textures/cipherPuzzle.png") {
         // Cipher puzzle
-        puzzle = createElement('iframe').size(586, 520);
-        puzzle.position((width / 2) - 586 / 2, (height / 2) - 550 / 2);
-        puzzle.attribute('src', './ui/cipherPuzzle.html');
+        openOverlayWindow = createElement('iframe').size(586, 520);
+        openOverlayWindow.position((width / 2) - 586 / 2, (height / 2) - 550 / 2);
+        openOverlayWindow.attribute('src', './ui/cipherPuzzle.html');
     }
 }
 
 function puzzleWindowClosed(puzzleSolved) {
     // Close the puzzle window
-    puzzle.remove();
-    puzzle = undefined;
+    closeOverlayWindow();
 
     // If the puzzle has been solved, double coin spawning rates
     if (puzzleSolved == true) {
-        alert("Puzzle solved! Coin spawning rates have been increased for one minute.")
+        alert("Puzzle solved! Coin spawning rates have been increased for one minute.");
         socket.emit("coinRateUp", 60);
     }
 }

@@ -1,15 +1,16 @@
 function exit() {
-    // From sketch.js
-    puzzleWindowClosed(false);
+    // Invoke callback function in sketch.js
+    window.parent.puzzleWindowClosed(false);
 }
 
 function verifyCode() {
     let codeInput = document.getElementById("codeInput");
     if (codeInput.value.toString() == "Saboteurs Sabotage") {
-        // From sketch.js
-        puzzleWindowClosed(true);
+        // Invoke callback function in sketch.js
+        window.parent.puzzleWindowClosed(true);
     }
     else {
         alert("Incorrect code");
     }
 }
+
