@@ -184,6 +184,16 @@ export default class MapManager {
             "./images/textures/spawnerFloor.png", 
             true));
 
+
+        // Push map overlay areas for puzzles
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 2,
+            this.centralRoomLocation.y + this.centralRoomHeight - 4,
+            3,
+            3,
+            "static",
+            "./images/textures/cipherPuzzle.png", 
+            false));
+
         return rooms;
     }
 

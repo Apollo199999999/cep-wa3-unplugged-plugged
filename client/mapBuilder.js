@@ -21,6 +21,9 @@ class MapBuilder {
         // Store the location of the real treasure room
         this.realTreasureRoomLocation = [];
 
+        // Stores location of map overlay areas
+        this.mapOverlayAreas;
+
         // Create sprite groups based on the different tiles available in the map
         this.wallBricks = new Group();
         this.pathBricks = new Group();
@@ -62,7 +65,7 @@ class MapBuilder {
     setStartPos(mapManager, clientSprite) {
         // Spawn the client sprite inside the room
         clientSprite.position.x = (width / 2) - (mapManager.numCols / 2);
-        clientSprite.position.y = height - mapManager.cellSize * 5;
+        clientSprite.position.y = height - mapManager.cellSize * 7;
     }
 
     findMapPosition(clientSprite) {
@@ -99,6 +102,7 @@ class MapBuilder {
         this.wallBricks.color = mapManager.wallColor;
         this.wallBricks.collider = 'static';
         this.wallBricks.stroke = mapManager.wallColor;
+        this.wallBricks.layer = 990;
         this.wallBricks.img = "./images/textures/wall.png";
 
         this.pathBricks.w = mapManager.cellSize;
@@ -107,6 +111,7 @@ class MapBuilder {
         this.pathBricks.color = mapManager.pathColor;
         this.pathBricks.collider = 'static';
         this.pathBricks.stroke = mapManager.pathColor;
+        this.pathBricks.layer = 990;
         this.pathBricks.img = "./images/textures/path.png";
 
         this.boundaryBricks.w = mapManager.cellSize;
@@ -115,6 +120,7 @@ class MapBuilder {
         this.boundaryBricks.color = mapManager.boundaryColor;
         this.boundaryBricks.collider = 'static';
         this.boundaryBricks.stroke = mapManager.boundaryColor;
+        this.boundaryBricks.layer = 990;
         this.boundaryBricks.img = "./images/textures/boundary.png";
 
         this.goldBricks.w = mapManager.cellSize;
@@ -158,6 +164,7 @@ class MapBuilder {
 
         // Build map overlay areas
         let mapOverlayAreas = mapManager.mapOverlayAreas;
+        this.mapOverlayAreas = mapManager.mapOverlayAreas;
 
         for (let i = 0; i < mapOverlayAreas.length; i++) {
             let mapOverlayArea = mapOverlayAreas[i];
