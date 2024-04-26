@@ -21,6 +21,7 @@ function Client(socket) {
     this.room = null;
     this.position = { x: 0, y: 0 };
     this.coins = 0;
+    this.buffs = [];
 }
 
 
@@ -125,6 +126,41 @@ io.on("connection", (socket) => {
         
     });
 
+    socket.on("useCoins", (amount) => {
+        if (client.room == null) return;
+        if (client.coins >= amount) {
+            client.coins -= amount;
+            // for (let c of client.room.clients) {
+            //     c.socket.emit("updateCoins", client.room.mapManager, null);
+            // }
+        }});
+    
+    socket.on("cooldownReduction", (duration) => {
+        if (client.room == null) return;
+        if (client.buffs.includes("cooldownReduction")){ //refresh cooldown reduction
+            client.buffs.splice(client.buffs.indexOf("cooldownReduction"), 1);
+            client.buffs.push("cooldownReduction");
+            setTimeout(() => {
+                client.buffs.splice(client.buffs.indexOf("cooldownReduction"), 1);
+            }, duration * 1000);
+        };
+        client.buffs.push("cooldownReduction");
+        setTimeout(() => {
+            client.buffs.splice(client.buffs.indexOf("cooldownReduction"), 1);
+        }, duration * 1000);
+    });
+
+    socket.on("addBarrierBlock", (count) => {
+        if (client.room == null) return;
+        for (let i = 0; i < count; i++) {
+            client.buffs.push("addBarrierBlock");
+            setTimeout(() => {
+                client.buffs.splice(client.buffs.indexOf("addBarrierBlock"), 1); //next frame remove
+            }, 2 * 1000/60);
+        }
+    });
+    
+
     socket.on("generateCoins", () => {
         if (client.room == null) return;
         client.room.mapManager.generateCoins();
@@ -173,6 +209,7 @@ function tick() {
                 id: c.socket.id,
                 ign: c.ign,
                 coins: c.coins,
+                buffs: c.buffs,
             };
         });
         // Spawn coins at specified rate

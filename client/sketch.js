@@ -10,6 +10,11 @@ let wallEditorMode = '-'; //for future use
 let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
 let playerMapPos;
 
+
+let buffs = [];
+let barrierBlocks = 0;
+let cooldownReductionDuration = 0;
+
 //iframe to display player stats
 let playerStatsFrame;
 
@@ -67,6 +72,7 @@ socket.on("playerDataUpdate", (id, playerData) => {
     for (let data of playerData) {
         if (data.id === id) {
             coins = data.coins;
+            buffs = data.buffs;
             continue;
         };
         if (!em.exists(data.id)) {
@@ -130,7 +136,8 @@ function setup() {
     playerMapPos = createVector();
 
     // Create an iframe to display player stats
-    playerStatsFrame = createElement('iframe').size(250, 80);
+    playerStatsFrame = createElement('iframe').size(340, 150);
+    playerStatsFrame.addClass('opacity-65 hover:opacity-100');
     playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
 }
@@ -194,6 +201,10 @@ function draw() {
         // Update player stats (from playerStats.js)
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
+        updateBarrierBlocks((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), barrierBlocks);
+        updateCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), cooldownReductionDuration);
+        
+        updateBuffs();
     }
 }
 
@@ -204,9 +215,18 @@ let cooldownTimer;
 
 function mouseReleased() {
     if (setupComplete && allowMapModification && numberOfBlocksEdited < 5) {
-        let successfulEditMap = mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
-        if (successfulEditMap) {
-            numberOfBlocksEdited++;
+        if (wallEditorMode == "x" && barrierBlocks > 0) {
+            let successfulEditMap = mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
+            
+            if (successfulEditMap) {
+                // numberOfBlocksEdited++;
+                barrierBlocks--;
+            }
+        } else if (wallEditorMode != "x"){
+            let successfulEditMap = mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
+            if (successfulEditMap) {
+                numberOfBlocksEdited++;
+            }
         }
     }
     if (numberOfBlocksEdited >= 5) {
@@ -241,11 +261,17 @@ function examineBtnClicked() {
     closeOverlayWindow();
 
     // Depending on what image the overlay is using, we can deduce what type of overlay the player is trying to access
-    if (overlayArea.img == "./images/textures/cipherPuzzle.png") {
+    if (overlayArea.type == "cipherPuzzle") {
         // Cipher puzzle
         openOverlayWindow = createElement('iframe').size(586, 520);
         openOverlayWindow.position((width / 2) - 586 / 2, (height / 2) - 550 / 2);
         openOverlayWindow.attribute('src', './ui/cipherPuzzle.html');
+    } else if (overlayArea.type == "shop"){
+        openOverlayWindow = createElement('iframe').size(width *0.8, height * 0.8);
+        openOverlayWindow.position((width / 2) - (width * 0.8) / 2, (height / 2) - (height * 0.8) / 2);
+        openOverlayWindow.attribute('src', './ui/shop.html');
+        console.log("Shop opened");
+    
     }
 }
 
@@ -259,6 +285,74 @@ function puzzleWindowClosed(puzzleSolved) {
         socket.emit("coinRateUp", 60);
     }
 }
+
+
+let targetSelectWindow;
+function targetSelectWindowClosed(target) {
+    closeTargetSelectWindow();
+    targetSelected(target);
+}
+
+function closeTargetSelectWindow() {
+    if (targetSelectWindow != undefined){
+        targetSelectWindow.remove();
+        targetSelectWindow = undefined;
+    }
+    
+}
+
+function buffPurchased(buff, cost) {
+    if (coins < cost) {
+        alert("Insufficient coins to purchase buff!");
+        return;
+    }
+    // If the buff has been purchased, apply the buff
+    if (buff == 1) {
+        socket.emit("useCoins", cost);
+        socket.emit("cooldownReduction", 60);
+        let initcooldownReductionDuration = cooldownReductionDuration;
+        cooldownReductionDuration = 60;
+        if (initcooldownReductionDuration == 0){
+            cooldownReductionTimer = setInterval(function () {
+            if (cooldownReductionDuration > 0) {
+                cooldownReductionDuration -= 1;
+            }
+            else {
+                cooldownReductionDuration = 0;
+                clearInterval(cooldownReductionTimer);
+            }
+        }, 1000);
+        }
+    } else if (buff == 2) {
+        // barrier block
+        socket.emit("useCoins", cost);
+        socket.emit("addBarrierBlock", 1);
+    } else if (buff == 3) {
+        closeOverlayWindow();
+        console.log("add barrier block");
+        openOverlayWindow = createElement('iframe').size(width / 2, height / 2)
+        openOverlayWindow.position((width / 2) - (width * 0.5) / 2, (height / 2) - (height * 0.5) / 2)
+        openOverlayWindow.attribute('src', './ui/targetSelect.html');
+        socket.emit("useCoins", cost);
+        //socket.emit("cooldownReduction", 60);
+    }
+}
+
+function updateBuffs() {
+    // Update buffs (from playerStats.js)
+    mapCooldownPeriod = 30;
+
+    for (let buff of buffs) {
+        if (buff == "cooldownReduction") {
+            mapCooldownPeriod = 10;
+            //applyCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
+        } else if (buff == "addBarrierBlock") {
+            barrierBlocks++;
+            //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
+        }
+    }
+}
+
 function keyPressed() {
     if (key === " ") {
         socket.emit("coinRateUp", 10);
@@ -347,7 +441,7 @@ function move() {
         wallEditorMode = "*";
     } else if (kb.pressing("2") && allowMapModification) {
         wallEditorMode = "=";
-    } else if (kb.pressing("3") && allowMapModification) {
+    } else if (kb.pressing("b") && allowMapModification) { //barrier block
         wallEditorMode = "x";
     } else if (kb.pressing("backspace") && allowMapModification) {
         wallEditorMode = "-";

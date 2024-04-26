@@ -8,13 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- client backend -->
     <script src="shop.js"></script>
+    <script src="targetSelect.js"></script>
     <script src="../sketch.js"></script>
-    <script src="../entityManager.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.min.js"></script>
-  <!-- p5play -->
-  <script src="https://p5play.org/v3/planck.min.js"></script>
-  <script src="https://p5play.org/v3/p5play.js"></script>
 </head>
 <body>
     <div class="flex flex-col absolute z-[999] overflow-hidden bg-base-100 rounded-md border border-primary"
@@ -28,21 +23,71 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <p class="text-xl ml-2 font-bold justify-self-center text-center w-full">Shop</p>
+            <p class="text-xl ml-2 font-bold justify-self-center text-center w-full">Choose a player to "mute"</p>
         </div>
-        <div class="grid place-items-center grid-cols-4 gap-2 overflow-hidden ">
-            <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
-                <img src="../images/shop/pickaxe.png" class="m-2 h-3/4 w-auto" />
+
+
+        <div class="grid place-items-center grid-cols-8 gap-2 overflow-hidden ">
+
+            <div class="w-full h-full items-center mt-4 mx-4 rounded bg-gray-800">
+                <button class="btn bg-gray-800 w-full h-full mt-4 hover:bg-primary">
+                    <img src="../images/textures/dwarf.png" class="m-2 h-3/4 w-auto" />
                 <div class="flex ">
-                    <h1 class="font-semibold text-center justify-self-center mx-4">Reduce mining cooldown by 66.6% for 2 minutes</h1>
+                    <h1 class="font-semibold text-center justify-self-center mx-4 mt-4" id="P1">P1</h1>
+                </div>
+                </button>
+                
+                
+            </div>
+
+            <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
+                <img src="../images/textures/dwarf.png" class="h-3/4 rounded w-auto m-2 justify-self-center overflow-hidden" />
+                <div class="flex ">
+                    <h1 class="font-semibold text-center justify-self-center mx-4 mt-4" id="P2">P2</h1>
+                </div>
+                <!-- <div class ="flex">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
+                    10 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
+                    </button>
+                </div> -->
+            </div>
+
+            <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
+                <img src="../images/textures/dwarf.png" class="h-3/4 rounded w-auto m-2 justify-self-center overflow-hidden" />
+                <div class="flex ">
+                    <h1 class="font-semibold text-center justify-self-center mx-4 mt-4" id="P3">P3</h1>
+                </div>
+                <!-- <div class ="flex">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
+                    10 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
+                    </button>
+                </div> -->
+            </div>
+
+            <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
+                <img src="../images/textures/dwarf.png" class="h-3/4 rounded w-auto m-2 mt-4 justify-self-center overflow-hidden" />
+                <div class="flex ">
+                    <h1 class="font-semibold text-center justify-self-center mx-4" id="P4">P4</h1>
+                </div>
+                <!-- <div class ="flex">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
+                    10 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
+                    </button>
+                </div> -->
+            </div>
+            
+            <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
+                <img src="../images/textures/dwarf.png" class="m-2 h-3/4 w-auto" />
+                <div class="flex ">
+                    <h1 class="font-semibold text-center justify-self-center mx-4" id="P5">P1</h1>
                 </div>
                 
             </div>
 
             <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
-                <img src="../images/textures/boundary.png" class="h-3/4 rounded w-auto m-2 justify-self-center overflow-hidden" />
+                <img src="../images/textures/dwarf.png" class="h-3/4 rounded w-auto m-2 justify-self-center overflow-hidden" />
                 <div class="flex ">
-                    <h1 class="font-semibold text-center justify-self-center mx-4">Place one boundary block</h1>
+                    <h1 class="font-semibold text-center justify-self-center mx-4" id="P6">P2</h1>
                 </div>
                 <!-- <div class ="flex">
                     <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
@@ -52,9 +97,9 @@
             </div>
 
             <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
-                <img src="../images/shop/barrier.png" class="h-3/4 rounded w-auto m-2 justify-self-center overflow-hidden" />
+                <img src="../images/textures/dwarf.png" class="h-3/4 rounded w-auto m-2 justify-self-center overflow-hidden" />
                 <div class="flex ">
-                    <h1 class="font-semibold text-center justify-self-center mx-4">Prevent a Player from Placing/Removing Blocks for 30s</h1>
+                    <h1 class="font-semibold text-center justify-self-center mx-4" id="P7">P3</h1>
                 </div>
                 <!-- <div class ="flex">
                     <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
@@ -64,9 +109,9 @@
             </div>
 
             <div class="w-full h-full items-center mt-4 mx-4 border-primary border-2 rounded bg-gray-800">
-                <img src="../images/textures/boundary.png" class="h-3/4 rounded w-auto m-2 mt-4 justify-self-center overflow-hidden" />
+                <img src="../images/textures/dwarf.png" class="h-3/4 rounded w-auto m-2 mt-4 justify-self-center overflow-hidden" />
                 <div class="flex ">
-                    <h1 class="font-semibold text-center justify-self-center mx-4">Place one boundary block</h1>
+                    <h1 class="font-semibold text-center justify-self-center mx-4">P4</h1>
                 </div>
                 <!-- <div class ="flex">
                     <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
@@ -89,23 +134,23 @@
             </div> -->
 
             <div class ="flex w-full">
-                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(1)">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="chooseTarget(1)">
                     10 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
                     </button>
             </div>
 
             <div class ="flex w-full">
-                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(2)">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="chooseTarget(2)">
                     10 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
                     </button>
             </div>
             <div class ="flex w-full">
-                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(3)">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="chooseTarget(3)">
                     20 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
                     </button>
             </div>
             <div class ="flex w-full">
-                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="purchaseBuff(1)">
+                    <button class="btn btn-primary w-4/5 mt-4 mx-4" onclick="chooseTarget(4)">
                     10 <img src="../images/textures/coinIcon.png" style="width: 20px; height: 20px" class="" />
                     </button>
             </div>
@@ -113,14 +158,6 @@
 
 
 
-        <!-- <div>
-            <img src="../images/shop/shop.png" style="width: 586px; height: 384px" />
-            <div class="flex items-center mt-4 mx-4">
-                <h1 class="font-semibold">Code: </h1>
-                <input type="text" placeholder="Type here" id="codeInput" class="input input-bordered w-full ml-4" />
-                <button class="ml-4 btn btn-primary" onclick="verifyCode()">Submit</button>
-            </div>
-        </div> -->
     
 </body>
 </html>
