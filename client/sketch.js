@@ -14,7 +14,7 @@ let playerMapPos;
 let playerStatsFrame;
 
 // Coin spawning variables
-let coinSpawiningFrequency = 0.5;
+let coinSpawningFrequency = 0.5;
 
 // Only start drawing stuff after the client successfully registers itself with the server
 let setupComplete = false;
@@ -178,11 +178,6 @@ function draw() {
         // Check if players are inside the real treasure room
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
 
-        // Spawn coins at specified rate
-        if (frameCount % (60 / coinSpawiningFrequency) == 0) {
-            socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
-        }
-
         // Update player stats (from playerStats.js)
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
@@ -213,6 +208,12 @@ function mouseReleased() {
                 clearInterval(cooldownTimer);
             }
         }, 1000);
+    }
+}
+
+function keyPressed() {
+    if (key === " ") {
+        socket.emit("coinRateUp", 10);
     }
 }
 

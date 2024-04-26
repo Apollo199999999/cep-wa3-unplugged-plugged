@@ -73,6 +73,7 @@ export default class MapManager {
         this.coinarr = [];
         this.coinWidth = 30;
         this.coinHeight = 30;
+        this.coinrate = 0.15;
     }
 
     generateMapWithCenterRoom(mapWidth, mapHeight, treasureRoomWidth, treasureRoomHeight) {
@@ -249,7 +250,6 @@ export default class MapManager {
 
     generateCoins() {
         let number = 0;
-
         while (number < 1) {
             for (let i = 0; i < this.mapOverlayAreas.length; i++) {
                 if (this.mapOverlayAreas[i].isCoinSpawner == true) {
@@ -262,6 +262,22 @@ export default class MapManager {
                     }
                 }
             }
+        }
+    }
+
+    coinRateUp(duration) { // duration in seconds
+        console.log("Coin rate up");
+        if (this.coinrate < 5){
+            this.coinrate += 1;
+            setTimeout(() => {
+                this.coinRateDown();
+            }, duration * 1000);
+        }
+        
+    }
+    coinRateDown() {
+        if (this.coinrate > 1){
+            this.coinrate -= 1;
         }
     }
 }

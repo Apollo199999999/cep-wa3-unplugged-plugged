@@ -11,6 +11,9 @@ const io = new Server(8001, {
 const clients = new Set();
 const rooms = [];
 const TICK_DELAY = 1000 / 60;
+const date = new Date();
+const lastTime = date.getTime();
+let frameCount = 0;
 
 function Client(socket) {
     this.socket = socket;
@@ -109,10 +112,11 @@ io.on("connection", (socket) => {
         // I'm guessing some sort of timing issue between client and server can sometimes cause the client side and server side coin array to mismatch, hence this check
         if (coinIndex < client.room.mapManager.coinarr.length) {
             client.coins += client.room.mapManager.coinarr[coinIndex].value;
+            console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex].value);
             let result = client.room.mapManager.collectCoin(coinIndex); // index in array
             if (!result) return;
             
-            console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex]);
+            
             
             for (let c of client.room.clients) {
                 c.socket.emit("updateCoins", client.room.mapManager, coinIndex);
@@ -122,6 +126,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("generateCoins", () => {
+        if (client.room == null) return;
         client.room.mapManager.generateCoins();
         for (let c of client.room.clients) {
             c.socket.emit("updateCoins", client.room.mapManager, null);
@@ -147,10 +152,20 @@ io.on("connection", (socket) => {
 
         rooms.splice(rooms.indexOf(client.room), 1);
     });
+
+    socket.on("coinRateUp", (duration) => {
+        if (client.room == null) return;
+
+        client.room.mapManager.coinRateUp(duration);
+        for (let c of client.room.clients) {
+            c.socket.emit("updateCoins", client.room.mapManager, null);
+        }
+    });
 });
 
 
 function tick() {
+    frameCount += 1;
     for (let room of rooms) {
         let allData = [...room.clients].map((c) => {
             return {
@@ -160,6 +175,17 @@ function tick() {
                 coins: c.coins,
             };
         });
+        // Spawn coins at specified rate
+        if (frameCount % Math.round(60 / room.mapManager.coinrate) == 0) {
+            room.mapManager.generateCoins();
+            console.log("generating", frameCount, date.getTime() - lastTime, room.mapManager.coinrate, 60 / room.mapManager.coinrate);
+            
+            for (let c of room.clients) {
+                c.socket.emit("updateCoins", c.room.mapManager, null);
+            }
+        }
+
+        //room.mapManager.generateCoins();
         for (let c of room.clients) {
             c.socket.emit("playerDataUpdate", c.socket.id, allData);
         }
