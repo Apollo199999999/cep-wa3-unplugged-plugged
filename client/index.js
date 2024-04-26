@@ -8,7 +8,7 @@ function enterChatroom(meetingCode) {
         alert("Username is empty, please enter a username.")
     }
     else {
-        window.location.href = "script.html?ign=" + usernameInputBox.value + "&roomCode=" + meetingCode;
+        window.location.href = "sketch.html?ign=" + usernameInputBox.value + "&roomCode=" + meetingCode;
     }
 }
 
