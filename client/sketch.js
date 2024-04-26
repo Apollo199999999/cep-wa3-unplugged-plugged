@@ -188,11 +188,6 @@ function draw() {
             interactionBtn = undefined;
         }
 
-        // Spawn coins at specified rate
-        if (frameCount % (60 / coinSpawiningFrequency) == 0) {
-            socket.emit("generateCoins", playerSprite.pos.x, playerSprite.pos.y);
-        }
-
         // Update player stats (from playerStats.js)
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
