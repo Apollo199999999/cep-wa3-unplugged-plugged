@@ -255,8 +255,8 @@ function puzzleWindowClosed(puzzleSolved) {
 
     // If the puzzle has been solved, double coin spawning rates
     if (puzzleSolved == true) {
-        alert("Puzzle solved! Coin spawning rates have been doubled.")
-        // coinSpawiningFrequency *= 2;
+        alert("Puzzle solved! Coin spawning rates have been increased for one minute.")
+        socket.emit("coinRateUp", 60);
     }
 }
 
