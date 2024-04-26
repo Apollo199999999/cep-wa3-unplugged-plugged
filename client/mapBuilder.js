@@ -154,21 +154,25 @@ class MapBuilder {
         // Build map overlays
         // Define props for map overlays
         this.mapOverlayAreaSprite.collider = 'static';
-        this.mapOverlayAreaSprite.overlaps(allSprites);
         this.mapOverlayAreaSprite.layer = 999;
 
-        // Build coin spawners
-        let coinSpawners = mapManager.coinSpawnerRooms;
+        // Build map overlay areas
+        let mapOverlayAreas = mapManager.mapOverlayAreas;
 
-        for (let i = 0; i < coinSpawners.length; i++) {
-            let coinSpawnerRoom = coinSpawners[i];
-            let coinSpawnerSprite = new this.mapOverlayAreaSprite.Sprite();
-            coinSpawnerSprite.w = coinSpawnerRoom.w * this.mapCellSize;
-            coinSpawnerSprite.h = coinSpawnerRoom.h * this.mapCellSize;
+        for (let i = 0; i < mapOverlayAreas.length; i++) {
+            let mapOverlayArea = mapOverlayAreas[i];
+            let mapOverlayAreaSprite = new this.mapOverlayAreaSprite.Sprite();
+
+            if (mapOverlayArea.collider == "none") {
+                mapOverlayAreaSprite.overlaps(allSprites);
+            }
+
+            mapOverlayAreaSprite.w = mapOverlayArea.w * this.mapCellSize;
+            mapOverlayAreaSprite.h = mapOverlayArea.h * this.mapCellSize;
             // p5play treats position of rectangle using the center point of the rect, hence this suspicious positioning fix
-            coinSpawnerSprite.x = (coinSpawnerRoom.x * this.mapCellSize) + this.mapX + (coinSpawnerSprite.w / 2) - (this.mapCellSize / 2);
-            coinSpawnerSprite.y = (coinSpawnerRoom.y * this.mapCellSize) + this.mapY + (coinSpawnerSprite.h / 2) - (this.mapCellSize / 2);
-            coinSpawnerSprite.img = coinSpawnerRoom.img;
+            mapOverlayAreaSprite.x = (mapOverlayArea.x * this.mapCellSize) + this.mapX + (mapOverlayAreaSprite.w / 2) - (this.mapCellSize / 2);
+            mapOverlayAreaSprite.y = (mapOverlayArea.y * this.mapCellSize) + this.mapY + (mapOverlayAreaSprite.h / 2) - (this.mapCellSize / 2);
+            mapOverlayAreaSprite.img = mapOverlayArea.img;
         }
 
         this.mapBuilt = true;

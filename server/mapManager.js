@@ -66,8 +66,8 @@ export default class MapManager {
         this.centralRoomHeight;
         this.centralRoomWidth;
 
-        // Stores MapOverlayArea objects belonging to coin spawners
-        this.coinSpawnerRooms = this.generateCoinSpawnerRooms();
+        // Stores MapOverlayArea objects
+        this.mapOverlayAreas = this.generateMapOverlayAreas();
 
         // Stores Coin objects, which tell us where each coin on the map is
         this.coinarr = [];
@@ -165,11 +165,25 @@ export default class MapManager {
         return map.map(row => row.join(''));
     }
 
-    generateCoinSpawnerRooms() {
-        // With reference to the central room location, create 2 coin spawner rooms at the top left and right corners of the map
+    generateMapOverlayAreas() {
         let rooms = [];
-        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + 1, this.centralRoomLocation.y + 1, 4, 4, "./images/textures/spawnerFloor.png"));
-        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + this.centralRoomWidth - 5, this.centralRoomLocation.y + 1, 4, 4, "./images/textures/spawnerFloor.png"));
+        // With reference to the central room location, create 2 coin spawner rooms at the top left and right corners of the map
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + 1,
+            this.centralRoomLocation.y + 1,
+            4,
+            4,
+            "none",
+            "./images/textures/spawnerFloor.png",
+            true));
+
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + this.centralRoomWidth - 5,
+            this.centralRoomLocation.y + 1,
+            4,
+            4,
+            "none",
+            "./images/textures/spawnerFloor.png", 
+            true));
+
         return rooms;
     }
 
@@ -227,13 +241,15 @@ export default class MapManager {
         let number = 0;
 
         while (number < 1) {
-            for (let i = 0; i < this.coinSpawnerRooms.length; i++) {
-                let coinSpawnerRoom = this.coinSpawnerRooms[i];
-                let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
-                let y = this.random(coinSpawnerRoom.y + 1, coinSpawnerRoom.y + coinSpawnerRoom.h - 1);
-                if (this.mapTiles[Math.floor(y)][Math.floor(x)] == '-') {
-                    this.coinarr.push(new Coin(x, y));
-                    number++;
+            for (let i = 0; i < this.mapOverlayAreas.length; i++) {
+                if (this.mapOverlayAreas[i].isCoinSpawner == true) {
+                    let coinSpawnerRoom = this.mapOverlayAreas[i];
+                    let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
+                    let y = this.random(coinSpawnerRoom.y + 1, coinSpawnerRoom.y + coinSpawnerRoom.h - 1);
+                    if (this.mapTiles[Math.floor(y)][Math.floor(x)] == '-') {
+                        this.coinarr.push(new Coin(x, y));
+                        number++;
+                    }
                 }
             }
         }
@@ -251,13 +267,16 @@ class Coin {
 }
 
 // Class to store overlays on the map (e.g. coin spawner rooms)
+// Overlay type an be one of the following:
 class MapOverlayArea {
-    constructor(x, y, w, h, clientOverlayImgPath) {
+    constructor(x, y, w, h, collider, clientOverlayImgPath, isCoinSpawner) {
         // x and y here refer to which tile it is placed on
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
+        this.collider = collider;
         this.img = clientOverlayImgPath;
+        this.isCoinSpawner = isCoinSpawner;
     }
 }
