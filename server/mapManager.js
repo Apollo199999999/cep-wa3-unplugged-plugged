@@ -175,7 +175,7 @@ export default class MapManager {
             4,
             "none",
             "./images/textures/spawnerFloor.png",
-            true));
+            true, "coinSpawner"));
 
         rooms.push(new MapOverlayArea(this.centralRoomLocation.x + this.centralRoomWidth - 5,
             this.centralRoomLocation.y + 1,
@@ -183,7 +183,7 @@ export default class MapManager {
             4,
             "none",
             "./images/textures/spawnerFloor.png", 
-            true));
+            true, "coinSpawner"));
 
 
         // Push map overlay areas for puzzles
@@ -193,7 +193,16 @@ export default class MapManager {
             3,
             "static",
             "./images/textures/cipherPuzzle.png", 
-            false));
+            false, "cipherPuzzle"));
+        
+        // Push map overlay areas for shop
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 2,
+            this.centralRoomLocation.y + 1,
+            3,
+            1,
+            "static",
+            "./images/textures/cipherPuzzle.png", //temporary
+            false, "shop"));
 
         return rooms;
     }
@@ -295,7 +304,7 @@ class Coin {
 // Class to store overlays on the map (e.g. coin spawner rooms)
 // Overlay type an be one of the following:
 class MapOverlayArea {
-    constructor(x, y, w, h, collider, clientOverlayImgPath, isCoinSpawner) {
+    constructor(x, y, w, h, collider, clientOverlayImgPath, isCoinSpawner, type) {
         // x and y here refer to which tile it is placed on
         this.x = x;
         this.y = y;
@@ -304,5 +313,6 @@ class MapOverlayArea {
         this.collider = collider;
         this.img = clientOverlayImgPath;
         this.isCoinSpawner = isCoinSpawner;
+        this.type = type;
     }
 }

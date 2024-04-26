@@ -259,6 +259,11 @@ function puzzleWindowClosed(puzzleSolved) {
         socket.emit("coinRateUp", 60);
     }
 }
+function keyPressed() {
+    if (key === " ") {
+        socket.emit("coinRateUp", 10);
+    }
+}
 
 function interpolateOtherPlayers() {
     const now = +new Date();
