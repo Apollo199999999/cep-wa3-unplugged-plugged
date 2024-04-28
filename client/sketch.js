@@ -203,7 +203,7 @@ function draw() {
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
         updateBarrierBlocks((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), barrierBlocks);
         updateCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), cooldownReductionDuration);
-        
+
         updateBuffs();
     }
 }
@@ -217,12 +217,12 @@ function mouseReleased() {
     if (setupComplete && allowMapModification && numberOfBlocksEdited < 5) {
         if (wallEditorMode == "x" && barrierBlocks > 0) {
             let successfulEditMap = mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
-            
+
             if (successfulEditMap) {
                 // numberOfBlocksEdited++;
                 barrierBlocks--;
             }
-        } else if (wallEditorMode != "x"){
+        } else if (wallEditorMode != "x") {
             let successfulEditMap = mapBuilder.editClickedTile(wallEditorMode, selectedTileIndex);
             if (successfulEditMap) {
                 numberOfBlocksEdited++;
@@ -245,7 +245,7 @@ function mouseReleased() {
         }, 1000);
     }
 }
-    
+
 function closeOverlayWindow() {
     if (openOverlayWindow != undefined) {
         openOverlayWindow.remove();
@@ -266,12 +266,17 @@ function examineBtnClicked() {
         openOverlayWindow = createElement('iframe').size(586, 520);
         openOverlayWindow.position((width / 2) - 586 / 2, (height / 2) - 550 / 2);
         openOverlayWindow.attribute('src', './ui/cipherPuzzle.html');
-    } else if (overlayArea.type == "shop"){
-        openOverlayWindow = createElement('iframe').size(width *0.8, height * 0.8);
+
+    } else if (overlayArea.type == "imagePuzzle") {
+        openOverlayWindow = createElement('iframe').size(805, 550);
+        openOverlayWindow.position((width / 2) - 805 / 2, (height / 2) - 600 / 2);
+        openOverlayWindow.attribute('src', './ui/imagePuzzle.html');
+
+    } else if (overlayArea.type == "shop") {
+        openOverlayWindow = createElement('iframe').size(width * 0.8, height * 0.8);
         openOverlayWindow.position((width / 2) - (width * 0.8) / 2, (height / 2) - (height * 0.8) / 2);
         openOverlayWindow.attribute('src', './ui/shop.html');
         console.log("Shop opened");
-    
     }
 }
 
@@ -294,11 +299,11 @@ function targetSelectWindowClosed(target) {
 }
 
 function closeTargetSelectWindow() {
-    if (targetSelectWindow != undefined){
+    if (targetSelectWindow != undefined) {
         targetSelectWindow.remove();
         targetSelectWindow = undefined;
     }
-    
+
 }
 
 function buffPurchased(buff, cost) {
@@ -312,16 +317,16 @@ function buffPurchased(buff, cost) {
         socket.emit("cooldownReduction", 60);
         let initcooldownReductionDuration = cooldownReductionDuration;
         cooldownReductionDuration = 60;
-        if (initcooldownReductionDuration == 0){
+        if (initcooldownReductionDuration == 0) {
             cooldownReductionTimer = setInterval(function () {
-            if (cooldownReductionDuration > 0) {
-                cooldownReductionDuration -= 1;
-            }
-            else {
-                cooldownReductionDuration = 0;
-                clearInterval(cooldownReductionTimer);
-            }
-        }, 1000);
+                if (cooldownReductionDuration > 0) {
+                    cooldownReductionDuration -= 1;
+                }
+                else {
+                    cooldownReductionDuration = 0;
+                    clearInterval(cooldownReductionTimer);
+                }
+            }, 1000);
         }
     } else if (buff == 2) {
         // barrier block
@@ -353,9 +358,9 @@ function buildPlayers() {
         let name = playerData.ign;
         console.log(name);
         names.push(name);
-        
+
     }
-    
+
     //socket.emit("loadPlayers", names);
 }
 

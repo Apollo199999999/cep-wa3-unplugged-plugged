@@ -7,13 +7,18 @@
     <title>CEP WA3</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- p5js my beloved -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.min.js"></script>
+
     <!-- client backend -->
     <script src="imagePuzzle.js"></script>
 </head>
 
 <body>
     <div class="flex flex-col absolute z-[999] overflow-hidden bg-base-100 rounded-md border border-primary"
-        style="width: 586px; height: 520px">
+        style="width: 805; height: 550px">
 
         <!-- Titlebar -->
         <div class="flex bg-base-200 rounded-t-md text-lg w-full h-12 p-2 items-center">
@@ -27,12 +32,8 @@
         </div>
 
         <div>
-            <img src="../images/puzzles/CipherPuzzleFull.png" style="width: 586px; height: 384px" />
-            <div class="flex items-center mt-4 mx-4">
-                <h1 class="font-semibold">Code: </h1>
-                <input type="text" placeholder="Type here" id="codeInput" class="input input-bordered w-full ml-4" />
-                <button class="ml-4 btn btn-primary" onclick="verifyCode()">Submit</button>
-            </div>
+            <main>
+            </main>
         </div>
     </div>
 </body>
