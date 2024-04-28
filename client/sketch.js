@@ -11,9 +11,10 @@ let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
 let playerMapPos;
 
 
-let buffs = [];
+let statusconditions = [];
 let barrierBlocks = 0;
 let cooldownReductionDuration = 0;
+let muted = 0;
 
 //iframe to display player stats
 let playerStatsFrame;
@@ -72,7 +73,7 @@ socket.on("playerDataUpdate", (id, playerData) => {
     for (let data of playerData) {
         if (data.id === id) {
             coins = data.coins;
-            buffs = data.buffs;
+            statusconditions = data.statusconditions;
             continue;
         };
         if (!em.exists(data.id)) {
@@ -136,7 +137,7 @@ function setup() {
     playerMapPos = createVector();
 
     // Create an iframe to display player stats
-    playerStatsFrame = createElement('iframe').size(340, 150);
+    playerStatsFrame = createElement('iframe').size(340, 200);
     playerStatsFrame.addClass('opacity-65 hover:opacity-100');
     playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
@@ -203,8 +204,9 @@ function draw() {
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
         updateBarrierBlocks((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), barrierBlocks);
         updateCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), cooldownReductionDuration);
+        updateMuteCondition((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), muted, muted > 0);
 
-        updateBuffs();
+        updateStatusConditions();
     }
 }
 
@@ -233,16 +235,19 @@ function mouseReleased() {
         allowMapModification = false;
         mapCooldownLeft = mapCooldownPeriod;
         numberOfBlocksEdited = 0;
-        cooldownTimer = setInterval(function () {
-            if (mapCooldownLeft > 0) {
-                mapCooldownLeft -= 1;
-            }
-            else {
-                mapCooldownLeft = 0;
-                allowMapModification = true;
-                clearInterval(cooldownTimer);
-            }
-        }, 1000);
+        if (muted == 0) {
+            cooldownTimer = setInterval(function () {
+                if (mapCooldownLeft > 0) {
+                    mapCooldownLeft -= 1;
+                }
+                else {
+                    mapCooldownLeft = 0;
+                    allowMapModification = true;
+                    clearInterval(cooldownTimer);
+                }
+            }, 1000);
+        }
+        
     }
 }
 
@@ -293,9 +298,15 @@ function puzzleWindowClosed(puzzleSolved) {
 
 
 let targetSelectWindow;
-function targetSelectWindowClosed(target) {
-    closeTargetSelectWindow();
-    targetSelected(target);
+function targetSelectWindowClosed(target, id) {
+
+    closeOverlayWindow();
+    targetSelected(target, id);
+    socket.emit("useCoins", 0); //change to 20
+}
+function targetSelected(target, id) {
+    console.log(target);
+    socket.emit("mutePlayer", target, id, 30);
 }
 
 function closeTargetSelectWindow() {
@@ -307,6 +318,7 @@ function closeTargetSelectWindow() {
 }
 
 function buffPurchased(buff, cost) {
+    closeOverlayWindow();
     if (coins < cost) {
         alert("Insufficient coins to purchase buff!");
         return;
@@ -338,8 +350,14 @@ function buffPurchased(buff, cost) {
         openOverlayWindow = createElement('iframe').size(width / 2, height / 2)
         openOverlayWindow.position((width / 2) - (width * 0.5) / 2, (height / 2) - (height * 0.5) / 2)
         openOverlayWindow.attribute('src', './ui/targetSelect.html');
-        buildPlayers();
-        socket.emit("useCoins", cost);
+        //openOverlayWindow.elt.contentWindow.targetSelectWindowClosed = targetSelectWindowClosed;
+        openOverlayWindow.elt.onload = function() {
+            buildPlayers();
+            // buildOnePlayer('dj');
+        };
+        // buildOnePlayer('dafdfas')
+        // buildPlayers();
+        // socket.emit("useCoins", cost); 
         //socket.emit("cooldownReduction", 60);
     }
 }
@@ -347,16 +365,15 @@ function buffPurchased(buff, cost) {
 function buildPlayers() {
     console.log("building players");
     let names = [];
+    //buildOnePlayer('dj');
     for (let [id, playerData] of em.entities) {
         console.log(playerData.ign)
         if (playerData.id === socket.id) {
             continue;
         }
-        // if (playerData.id === id) {
-        //     continue;
-        // };
         let name = playerData.ign;
-        console.log(name);
+        buildOnePlayer(name, id);
+        console.log(name); 
         names.push(name);
 
     }
@@ -364,45 +381,68 @@ function buildPlayers() {
     //socket.emit("loadPlayers", names);
 }
 
-function buildOnePlayer(name) {
-    let element = document.getElementById("GRID");
-    console.log(element);
-    let player = createDiv();
+function buildOnePlayer(name, id) {
+    console.log('building player')
+    let element = (openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document).getElementById("GRID");
+    let player = createElement('div');
     player.parent(element);
-    player.classList.add("w-full h-full items-center mt-4 mx-4 rounded bg-gray-800");
-    let button = createButton();
-    button.addClass("btn bg-gray-800 w-full h-full mt-4 hover:bg-primary");
+    player.addClass("w-full h-full items-center mt-4 mx-4 rounded bg-gray-800");
+    let button = createButton('');
+    button.addClass("btn bg-gray-800 w-full h-auto mt-2 hover:bg-primary hover:text-gray-800");
     button.parent(player);
     button.id = name;
-    let img = document.createElement("img");
-    img.src = "./images/textures/dwarf.png";
-    img.classList.add("m-2 h-3/4 w-auto");
+    button.mousePressed(function() {
+        targetSelectWindowClosed(name, id);
+    });
+    let img = createImg("../images/textures/dwarf.png");
+    // img.src = "./images/textures/dwarf.png";
+    img.class("m-2 h-auto w-full");
     img.parent(button);
-    let label = createDiv();
-    label.classList.add("flex");
+    let label = createElement('div');
+    label.addClass("flex");
     label.parent(button);
-    let text = document.createElement("h1");
-    text.innerHTML = name;
-    text.id = name + "text";
-    text.classList.add("font-semibold text-center justify-self-center mx-4 mt-4");
+    let text = createElement("h1");
+    text.html(name)
+    // text.innerHTML(id + "text")
+    text.class("font-semibold text-center justify-self-center mx-4 mt-4 text-lg");
     text.parent(label);
 
 
 }
-// export let names = names;
-// export const socket1 = socket;
 
-function updateBuffs() {
-    // Update buffs (from playerStats.js)
+
+
+
+let prevmute = 0;
+function updateStatusConditions() {
+    // console.log(statusconditions);
+    console.log(muted)
+    // Update statusconditions (from playerStats.js)
     mapCooldownPeriod = 30;
 
-    for (let buff of buffs) {
-        if (buff == "cooldownReduction") {
+    for (let status of statusconditions) {
+        if (status == "cooldownReduction") {
             mapCooldownPeriod = 10;
             //applyCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
-        } else if (buff == "addBarrierBlock") {
+        } else if (status == "addBarrierBlock") {
             barrierBlocks++;
             //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
+        } else if (status == "mute") {
+            if (prevmute == 0) {
+                muted = 30;
+                setInterval(function () {
+                    if (muted > 0) {
+                        muted -= 1;
+                    }
+                    else {
+                        muted = 0;
+                    }
+                }, 1000);
+                //prevmute = 1;
+            }
+            prevmute = muted;
+            allowMapModification = false;
+
         }
     }
 }

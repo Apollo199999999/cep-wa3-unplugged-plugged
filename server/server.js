@@ -21,7 +21,7 @@ function Client(socket) {
     this.room = null;
     this.position = { x: 0, y: 0 };
     this.coins = 0;
-    this.buffs = [];
+    this.statusconditions = [];
 }
 
 
@@ -137,26 +137,51 @@ io.on("connection", (socket) => {
     
     socket.on("cooldownReduction", (duration) => {
         if (client.room == null) return;
-        if (client.buffs.includes("cooldownReduction")){ //refresh cooldown reduction
-            client.buffs.splice(client.buffs.indexOf("cooldownReduction"), 1);
-            client.buffs.push("cooldownReduction");
+        if (client.statusconditions.includes("cooldownReduction")){ //refresh cooldown reduction
+            client.statusconditions.splice(client.statusconditions.indexOf("cooldownReduction"), 1);
+            client.statusconditions.push("cooldownReduction");
             setTimeout(() => {
-                client.buffs.splice(client.buffs.indexOf("cooldownReduction"), 1);
+                client.statusconditions.splice(client.statusconditions.indexOf("cooldownReduction"), 1);
             }, duration * 1000);
         };
-        client.buffs.push("cooldownReduction");
+        client.statusconditions.push("cooldownReduction");
         setTimeout(() => {
-            client.buffs.splice(client.buffs.indexOf("cooldownReduction"), 1);
+            client.statusconditions.splice(client.statusconditions.indexOf("cooldownReduction"), 1);
         }, duration * 1000);
     });
 
     socket.on("addBarrierBlock", (count) => {
         if (client.room == null) return;
         for (let i = 0; i < count; i++) {
-            client.buffs.push("addBarrierBlock");
+            client.statusconditions.push("addBarrierBlock");
             setTimeout(() => {
-                client.buffs.splice(client.buffs.indexOf("addBarrierBlock"), 1); //next frame remove
+                client.statusconditions.splice(client.statusconditions.indexOf("addBarrierBlock"), 1); //next frame remove
             }, 2 * 1000/60);
+        }
+    });
+
+    socket.on("mutePlayer", (target, id, duration) => {
+        console.log("Muting player: " + target + " for " + duration + " seconds" + " by " + client.ign)
+        if (client.room == null) return;
+        
+        for (let c of client.room.clients) {
+            console.log(id,c.socket.id)
+            if (c.socket.id == id) {
+                console.log("Muting player: " + c.ign + " for " + duration + " seconds" + " by " + client.ign)
+                if (c.statusconditions.includes("mute")){
+                    c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
+                    c.statusconditions.push("mute");
+                    setTimeout(() => {
+                        c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
+                    }, duration * 1000);
+                } else {
+                    c.statusconditions.push("mute");
+                setTimeout(() => {
+                    c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
+                }, duration * 1000);
+                }
+                
+            }
         }
     });
     
@@ -208,7 +233,7 @@ function tick() {
                 id: c.socket.id,
                 ign: c.ign,
                 coins: c.coins,
-                buffs: c.buffs,
+                statusconditions: c.statusconditions,
             };
         });
         // Spawn coins at specified rate

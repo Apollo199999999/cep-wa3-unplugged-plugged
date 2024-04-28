@@ -15,12 +15,12 @@ function purchaseBuff(buff) {
     window.parent.buffPurchased(buff, cost);
 }
 
-socket1.on("loadPlayers", (players) => {
-    console.log(names);
-    for (let player of names) {
-        buildOnePlayer(player);
-    }
-});
+// socket1.on("loadPlayers", (players) => {
+//     console.log(names);
+//     for (let player of names) {
+//         buildOnePlayer(player);
+//     }
+// });
 // let targetSelectWindow;
 function chooseTarget() {
     //targetSelectWindow = createElement('iframe').size(width / 2, height / 2).position((width / 2) - (width * 0.5) / 2, (height / 2) - (height * 0.5) / 2).attribute('src', 'client/ui/targetSelect.html');

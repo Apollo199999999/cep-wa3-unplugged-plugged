@@ -33,3 +33,21 @@ function updateCooldownReduction(frameDocument, cooldownReduction) {
         cooldownReductionCounter.innerHTML = "Cooldown Reduction Active for: " + cooldownReduction.toString() + "s";
     } catch { }
 }   
+
+function updateMuteCondition(frameDocument, muteCondition, showMuteCondition) {
+    // Try catch because draw() will sometimes call before document has loaded
+    try {
+        let muteCounter = frameDocument.getElementById("muteCounter")
+        muteCounter.innerHTML = "Mute Active for: " + muteCondition.toString() + "s";
+        if (!showMuteCondition) {
+            div = document.getElementById("mutediv");
+            div.addClass("hidden");
+        } else {
+            div = document.getElementById("mutediv");
+            div.removeClass("hidden");
+        
+        }
+        // Coins variable is from sktech.js
+        
+    } catch { }
+}
