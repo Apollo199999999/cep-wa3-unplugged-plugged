@@ -333,10 +333,33 @@ function buffPurchased(buff, cost) {
         openOverlayWindow = createElement('iframe').size(width / 2, height / 2)
         openOverlayWindow.position((width / 2) - (width * 0.5) / 2, (height / 2) - (height * 0.5) / 2)
         openOverlayWindow.attribute('src', './ui/targetSelect.html');
+        buildPlayers();
         socket.emit("useCoins", cost);
         //socket.emit("cooldownReduction", 60);
     }
 }
+
+function buildPlayers() {
+    console.log("building players");
+    let names = [];
+    for (let [id, playerData] of em.entities) {
+        console.log(playerData.ign)
+        if (playerData.id === socket.id) {
+            continue;
+        }
+        // if (playerData.id === id) {
+        //     continue;
+        // };
+        let name = playerData.ign;
+        console.log(name);
+        names.push(name);
+        
+    }
+    
+    //socket.emit("loadPlayers", names);
+}
+export let names = names;
+export const socket1 = socket;
 
 function updateBuffs() {
     // Update buffs (from playerStats.js)
