@@ -358,6 +358,32 @@ function buildPlayers() {
     
     //socket.emit("loadPlayers", names);
 }
+
+function buildOnePlayer(name) {
+    let element = document.getElementById("GRID");
+    console.log(element);
+    let player = createDiv();
+    player.parent(element);
+    player.classList.add("w-full h-full items-center mt-4 mx-4 rounded bg-gray-800");
+    let button = createButton();
+    button.addClass("btn bg-gray-800 w-full h-full mt-4 hover:bg-primary");
+    button.parent(player);
+    button.id = name;
+    let img = document.createElement("img");
+    img.src = "./images/textures/dwarf.png";
+    img.classList.add("m-2 h-3/4 w-auto");
+    img.parent(button);
+    let label = createDiv();
+    label.classList.add("flex");
+    label.parent(button);
+    let text = document.createElement("h1");
+    text.innerHTML = name;
+    text.id = name + "text";
+    text.classList.add("font-semibold text-center justify-self-center mx-4 mt-4");
+    text.parent(label);
+
+
+}
 // export let names = names;
 // export const socket1 = socket;
 
