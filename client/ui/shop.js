@@ -1,4 +1,4 @@
-import { names, socket1 } from "../sketch.js";
+
 
 function purchaseBuff(buff) {
     let cost = 0;
