@@ -107,11 +107,11 @@ io.on("connection", (socket) => {
         
     });
 
-    socket.on("collectCoin", (coinIndex) => {
+    socket.on("collectCoin", (coinIndex, clientArrLength) => {
         if (client.room == null) return;
 
         // I'm guessing some sort of timing issue between client and server can sometimes cause the client side and server side coin array to mismatch, hence this check
-        if (coinIndex < client.room.mapManager.coinarr.length) {
+        if (clientArrLength == client.room.mapManager.coinarr.length) {
             client.coins += client.room.mapManager.coinarr[coinIndex].value;
             console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex].value);
             let result = client.room.mapManager.collectCoin(coinIndex); // index in array
@@ -198,7 +198,6 @@ io.on("connection", (socket) => {
         }
     });
 });
-
 
 function tick() {
     frameCount += 1;

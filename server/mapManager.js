@@ -74,6 +74,10 @@ export default class MapManager {
         this.coinWidth = 30;
         this.coinHeight = 30;
         this.coinrate = 0.15;
+
+        // Limit the total number of coins spawned to avoid lag
+        this.totalCoinsSpawned = 0;
+        this.maxCoinsSpawned = 15;
     }
 
     generateMapWithCenterRoom(mapWidth, mapHeight, treasureRoomWidth, treasureRoomHeight) {
@@ -182,7 +186,7 @@ export default class MapManager {
             4,
             4,
             "none",
-            "./images/textures/spawnerFloor.png", 
+            "./images/textures/spawnerFloor.png",
             true, "coinSpawner"));
 
 
@@ -192,9 +196,17 @@ export default class MapManager {
             3,
             3,
             "static",
-            "./images/textures/cipherPuzzle.png", 
+            "./images/textures/cipherPuzzle.png",
             false, "cipherPuzzle"));
-        
+
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 10,
+            this.centralRoomLocation.y + this.centralRoomHeight - 4,
+            3,
+            3,
+            "static",
+            "./images/textures/imagePuzzle.png",
+            false, "imagePuzzle"));
+
         // Push map overlay areas for shop
         rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 2,
             this.centralRoomLocation.y + 1,
@@ -228,6 +240,7 @@ export default class MapManager {
     collectCoin(coinIndex) {
         if (coinIndex != null) {
             this.coinarr.splice(coinIndex, 1);
+            this.totalCoinsSpawned -= 1;
             return true;
         } else return false;
     }
@@ -258,34 +271,38 @@ export default class MapManager {
     };
 
     generateCoins() {
-        let number = 0;
-        while (number < 1) {
-            for (let i = 0; i < this.mapOverlayAreas.length; i++) {
-                if (this.mapOverlayAreas[i].isCoinSpawner == true) {
-                    let coinSpawnerRoom = this.mapOverlayAreas[i];
-                    let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
-                    let y = this.random(coinSpawnerRoom.y + 1, coinSpawnerRoom.y + coinSpawnerRoom.h - 1);
-                    if (this.mapTiles[Math.floor(y)][Math.floor(x)] == '-') {
-                        this.coinarr.push(new Coin(x, y));
-                        number++;
+        if (this.totalCoinsSpawned <= this.maxCoinsSpawned) {
+            let number = 0;
+            while (number < 1) {
+                for (let i = 0; i < this.mapOverlayAreas.length; i++) {
+                    if (this.mapOverlayAreas[i].isCoinSpawner == true) {
+                        let coinSpawnerRoom = this.mapOverlayAreas[i];
+                        let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
+                        let y = this.random(coinSpawnerRoom.y + 1, coinSpawnerRoom.y + coinSpawnerRoom.h - 1);
+                        if (this.mapTiles[Math.floor(y)][Math.floor(x)] == '-') {
+                            this.coinarr.push(new Coin(x, y));
+                            number++;
+                        }
                     }
                 }
             }
+            this.totalCoinsSpawned += 1;
         }
+
     }
 
     coinRateUp(duration) { // duration in seconds
         console.log("Coin rate up");
-        if (this.coinrate < 5){
+        if (this.coinrate < 5) {
             this.coinrate += 1;
             setTimeout(() => {
                 this.coinRateDown();
             }, duration * 1000);
         }
-        
+
     }
     coinRateDown() {
-        if (this.coinrate > 1){
+        if (this.coinrate > 1) {
             this.coinrate -= 1;
         }
     }

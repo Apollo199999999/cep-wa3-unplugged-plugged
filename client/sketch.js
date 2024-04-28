@@ -358,8 +358,8 @@ function buildPlayers() {
     
     //socket.emit("loadPlayers", names);
 }
-export let names = names;
-export const socket1 = socket;
+// export let names = names;
+// export const socket1 = socket;
 
 function updateBuffs() {
     // Update buffs (from playerStats.js)
