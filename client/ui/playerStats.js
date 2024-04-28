@@ -30,21 +30,23 @@ function updateCooldownReduction(frameDocument, cooldownReduction) {
     try {
         let cooldownReductionCounter = frameDocument.getElementById("cooldownReductionCounter");
         // Coins variable is from sktech.js
-        cooldownReductionCounter.innerHTML = "Cooldown Reduction Active for: " + cooldownReduction.toString() + "s";
+        cooldownReductionCounter.innerHTML = "Cooldown Reduction Active For: " + cooldownReduction.toString() + "s";
     } catch { }
 }   
 
 function updateMuteCondition(frameDocument, muteCondition, showMuteCondition) {
     // Try catch because draw() will sometimes call before document has loaded
     try {
+        // console.log(muteCondition, showMuteCondition)
         let muteCounter = frameDocument.getElementById("muteCounter")
-        muteCounter.innerHTML = "Mute Active for: " + muteCondition.toString() + "s";
-        if (!showMuteCondition) {
-            div = document.getElementById("mutediv");
-            div.addClass("hidden");
-        } else {
-            div = document.getElementById("mutediv");
-            div.removeClass("hidden");
+        muteCounter.innerHTML = "Mute Active For: " + muteCondition.toString() + "s";
+        let div  = frameDocument.getElementById("mutediv");
+        // console.log(div.classList.contains("hidden"));
+        if (!showMuteCondition && !div.classList.contains("hidden")) {
+            console.log("Hiding mute div");
+            div.classList.add("hidden");
+        } else if (showMuteCondition && div.classList.contains("hidden")) {
+            div.classList.remove("hidden");
         
         }
         // Coins variable is from sktech.js

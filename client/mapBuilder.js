@@ -75,13 +75,19 @@ class MapBuilder {
         return createVector(x, y);
     }
 
-    displaySelectedTile(tileIndex) {
+    displaySelectedTile(tileIndex, muted) {
         if (tileIndex != -1) {
             let currTile = this.mapTiles[tileIndex];
             this.selectedtile.pos.x = currTile.x;
             this.selectedtile.pos.y = currTile.y;
             this.selectedtile.visible = true;
             this.selectedtile.layer = 999999;
+            if (muted) {
+                console.log("Muted");
+                this.selectedtile.img = "./images/textures/selected_muted.png";
+            } else {
+                this.selectedtile.img = "./images/textures/selected.png";
+            }
         }
     }
 

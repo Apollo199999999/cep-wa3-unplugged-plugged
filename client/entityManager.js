@@ -52,7 +52,6 @@ class EntityManager {
 
 function createPlayerSprite(name) {
     let playerSprite = new Sprite(0, 0, 32, 32);
-    playerSprite.layer = 1000;
     playerSprite.visible = true;
 
     // Load sprite sheet

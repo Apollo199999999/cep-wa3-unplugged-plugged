@@ -7,7 +7,7 @@ function purchaseBuff(buff) {
     } else if (buff == 2){ //increase coin rate
         cost = 10;
     } else if (buff == 3){ //add barrier block
-        cost = 0;
+        cost = 20;
         //console.log("add barrier block");
         //exit();
 

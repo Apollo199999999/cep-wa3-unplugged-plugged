@@ -171,6 +171,7 @@ function draw() {
 
         // Prevent playersprite from becoming rotated on collision
         playerSprite.rotation = 0;
+        playerSprite.layer = 99999999;
 
         // Map diagram display shouldnt be bound by any conditions
         mapBuilder.displayMapDiagram();
@@ -179,7 +180,7 @@ function draw() {
 
         selectTile();
 
-        mapBuilder.displaySelectedTile(selectedTileIndex);
+        mapBuilder.displaySelectedTile(selectedTileIndex, statusconditions.includes("mute"));
 
         // Check if players are within range of coins
         mapBuilder.checkPlayerCollectedCoins(playerSprite);
@@ -298,15 +299,15 @@ function puzzleWindowClosed(puzzleSolved) {
 
 
 let targetSelectWindow;
-function targetSelectWindowClosed(target, id) {
+function targetSelectWindowClosed(target, id, cost) {
 
     closeOverlayWindow();
     targetSelected(target, id);
-    socket.emit("useCoins", 0); //change to 20
+    socket.emit("useCoins", cost); //change to 20
 }
 function targetSelected(target, id) {
     console.log(target);
-    socket.emit("mutePlayer", target, id, 30);
+    socket.emit("mutePlayer", target, id, 45);
 }
 
 function closeTargetSelectWindow() {
@@ -352,7 +353,7 @@ function buffPurchased(buff, cost) {
         openOverlayWindow.attribute('src', './ui/targetSelect.html');
         //openOverlayWindow.elt.contentWindow.targetSelectWindowClosed = targetSelectWindowClosed;
         openOverlayWindow.elt.onload = function() {
-            buildPlayers();
+            buildPlayers(cost);
             // buildOnePlayer('dj');
         };
         // buildOnePlayer('dafdfas')
@@ -362,7 +363,7 @@ function buffPurchased(buff, cost) {
     }
 }
 
-function buildPlayers() {
+function buildPlayers(cost) {
     console.log("building players");
     let names = [];
     //buildOnePlayer('dj');
@@ -372,7 +373,7 @@ function buildPlayers() {
             continue;
         }
         let name = playerData.ign;
-        buildOnePlayer(name, id);
+        buildOnePlayer(name, id, cost);
         console.log(name); 
         names.push(name);
 
@@ -381,7 +382,7 @@ function buildPlayers() {
     //socket.emit("loadPlayers", names);
 }
 
-function buildOnePlayer(name, id) {
+function buildOnePlayer(name, id, cost) {
     console.log('building player')
     let element = (openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document).getElementById("GRID");
     let player = createElement('div');
@@ -392,7 +393,7 @@ function buildOnePlayer(name, id) {
     button.parent(player);
     button.id = name;
     button.mousePressed(function() {
-        targetSelectWindowClosed(name, id);
+        targetSelectWindowClosed(name, id, cost);
     });
     let img = createImg("../images/textures/dwarf.png");
     // img.src = "./images/textures/dwarf.png";
@@ -416,7 +417,7 @@ function buildOnePlayer(name, id) {
 let prevmute = 0;
 function updateStatusConditions() {
     // console.log(statusconditions);
-    console.log(muted)
+    // console.log(muted)
     // Update statusconditions (from playerStats.js)
     mapCooldownPeriod = 30;
 
@@ -429,7 +430,7 @@ function updateStatusConditions() {
             //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
         } else if (status == "mute") {
             if (prevmute == 0) {
-                muted = 30;
+                muted = 45;
                 setInterval(function () {
                     if (muted > 0) {
                         muted -= 1;
