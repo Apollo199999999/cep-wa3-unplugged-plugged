@@ -19,6 +19,7 @@ function Client(socket) {
     this.socket = socket;
     this.ign = null;
     this.room = null;
+    this.playerRole = null;
     this.position = { x: 0, y: 0 };
     this.coins = 0;
     this.statusconditions = [];
@@ -73,8 +74,9 @@ io.on("connection", (socket) => {
     // });
 
     // Client registers itself with the server
-    socket.on("registerClient", (ign, roomCode) => {
+    socket.on("registerClient", (ign, playerRole, roomCode) => {
         client.ign = ign;
+        client.playerRole = playerRole;
 
         // First, we check if the roomcode provided by the client exists
         let roomExists = false;

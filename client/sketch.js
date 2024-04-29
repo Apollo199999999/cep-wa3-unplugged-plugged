@@ -35,6 +35,7 @@ let puzzlesSolved = [];
 // Map cooldown timer
 let mapCooldownTimer;
 
+// Player role, either saboteur or dwarf
 let playerRole;
 
 const socket = io.connect("ws://localhost:8001");
@@ -60,7 +61,7 @@ window.onload = () => {
     }
 
     // Tell the client to register itself with the server event
-    socket.emit("registerClient", localIGN, currentRoomCode);
+    socket.emit("registerClient", localIGN, playerRole, currentRoomCode);
 };
 
 
