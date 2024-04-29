@@ -21,7 +21,7 @@ function Client(socket) {
     this.room = null;
     this.playerRole = null;
     this.position = { x: 0, y: 0 };
-    this.coins = 40;
+    this.coins = 0;
     this.statusconditions = [];
 }
 

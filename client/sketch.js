@@ -367,7 +367,7 @@ function targetSelectWindowClosed(target, id, cost) {
 }
 function targetSelected(target, id) {
     console.log(target);
-    socket.emit("mutePlayer", target, id, 300);
+    socket.emit("mutePlayer", target, id, 180);
 }
 
 function closeTargetSelectWindow() {
@@ -494,7 +494,7 @@ function updateStatusConditions() {
             //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
         } else if (status == "mute") {
             if (prevmute == 0) {
-                muted = 300;
+                muted = 180;
                 setInterval(function () {
                     if (muted > 0) {
                         muted -= 1;
