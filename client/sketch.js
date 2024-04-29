@@ -487,11 +487,6 @@ function updateStatusConditions() {
     }
 }
 
-function keyPressed() {
-    if (key === " ") {
-        socket.emit("coinRateUp", 10);
-    }
-}
 
 function interpolateOtherPlayers() {
     const now = +new Date();
