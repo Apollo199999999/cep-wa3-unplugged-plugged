@@ -451,9 +451,9 @@ function buildOnePlayer(name, id, cost) {
     let element = (openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document).getElementById("GRID");
     let player = createElement('div');
     player.parent(element);
-    player.addClass("w-full h-full items-center mt-4 mx-4 rounded bg-gray-800");
+    player.addClass("w-4/5 justify-self-center h-full items-center mx-4 rounded-md bg-gray-800 ");
     let button = createButton('');
-    button.addClass("btn bg-gray-800 w-full h-auto mt-2 hover:bg-primary hover:text-gray-800");
+    button.addClass("btn w-full h-full hover:bg-primary hover:text-gray-800");
     button.parent(player);
     button.id = name;
     button.mousePressed(function () {
@@ -467,9 +467,9 @@ function buildOnePlayer(name, id, cost) {
     label.addClass("flex");
     label.parent(button);
     let text = createElement("h1");
-    text.html(name)
+    text.html("Mute " + name);
     // text.innerHTML(id + "text")
-    text.class("font-semibold text-center justify-self-center mx-4 mt-4 text-lg");
+    text.class("font-semibold text-center justify-self-center mx-4 text-lg");
     text.parent(label);
 
 
