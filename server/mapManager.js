@@ -211,7 +211,7 @@ export default class MapManager {
         rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 2,
             this.centralRoomLocation.y + 1,
             3,
-            1,
+            3,
             "static",
             "./images/textures/cipherPuzzle.png", //temporary
             false, "shop"));
