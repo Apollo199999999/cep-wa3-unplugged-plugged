@@ -68,11 +68,6 @@ io.on("connection", (socket) => {
         client.position = { x, y };
     });
 
-    // Update the client's coins server-side
-    // socket.on("coins", (coins) => {
-    //     client.coins = coins;
-    // });
-
     // Client registers itself with the server
     socket.on("registerClient", (ign, playerRole, roomCode) => {
         client.ign = ign;

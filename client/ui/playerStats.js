@@ -1,3 +1,11 @@
+function updatePlayerRole(frameDocument, playerRole) {
+    try {
+        let roleDisplay = frameDocument.getElementById("playerRoleDisplay");
+        // Coins variable is from sktech.js
+        roleDisplay.innerHTML = "Role: " + playerRole.toString();
+    } catch { }
+}
+
 function updateCoinCounter(frameDocument, coinCount) {
     // Try catch because draw() will sometimes call before document has loaded
     try {

@@ -154,7 +154,7 @@ function setup() {
     playerMapPos = createVector();
 
     // Create an iframe to display player stats
-    playerStatsFrame = createElement('iframe').size(340, 200);
+    playerStatsFrame = createElement('iframe').size(340, 240);
     playerStatsFrame.addClass('opacity-65 hover:opacity-100');
     playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
@@ -218,6 +218,8 @@ function draw() {
         }
 
         // Update player stats (from playerStats.js)
+        // Uppercase first letter of player role
+        updatePlayerRole((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), playerRole.charAt(0).toUpperCase() + playerRole.slice(1));
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
         updateBarrierBlocks((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), barrierBlocks);
