@@ -21,7 +21,7 @@ function Client(socket) {
     this.room = null;
     this.playerRole = null;
     this.position = { x: 0, y: 0 };
-    this.coins = 0;
+    this.coins = 40;
     this.statusconditions = [];
 }
 
@@ -166,12 +166,16 @@ io.on("connection", (socket) => {
             if (c.socket.id == id) {
                 console.log("Muting player: " + c.ign + " for " + duration + " seconds" + " by " + client.ign)
                 if (c.statusconditions.includes("mute")){
-                    c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
-                    c.statusconditions.push("mute");
-                    setTimeout(() => {
-                        c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
-                    }, duration * 1000);
-                } else {
+                    client.socket.emit("playerAlreadyMuted", c.ign);
+                    return;
+                }
+                // if (c.statusconditions.includes("mute")){
+                //     c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
+                //     c.statusconditions.push("mute");
+                //     setTimeout(() => {
+                //         c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
+                //     }, duration * 1000);
+                else {
                     c.statusconditions.push("mute");
                 setTimeout(() => {
                     c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);

@@ -118,6 +118,15 @@ socket.on("gameOver", (ownId, winId) => {
     }
 });
 
+socket.on("playerAlreadyMuted", (name) => {
+    txt = name + " has already been muted.";
+    Swal.fire({
+        title: "Player already muted...",
+        text: txt,
+        icon: "info"
+    });
+});
+
 // used as a replacement for console.log on server side to log messages to client
 socket.on("Log", (msg) => {
     console.log(msg, "logger");
@@ -358,7 +367,7 @@ function targetSelectWindowClosed(target, id, cost) {
 }
 function targetSelected(target, id) {
     console.log(target);
-    socket.emit("mutePlayer", target, id, 45);
+    socket.emit("mutePlayer", target, id, 300);
 }
 
 function closeTargetSelectWindow() {
@@ -485,7 +494,7 @@ function updateStatusConditions() {
             //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
         } else if (status == "mute") {
             if (prevmute == 0) {
-                muted = 45;
+                muted = 300;
                 setInterval(function () {
                     if (muted > 0) {
                         muted -= 1;
