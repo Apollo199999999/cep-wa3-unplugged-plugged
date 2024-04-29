@@ -301,7 +301,8 @@ class MapBuilder {
     checkPlayerCollectedCoins(playerSprite) {
         // Check if player has collected a coin
         for (let i = 0; i < this.coins.length; i++) {
-            if (playerSprite.overlap(this.coins[i])) {
+            let coin = this.coins[i];
+            if (dist(playerSprite.x, playerSprite.y, coin.x, coin.y) < 64) {
                 socket.emit("collectCoin", i, this.coins.length);
                 console.log("Coin collected");
             }

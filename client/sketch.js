@@ -286,14 +286,22 @@ function examineBtnClicked() {
     }
 }
 
-function puzzleWindowClosed(puzzleSolved) {
+function puzzleWindowClosed(puzzleSolved, puzzleType) {
     // Close the puzzle window
     closeOverlayWindow();
 
     // If the puzzle has been solved, double coin spawning rates
     if (puzzleSolved == true) {
         alert("Puzzle solved! Coin spawning rates have been increased for one minute.");
-        socket.emit("coinRateUp", 60);
+        if (puzzleType == "cipherPuzzle") {
+            socket.emit("coinRateUp", 60);
+        }
+        else if (puzzleType == "imagePuzzle") {
+            socket.emit("coinRateUp", 60);
+            socket.emit("coinRateUp", 60);
+            socket.emit("coinRateUp", 60);
+        }
+        
     }
 }
 

@@ -86,8 +86,8 @@ function preload() {
 }
 
 function setup() {
-    rows = 8;
-    columns = 8;
+    rows = 1;
+    columns = 2;
     w = puzzleImage.width / columns;
     h = puzzleImage.height / rows;
     createCanvas(800, 500);
@@ -119,7 +119,7 @@ function draw() {
     for (let i = 0; i < pieces.length; i++) {
         if (solved) {
             // Invoke callback function in sketch.js
-            window.parent.puzzleWindowClosed(true);
+            window.parent.puzzleWindowClosed(true, "imagePuzzle");
         }
         pieces[i].show();
     }
@@ -156,5 +156,5 @@ function mouseReleased() {
 
 function exit() {
     // Invoke callback function in sketch.js
-    window.parent.puzzleWindowClosed(false);
+    window.parent.puzzleWindowClosed(false, "imagePuzzle");
 }

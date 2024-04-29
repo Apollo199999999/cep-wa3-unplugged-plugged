@@ -76,8 +76,7 @@ export default class MapManager {
         this.coinrate = 0.15;
 
         // Limit the total number of coins spawned to avoid lag
-        this.totalCoinsSpawned = 0;
-        this.maxCoinsSpawned = 15;
+        this.maxCoinsSpawned = 5;
     }
 
     generateMapWithCenterRoom(mapWidth, mapHeight, treasureRoomWidth, treasureRoomHeight) {
@@ -239,8 +238,8 @@ export default class MapManager {
 
     collectCoin(coinIndex) {
         if (coinIndex != null) {
+            this.coinarr[coinIndex].spawner.numCoinsAtSpawner -= 1;
             this.coinarr.splice(coinIndex, 1);
-            this.totalCoinsSpawned -= 1;
             return true;
         } else return false;
     }
@@ -271,22 +270,17 @@ export default class MapManager {
     };
 
     generateCoins() {
-        if (this.totalCoinsSpawned <= this.maxCoinsSpawned) {
-            let number = 0;
-            while (number < 1) {
-                for (let i = 0; i < this.mapOverlayAreas.length; i++) {
-                    if (this.mapOverlayAreas[i].isCoinSpawner == true) {
-                        let coinSpawnerRoom = this.mapOverlayAreas[i];
-                        let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
-                        let y = this.random(coinSpawnerRoom.y + 1, coinSpawnerRoom.y + coinSpawnerRoom.h - 1);
-                        if (this.mapTiles[Math.floor(y)][Math.floor(x)] == '-') {
-                            this.coinarr.push(new Coin(x, y));
-                            number++;
-                        }
-                    }
+        for (let i = 0; i < this.mapOverlayAreas.length; i++) {
+            if (this.mapOverlayAreas[i].isCoinSpawner == true) {
+                let coinSpawnerRoom = this.mapOverlayAreas[i];
+                let x = this.random(coinSpawnerRoom.x + 1, coinSpawnerRoom.x + coinSpawnerRoom.w - 1);
+                let y = this.random(coinSpawnerRoom.y + 1, coinSpawnerRoom.y + coinSpawnerRoom.h - 1);
+
+                if (coinSpawnerRoom.numCoinsAtSpawner < this.maxCoinsSpawned) {
+                    this.coinarr.push(new Coin(x, y, coinSpawnerRoom));
+                    coinSpawnerRoom.numCoinsAtSpawner += 1;
                 }
             }
-            this.totalCoinsSpawned += 1;
         }
 
     }
@@ -310,10 +304,11 @@ export default class MapManager {
 
 
 class Coin {
-    constructor(x, y, value = 1) {
+    constructor(x, y, spawner, value = 1) {
         // x and y here refer to which tile it is placed on
         this.x = x;
         this.y = y;
+        this.spawner = spawner;
         this.value = value;
     }
 }
@@ -331,5 +326,8 @@ class MapOverlayArea {
         this.img = clientOverlayImgPath;
         this.isCoinSpawner = isCoinSpawner;
         this.type = type;
+
+        // Only used for coin spawners
+        this.numCoinsAtSpawner = 0;
     }
 }
