@@ -29,6 +29,9 @@ let mapCooldownLeft = 0;
 // Stores the current overlay window that is open
 let openOverlayWindow;
 
+// Stores puzzles solved by the user
+let puzzlesSolved = [];
+
 const socket = io.connect("ws://localhost:8001");
 
 window.onload = () => {
@@ -266,6 +269,16 @@ function examineBtnClicked() {
 
     closeOverlayWindow();
 
+    // First, check if the user has already solved this puzzle
+    if (puzzlesSolved.includes(overlayArea.type)) {
+        Swal.fire({
+            title: "Puzzle already solved...",
+            text: "You have already solved this puzzle.",
+            icon: "info"
+          });
+        return;
+    }
+
     // Depending on what image the overlay is using, we can deduce what type of overlay the player is trying to access
     if (overlayArea.type == "cipherPuzzle") {
         // Cipher puzzle
@@ -292,11 +305,25 @@ function puzzleWindowClosed(puzzleSolved, puzzleType) {
 
     // If the puzzle has been solved, double coin spawning rates
     if (puzzleSolved == true) {
-        alert("Puzzle solved! Coin spawning rates have been increased for one minute.");
+        // Indicate that user has solved this puzzle
+        puzzlesSolved.push(puzzleType);
+
         if (puzzleType == "cipherPuzzle") {
+            Swal.fire({
+                title: "Puzzle solved!",
+                text: "Puzzle solved! Coin spawning rates have been doubled for one minute.",
+                icon: "success"
+              });
+    
             socket.emit("coinRateUp", 60);
         }
         else if (puzzleType == "imagePuzzle") {
+            Swal.fire({
+                title: "Puzzle solved!",
+                text: "Puzzle solved! Coin spawning rates have been quadrupled for one minute.",
+                icon: "success"
+              });
+    
             socket.emit("coinRateUp", 60);
             socket.emit("coinRateUp", 60);
             socket.emit("coinRateUp", 60);
@@ -329,7 +356,11 @@ function closeTargetSelectWindow() {
 function buffPurchased(buff, cost) {
     closeOverlayWindow();
     if (coins < cost) {
-        alert("Insufficient coins to purchase buff!");
+        Swal.fire({
+            title: "Insufficient coins!",
+            text: "Insufficient coins to purchase buff!",
+            icon: "error"
+          });
         return;
     }
     // If the buff has been purchased, apply the buff

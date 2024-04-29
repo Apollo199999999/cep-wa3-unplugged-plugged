@@ -70,7 +70,6 @@ class Piece {
         cursor("grab");
         //check if in target location
         if (abs(this.x - this.tx) < 10 && abs(this.y - this.ty) < 10) {
-            print("right spot");
             this.correct = true;
             this.x = this.tx;
             this.y = this.ty;

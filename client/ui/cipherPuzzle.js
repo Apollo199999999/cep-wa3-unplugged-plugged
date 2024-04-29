@@ -10,7 +10,11 @@ function verifyCode() {
         window.parent.puzzleWindowClosed(true, "cipherPuzzle");
     }
     else {
-        alert("Incorrect code");
+        Swal.fire({
+            title: "Error solving puzzle!",
+            text: "Wrong code entered!",
+            icon: "error"
+          });
     }
 }
 
