@@ -32,6 +32,11 @@ let openOverlayWindow;
 // Stores puzzles solved by the user
 let puzzlesSolved = [];
 
+// Map cooldown timer
+let mapCooldownTimer;
+
+let playerRole;
+
 const socket = io.connect("ws://localhost:8001");
 
 window.onload = () => {
@@ -45,6 +50,14 @@ window.onload = () => {
 
     currentRoomCode = urlParams.get('roomCode');
     Object.freeze(currentRoomCode);
+
+    // Assign player role (each player has a 0.3 chance of being a saboteur)
+    let random = Math.random();
+    if (random < 0.3) {
+        playerRole = "saboteur";
+    } else {
+        playerRole = "dwarf";
+    }
 
     // Tell the client to register itself with the server event
     socket.emit("registerClient", localIGN, currentRoomCode);
@@ -240,18 +253,18 @@ function mouseReleased() {
         mapCooldownLeft = mapCooldownPeriod;
         numberOfBlocksEdited = 0;
         if (muted == 0) {
-            cooldownTimer = setInterval(function () {
+            mapCooldownTimer = setInterval(function () {
                 if (mapCooldownLeft > 0) {
                     mapCooldownLeft -= 1;
                 }
                 else {
                     mapCooldownLeft = 0;
                     allowMapModification = true;
-                    clearInterval(cooldownTimer);
+                    clearInterval(mapCooldownTimer);
                 }
             }, 1000);
         }
-        
+
     }
 }
 
@@ -275,7 +288,7 @@ function examineBtnClicked() {
             title: "Puzzle already solved...",
             text: "You have already solved this puzzle.",
             icon: "info"
-          });
+        });
         return;
     }
 
@@ -313,8 +326,8 @@ function puzzleWindowClosed(puzzleSolved, puzzleType) {
                 title: "Puzzle solved!",
                 text: "Puzzle solved! Coin spawning rates have been doubled for one minute.",
                 icon: "success"
-              });
-    
+            });
+
             socket.emit("coinRateUp", 60);
         }
         else if (puzzleType == "imagePuzzle") {
@@ -322,13 +335,13 @@ function puzzleWindowClosed(puzzleSolved, puzzleType) {
                 title: "Puzzle solved!",
                 text: "Puzzle solved! Coin spawning rates have been quadrupled for one minute.",
                 icon: "success"
-              });
-    
+            });
+
             socket.emit("coinRateUp", 60);
             socket.emit("coinRateUp", 60);
             socket.emit("coinRateUp", 60);
         }
-        
+
     }
 }
 
@@ -360,7 +373,7 @@ function buffPurchased(buff, cost) {
             title: "Insufficient coins!",
             text: "Insufficient coins to purchase buff!",
             icon: "error"
-          });
+        });
         return;
     }
     // If the buff has been purchased, apply the buff
@@ -391,7 +404,7 @@ function buffPurchased(buff, cost) {
         openOverlayWindow.position((width / 2) - (width * 0.5) / 2, (height / 2) - (height * 0.5) / 2)
         openOverlayWindow.attribute('src', './ui/targetSelect.html');
         //openOverlayWindow.elt.contentWindow.targetSelectWindowClosed = targetSelectWindowClosed;
-        openOverlayWindow.elt.onload = function() {
+        openOverlayWindow.elt.onload = function () {
             buildPlayers(cost);
             // buildOnePlayer('dj');
         };
@@ -413,7 +426,7 @@ function buildPlayers(cost) {
         }
         let name = playerData.ign;
         buildOnePlayer(name, id, cost);
-        console.log(name); 
+        console.log(name);
         names.push(name);
 
     }
@@ -431,7 +444,7 @@ function buildOnePlayer(name, id, cost) {
     button.addClass("btn bg-gray-800 w-full h-auto mt-2 hover:bg-primary hover:text-gray-800");
     button.parent(player);
     button.id = name;
-    button.mousePressed(function() {
+    button.mousePressed(function () {
         targetSelectWindowClosed(name, id, cost);
     });
     let img = createImg("../images/textures/dwarf.png");
