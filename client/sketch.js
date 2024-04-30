@@ -321,7 +321,22 @@ function examineBtnClicked() {
         openOverlayWindow.position((width / 2) - (width * 0.8) / 2, (height / 2) - (height * 0.8) / 2);
         openOverlayWindow.attribute('src', './ui/shop.html');
         console.log("Shop opened");
+    } else if (overlayArea.type == "mapRevoke") {
+        // Cipher puzzle
+        openOverlayWindow = createElement('iframe').size(800, 520);
+        openOverlayWindow.position((width / 2) - 800 / 2, (height / 2) - 550 / 2);
+        openOverlayWindow.attribute('src', './ui/mapRevocation.html');
+
+        // Init usernames in maprevocation window (from mapRevocation.js)
+        openOverlayWindow.elt.onload = () => {
+            initialiseUsernames((openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document), em.entities);
+        };
     }
+    
+}
+
+function getOverlayWindowDocument() {
+    return (openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document);
 }
 
 function puzzleWindowClosed(puzzleSolved, puzzleType) {
@@ -356,6 +371,29 @@ function puzzleWindowClosed(puzzleSolved, puzzleType) {
 
     }
 }
+
+function revokeMapPlayer(socketid) {
+    // Tell the server to increase this player's cooldown
+    socket.emit("mapRevoke", socketid);
+}
+
+socket.on("mapRevokeIncreaseCooldown", () => {
+    clearInterval(mapCooldownTimer);
+    allowMapModification = false;
+    mapCooldownLeft += 7 * 60;
+
+    mapCooldownTimer = setInterval(function () {
+        if (mapCooldownLeft > 0) {
+            mapCooldownLeft -= 1;
+        }
+        else {
+            mapCooldownLeft = 0;
+            allowMapModification = true;
+            clearInterval(mapCooldownTimer);
+        }
+    }, 1000);
+
+});
 
 
 let targetSelectWindow;

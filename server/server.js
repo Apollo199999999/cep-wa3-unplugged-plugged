@@ -96,12 +96,12 @@ io.on("connection", (socket) => {
 
     socket.on("mapModified", (tileIndex, tileChar) => {
         client.room.mapManager.updateMap(tileIndex, tileChar);
-        if (client.room){
+        if (client.room) {
             for (let c of client.room.clients) {
                 c.socket.emit("updateMap", tileIndex, tileChar);
             }
         }
-        
+
     });
 
     socket.on("collectCoin", (coinIndex, clientArrLength) => {
@@ -113,14 +113,14 @@ io.on("connection", (socket) => {
             console.log("Coin collected by: " + client.ign + " at index: " + coinIndex + " with value: " + client.room.mapManager.coinarr[coinIndex].value);
             let result = client.room.mapManager.collectCoin(coinIndex); // index in array
             if (!result) return;
-            
-            
-            
+
+
+
             for (let c of client.room.clients) {
                 c.socket.emit("updateCoins", client.room.mapManager, coinIndex);
             }
         }
-        
+
     });
 
     socket.on("useCoins", (amount) => {
@@ -130,11 +130,22 @@ io.on("connection", (socket) => {
             // for (let c of client.room.clients) {
             //     c.socket.emit("updateCoins", client.room.mapManager, null);
             // }
-        }});
-    
+        }
+    });
+
+    socket.on("mapRevoke", (socketid) => {
+        console.log(socketid);
+        for (let c of client.room.clients) {
+            if (c.socket.id == socketid) {
+                c.socket.emit("mapRevokeIncreaseCooldown");
+                break;
+            }
+        }
+    });
+
     socket.on("cooldownReduction", (duration) => {
         if (client.room == null) return;
-        if (client.statusconditions.includes("cooldownReduction")){ //refresh cooldown reduction
+        if (client.statusconditions.includes("cooldownReduction")) { //refresh cooldown reduction
             client.statusconditions.splice(client.statusconditions.indexOf("cooldownReduction"), 1);
             client.statusconditions.push("cooldownReduction");
             setTimeout(() => {
@@ -153,19 +164,19 @@ io.on("connection", (socket) => {
             client.statusconditions.push("addBarrierBlock");
             setTimeout(() => {
                 client.statusconditions.splice(client.statusconditions.indexOf("addBarrierBlock"), 1); //next frame remove
-            }, 2 * 1000/60);
+            }, 2 * 1000 / 60);
         }
     });
 
     socket.on("mutePlayer", (target, id, duration) => {
         console.log("Muting player: " + target + " for " + duration + " seconds" + " by " + client.ign)
         if (client.room == null) return;
-        
+
         for (let c of client.room.clients) {
-            console.log(id,c.socket.id)
+            console.log(id, c.socket.id)
             if (c.socket.id == id) {
                 console.log("Muting player: " + c.ign + " for " + duration + " seconds" + " by " + client.ign)
-                if (c.statusconditions.includes("mute")){
+                if (c.statusconditions.includes("mute")) {
                     client.socket.emit("playerAlreadyMuted", c.ign);
                     return;
                 }
@@ -177,15 +188,15 @@ io.on("connection", (socket) => {
                 //     }, duration * 1000);
                 else {
                     c.statusconditions.push("mute");
-                setTimeout(() => {
-                    c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
-                }, duration * 1000);
+                    setTimeout(() => {
+                        c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
+                    }, duration * 1000);
                 }
-                
+
             }
         }
     });
-    
+
 
     socket.on("generateCoins", () => {
         if (client.room == null) return;
@@ -241,7 +252,7 @@ function tick() {
         if (frameCount % Math.round(60 / room.mapManager.coinrate) == 0) {
             room.mapManager.generateCoins();
             console.log("generating", frameCount, date.getTime() - lastTime, room.mapManager.coinrate, 60 / room.mapManager.coinrate);
-            
+
             for (let c of room.clients) {
                 c.socket.emit("updateCoins", c.room.mapManager, null);
             }

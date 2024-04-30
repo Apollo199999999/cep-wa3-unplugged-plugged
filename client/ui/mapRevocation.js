@@ -1,11 +1,11 @@
-function initialiseUsernames(frameDocument, usernamesList) {
+function initialiseUsernames(frameDocument, emEntities) {
     // Clear all radio buttons
     let userRadioBtns = frameDocument.getElementById("user-radio-buttons");
     userRadioBtns.innerHTML = ' ';
 
-    // Create radio buttons based on usernamesList
-    for (username of usernamesList) {
-        let xmlString = '<label class="label cursor-pointer"><span class="label-text">' + username + '</span><input type="radio" name="usernames-radio" class="radio radio-primary"/></label>';
+    // Create radio buttons
+    for (let [id, playerData] of emEntities) {
+        let xmlString = '<label class="label cursor-pointer"><span class="label-text">' + playerData.ign + '</span><input type="radio" name="usernames-radio" data-socketid="' + id +  '" class="radio radio-primary"/></label>';
         let radioBtn = createElementFromHTML(xmlString);
         userRadioBtns.appendChild(radioBtn);
     }
@@ -19,7 +19,36 @@ function createElementFromHTML(htmlString) {
     return div.firstChild;
 }
 
-// Simply to test that appending radio btns work
-window.onload = () => {
-    initialiseUsernames(document, ["User1", "User2"]);
+function exit() {
+    // Invoke callback function in sketch.js
+    window.parent.closeOverlayWindow();
+}
+
+function revokePlayer() {
+    // Find the selected player
+    let frameDocument = window.parent.getOverlayWindowDocument();
+    let userRadioBtns = frameDocument.getElementById("user-radio-buttons");
+
+    // Get the selected radio btn
+    let radios = userRadioBtns.querySelectorAll("input[name=\"usernames-radio\"]");
+    let radioChecked = false;
+    for (let radio of radios) {
+        if (radio.checked) {
+            let selectedSocketId = radio.dataset.socketid.toString();
+            radioChecked = true;
+            window.parent.revokeMapPlayer(selectedSocketId);
+            window.parent.closeOverlayWindow();
+
+            break;
+        }
+    }
+
+    if (radioChecked == false) {
+        // Show an error message
+        Swal.fire({
+            title: "No player selected!",
+            text: "You have not selected a player to revoke.",
+            icon: "error"
+        });
+    }
 }

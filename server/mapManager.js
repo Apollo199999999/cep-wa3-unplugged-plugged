@@ -206,7 +206,7 @@ export default class MapManager {
             "./images/textures/imagePuzzle.png",
             false, "imagePuzzle"));
 
-        // Push map overlay areas for shop
+        // Push map overlay area for shop
         rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 2,
             this.centralRoomLocation.y + 1,
             3,
@@ -214,6 +214,15 @@ export default class MapManager {
             "static",
             "./images/textures/cipherPuzzle.png", //temporary
             false, "shop"));
+
+        // Push map overlay area for map revoke area
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + this.centralRoomWidth - 4,
+        this.centralRoomLocation.y + this.centralRoomHeight - 4,
+        3,
+        3,
+        "static",
+        "./images/textures/mapRevoke.png", //temporary
+        false, "mapRevoke"));
 
         return rooms;
     }
