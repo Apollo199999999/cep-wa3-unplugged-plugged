@@ -21,7 +21,7 @@ function Client(socket) {
     this.room = null;
     this.playerRole = null;
     this.position = { x: 0, y: 0 };
-    this.coins = 0;
+    this.coins = 100;
     this.statusconditions = [];
 }
 
@@ -197,6 +197,14 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("revealRoom", () => {
+        // console.log(3298746523987)
+        if (client.room == null) return;
+        if (client.room.mapManager.realTreasureRoomIndex == null) return;
+        console.log(client.room.mapManager.realTreasureRoomIndex)
+        client.socket.emit("realTreasureRoom", client.room.mapManager);
+    });
+    
 
     socket.on("generateCoins", () => {
         if (client.room == null) return;

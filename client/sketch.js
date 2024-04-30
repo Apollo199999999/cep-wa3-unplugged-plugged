@@ -102,6 +102,21 @@ socket.on("playerAlreadyMuted", (name) => {
     });
 });
 
+socket.on("realTreasureRoom", (roomIndex) => {
+    // console.log(134312)
+    txt = "The real treasure room has been revealed...";
+    Swal.fire({
+        title:"Revelation: ",
+        text:txt,
+        imageUrl: "./images/shop/treasure-chest.png",
+        imageWidth : 200,
+        imageHeigh : 200,
+        animation:true
+
+    });
+    mapBuilder.revealRoom(roomIndex);
+})
+
 // used as a replacement for console.log on server side to log messages to client
 socket.on("Log", (msg) => {
     console.log(msg, "logger");
@@ -474,6 +489,9 @@ function buffPurchased(buff, cost) {
         // buildPlayers();
         // socket.emit("useCoins", cost); 
         //socket.emit("cooldownReduction", 60);
+    } else if (buff = 4) {
+        socket.emit("useCoins", cost);
+        socket.emit("revealRoom"); 
     }
 }
 

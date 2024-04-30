@@ -11,6 +11,8 @@ function purchaseBuff(buff) {
         //console.log("add barrier block");
         //exit();
 
+    } else if (buff == 4){
+        cost = 20; 
     }
     window.parent.buffPurchased(buff, cost);
 }

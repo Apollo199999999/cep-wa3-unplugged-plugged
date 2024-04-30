@@ -60,6 +60,7 @@ export default class MapManager {
 
         // Store the location of the real treasure room
         this.realTreasureRoomLocation;
+        this.realTreasureRoomIndex;
 
         // Variables to store central room details
         this.centralRoomLocation;
@@ -149,6 +150,7 @@ export default class MapManager {
         let numTreasureRooms = 0;
         // Randomly generate which treasure room contains the real gold
         let realTreasureRoomIndex = Math.floor(this.random(0, 2));
+        this.realTreasureRoomIndex = realTreasureRoomIndex;
 
         while (numTreasureRooms < 3) {
             const topLeftX = Math.floor(Math.random() * (mapWidth - treasureRoomWidth - 1)) + 1;
@@ -160,6 +162,7 @@ export default class MapManager {
                 if (numTreasureRooms == realTreasureRoomIndex) {
                     // Push the real treasure room to the global variable
                     this.realTreasureRoomLocation = { x: topLeftX, y: topLeftY, width: treasureRoomWidth, height: treasureRoomHeight };
+                    // this.realTreasureRoomLocationCoords = {x : topLeftX * 32 }
                 }
 
                 numTreasureRooms += 1;

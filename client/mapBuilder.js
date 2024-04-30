@@ -59,6 +59,15 @@ class MapBuilder {
         this.selectedtile.strokeWeight = 2;
         this.selectedtile.img = "./images/textures/selected.png";
 
+        this.revealRoomTile = new Sprite();
+        this.revealRoomTile.w = 5 * 32;
+        this.revealRoomTile.h = 7 * 32;
+        this.revealRoomTile.pos.x = 1300
+        this.revealRoomTile.pos.y = 400
+        this.revealRoomTile.collider = 'none';
+        // this.revealRoomTile.layer = 1000000;
+        this.revealRoomTile.visible = true;
+        this.revealRoomTile.img = "./images/textures/foundtreasureroom.png"
 
     }
 
@@ -66,6 +75,18 @@ class MapBuilder {
         // Spawn the client sprite inside the room
         clientSprite.position.x = (width / 2) - (mapManager.numCols / 2);
         clientSprite.position.y = height - mapManager.cellSize * 7;
+    }
+
+
+    revealRoom(mapManager){
+        this.revealRoomTile.pos.x = (mapManager.realTreasureRoomLocation.x * this.mapCellSize + this.mapX) + 32 * 3;
+        this.revealRoomTile.pos.y = (mapManager.realTreasureRoomLocation.y * this.mapCellSize + this.mapY) + 32 * 4;
+        // this.revealRoomTile.pos = createVector(this.realTreasureRoomLocation.x * this.mapCellSize + this.mapX, this.realTreasureRoomLocation.y * this.mapCellSize + this.mapY);
+        this.revealRoomTile.visible == true;
+        this.revealRoomTile.layer = 1000000;
+        // console.log(mapManager.realTreasureRoomLocation.x * this.mapCellSize + this.mapX, this.realTreasureRoomLocation.y * this.mapCellSize)
+        // console.log(this.revealRoomTile);
+
     }
 
     findMapPosition(clientSprite) {
@@ -220,6 +241,7 @@ class MapBuilder {
             this.mapTiles.update();
         }
     }
+
 
     editClickedTile(tileChar, selectedTileIndex) {
         let currTile = this.mapTiles[selectedTileIndex];
