@@ -212,7 +212,7 @@ export default class MapManager {
             3,
             3,
             "static",
-            "./images/textures/cipherPuzzle.png", //temporary
+            "./images/textures/shopIcon.png", 
             false, "shop"));
 
         // Push map overlay area for map revoke area
