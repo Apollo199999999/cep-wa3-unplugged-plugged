@@ -198,7 +198,7 @@ export default class MapManager {
             "./images/textures/cipherPuzzle.png",
             false, "cipherPuzzle"));
 
-        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + (this.centralRoomWidth / 2) - 10,
+        rooms.push(new MapOverlayArea(this.centralRoomLocation.x + 1,
             this.centralRoomLocation.y + this.centralRoomHeight - 4,
             3,
             3,

@@ -129,7 +129,7 @@ function setup() {
     } else {
         playerRole = "dwarf";
     }
-    
+
     camManager = new CameraManager(camera);
     em = new EntityManager();
     mapBuilder = new MapBuilder();
@@ -162,9 +162,15 @@ function setup() {
 
     // Create an iframe to display player stats
     playerStatsFrame = createElement('iframe').size(340, 240);
-    playerStatsFrame.addClass('opacity-65 hover:opacity-100');
+    playerStatsFrame.addClass('opacity-75 hover:opacity-100');
     playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
+
+    // Create an iframe to display what keys to press to change blocks
+    let blockFrame = createElement('iframe').size(200, 250);
+    blockFrame.addClass('opacity-75 hover:opacity-100');
+    blockFrame.position(10, 10);
+    blockFrame.attribute('src', './ui/blockKeyboardDisplay.html');
 }
 
 
@@ -634,10 +640,10 @@ function move() {
         playerSprite.changeAni('idle');
     }
 
-    // Temporary, to allow the players to change the block added
-    if (kb.pressing("1") && allowMapModification) {
+    // To allow the players to change the block added
+    if (kb.pressing("p") && allowMapModification) {
         wallEditorMode = "*";
-    } else if (kb.pressing("2") && allowMapModification) {
+    } else if (kb.pressing("q") && allowMapModification) {
         wallEditorMode = "=";
     } else if (kb.pressing("b") && allowMapModification) { //barrier block
         wallEditorMode = "x";
