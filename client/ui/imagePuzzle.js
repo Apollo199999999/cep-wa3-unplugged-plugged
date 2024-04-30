@@ -85,8 +85,8 @@ function preload() {
 }
 
 function setup() {
-    rows = 1;
-    columns = 2;
+    rows = 8;
+    columns = 8;
     w = puzzleImage.width / columns;
     h = puzzleImage.height / rows;
     createCanvas(800, 500);
@@ -114,7 +114,7 @@ function draw() {
     fill(255);
     noStroke();
     textSize(28);
-    text(numberCorrect, 670, 446);
+    text(numberCorrect, 670, 445);
     for (let i = 0; i < pieces.length; i++) {
         if (solved) {
             // Invoke callback function in sketch.js
