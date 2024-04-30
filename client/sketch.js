@@ -331,6 +331,7 @@ function examineBtnClicked() {
             openOverlayWindow.elt.onload = () => {
                 initialiseUsernames((openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document), em.entities);
             };
+
         } else {
             Swal.fire({
                 title: "Access Denied!",
@@ -338,8 +339,6 @@ function examineBtnClicked() {
                 icon: "error"
             });
         }
-
-
     }
 
 }
