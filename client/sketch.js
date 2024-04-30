@@ -40,31 +40,6 @@ let playerRole;
 
 const socket = io.connect("ws://localhost:8001");
 
-window.onload = () => {
-    // Retrieve IGN and room code from url query
-    const urlParams = new URLSearchParams(
-        window.location.search,
-    );
-
-    localIGN = urlParams.get('ign');
-    Object.freeze(localIGN);
-
-    currentRoomCode = urlParams.get('roomCode');
-    Object.freeze(currentRoomCode);
-
-    // Assign player role (each player has a 0.3 chance of being a saboteur)
-    let random = Math.random();
-    if (random < 0.3) {
-        playerRole = "saboteur";
-    } else {
-        playerRole = "dwarf";
-    }
-
-    // Tell the client to register itself with the server event
-    socket.emit("registerClient", localIGN, playerRole, currentRoomCode);
-};
-
-
 socket.on("buildMap", (mapManager) => {
     playerSprite = createPlayerSprite(localIGN);
     camManager.setTarget(playerSprite);
@@ -135,9 +110,32 @@ socket.on("Log", (msg) => {
 
 function setup() {
     new Canvas("fullscreen");
+
+    // Retrieve IGN and room code from url query
+    const urlParams = new URLSearchParams(
+        window.location.search,
+    );
+
+    localIGN = urlParams.get('ign');
+    Object.freeze(localIGN);
+
+    currentRoomCode = urlParams.get('roomCode');
+    Object.freeze(currentRoomCode);
+
+    // Assign player role (each player has a 0.3 chance of being a saboteur)
+    let random = Math.random();
+    if (random < 0.3) {
+        playerRole = "saboteur";
+    } else {
+        playerRole = "dwarf";
+    }
+    
+    camManager = new CameraManager(camera);
     em = new EntityManager();
     mapBuilder = new MapBuilder();
-    camManager = new CameraManager(camera);
+
+    // Tell the client to register itself with the server event
+    socket.emit("registerClient", localIGN, playerRole, currentRoomCode);
 
     // p5play draws over our draw() loop, so we
     // have to jump thru hoops to draw our text
