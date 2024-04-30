@@ -322,17 +322,26 @@ function examineBtnClicked() {
         openOverlayWindow.attribute('src', './ui/shop.html');
         console.log("Shop opened");
     } else if (overlayArea.type == "mapRevoke") {
-        // Cipher puzzle
-        openOverlayWindow = createElement('iframe').size(800, 520);
-        openOverlayWindow.position((width / 2) - 800 / 2, (height / 2) - 550 / 2);
-        openOverlayWindow.attribute('src', './ui/mapRevocation.html');
+        // Map revoke area puzzle
+        if (playerRole == "dwarf") {
+            openOverlayWindow = createElement('iframe').size(800, 520);
+            openOverlayWindow.position((width / 2) - 800 / 2, (height / 2) - 550 / 2);
+            openOverlayWindow.attribute('src', './ui/mapRevocation.html');
+            // Init usernames in maprevocation window (from mapRevocation.js)
+            openOverlayWindow.elt.onload = () => {
+                initialiseUsernames((openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document), em.entities);
+            };
+        } else {
+            Swal.fire({
+                title: "Access Denied!",
+                text: "Only dwarves can access the map revocation area.",
+                icon: "error"
+            });
+        }
 
-        // Init usernames in maprevocation window (from mapRevocation.js)
-        openOverlayWindow.elt.onload = () => {
-            initialiseUsernames((openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document), em.entities);
-        };
+
     }
-    
+
 }
 
 function getOverlayWindowDocument() {
