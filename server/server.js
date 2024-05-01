@@ -262,7 +262,7 @@ function tick() {
             };
         });
         // Spawn coins at specified rate
-        if (frameCount % Math.round(60 / room.mapManager.coinrate) == 0) {
+        if (frameCount % Math.round(60 / room.mapManager.coinrate) == 0 && room.gameStarted) {
             room.mapManager.generateCoins();
             console.log("generating", frameCount, date.getTime() - lastTime, room.mapManager.coinrate, 60 / room.mapManager.coinrate);
 
