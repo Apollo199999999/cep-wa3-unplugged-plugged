@@ -57,10 +57,21 @@ socket.on("buildMap", (mapManager) => {
 socket.on('gameStarted', () => {
     startGame = true;
     allowMapModification = true;
-    interactionBtn.remove();
-    interactionBtn = undefined;
+    if (interactionBtn != undefined){
+        interactionBtn.remove();
+        interactionBtn = undefined;
+    }
     // add a timer aft the game starts
 });
+
+socket.on("playerRole", (role) => {
+    playerRole = role; 
+    Swal.fire({
+        title: "Role Assigned",
+        text: "You are a " + role + "!",
+        icon: "success"
+    });
+} );
 
 socket.on("updateMap", (tileIndex, tileChar) => {
     mapBuilder.updateClickedTile(tileIndex, tileChar);
@@ -165,11 +176,11 @@ function setup() {
 
     // Assign player role (each player has a 0.3 chance of being a saboteur)
     let random = Math.random();
-    if (random < 0.3) {
-        playerRole = "saboteur";
-    } else {
-        playerRole = "dwarf";
-    }
+    // if (random < 0.3) {
+    //     playerRole = "saboteur";
+    // } else {
+    //     playerRole = "dwarf";
+    // }
 
     camManager = new CameraManager(camera);
     em = new EntityManager();
@@ -278,8 +289,26 @@ function draw() {
             interactionBtn.addClass('flex m-0 my-2 p-4 scale-90 btn btn-primary hover:scale-100 text-center justify-self-center hover:border-2 hover:border-secondary hover:border-offset-2 overflow-visible w-32');
             interactionBtn.position(width / 2 - 64, 100);
             interactionBtn.mouseClicked(() => {
-                socket.emit("startGame");
-            });
+                if (em.entities.size < 3) {
+                    Swal.fire({
+                        title: "Not enough players...",
+                        text: "Not enough players to start the game. Please wait for more players to join.",
+                        icon: "info"
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Game starting...",
+                        text: "The game will start in 5 seconds.",
+                        icon: "success"
+                    });
+                    setTimeout(() => {
+                        socket.emit("startGame");
+                        interactionBtn.remove();
+                        interactionBtn = undefined;
+                    }, 5000);
+            }
+            })
+
         } 
         if (timeRemaining < 60) {
             timerFrame.addClass("border-red-500");
@@ -298,7 +327,7 @@ function draw() {
 
         // Update player stats (from playerStats.js)
         // Uppercase first letter of player role
-        updatePlayerRole((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), playerRole.charAt(0).toUpperCase() + playerRole.slice(1));
+        updatePlayerRole((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), playerRole);
         updateCoinCounter((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), coins);
         updateCooldownLeft((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), mapCooldownLeft);
         updateBarrierBlocks((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), barrierBlocks);

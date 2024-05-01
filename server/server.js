@@ -146,6 +146,25 @@ io.on("connection", (socket) => {
     socket.on("startGame", () => {
         if (client.room == null) return;
         client.room.startGame();
+        let saboteurCount = 0;
+        let playerroles = new Map();
+        while (saboteurCount <= Math.floor(client.room.clients.length * 0.3)) {
+            let randomIndex = Math.floor(Math.random() * client.room.clients.length);
+            if (!playerroles.has(client.room.clients[randomIndex].socket.id)) {
+                    playerroles.set(client.room.clients[randomIndex].socket.id, "Saboteur");
+                    saboteurCount += 1;
+                }
+        }
+        for (let c of client.room.clients) {
+            if (playerroles.has(c.socket.id)) {
+                c.socket.emit("playerRole", playerroles.get(c.socket.id));
+            }
+            else {
+                playerroles.set(c.socket.id, "Dwarf");
+                c.socket.emit("playerRole", "Dwarf");
+            }
+        }
+        console.log(playerroles)
         for (let c of client.room.clients) {
             c.socket.emit("gameStarted");
         }

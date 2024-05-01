@@ -1,8 +1,16 @@
 function updatePlayerRole(frameDocument, playerRole) {
     try {
+        let playerrole;
+        if (playerRole == null) {
+            playerrole = "Not assigned yet";
+            // console.log("Player role is null");
+        } else {
+            playerrole = playerRole.charAt(0).toUpperCase() + playerRole.slice(1);  // Capitalize first letter
+        }
+        
         let roleDisplay = frameDocument.getElementById("playerRoleDisplay");
         // Coins variable is from sktech.js
-        roleDisplay.innerHTML = "Role: " + playerRole.toString();
+        roleDisplay.innerHTML = "Role: " + playerrole.toString();
     } catch { }
 }
 
