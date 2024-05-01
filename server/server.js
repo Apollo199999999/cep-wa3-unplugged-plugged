@@ -148,15 +148,6 @@ io.on("connection", (socket) => {
         }, duration * 1000);
     });
 
-    socket.on("addBarrierBlock", (count) => {
-        if (client.room == null) return;
-        for (let i = 0; i < count; i++) {
-            client.statusconditions.push("addBarrierBlock");
-            setTimeout(() => {
-                client.statusconditions.splice(client.statusconditions.indexOf("addBarrierBlock"), 1); //next frame remove
-            }, 2 * 1000 / 60);
-        }
-    });
 
     socket.on("mutePlayer", (target, id, duration) => {
         console.log("Muting player: " + target + " for " + duration + " seconds" + " by " + client.ign)

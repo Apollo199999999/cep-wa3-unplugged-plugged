@@ -111,12 +111,12 @@ socket.on("realTreasureRoom", (roomIndex) => {
     // console.log(134312)
     txt = "The real treasure room has been revealed...";
     Swal.fire({
-        title:"Revelation: ",
-        text:txt,
+        title: "Revelation: ",
+        text: txt,
         imageUrl: "./images/shop/treasure-chest.png",
-        imageWidth : 200,
-        imageHeight : 200,
-        animation:true
+        imageWidth: 200,
+        imageHeight: 200,
+        animation: true
 
     });
     mapBuilder.revealRoom(roomIndex);
@@ -462,10 +462,10 @@ function buffPurchased(buff, cost) {
     } else if (buff == 2) {
         // barrier block
         socket.emit("useCoins", cost);
-        socket.emit("addBarrierBlock", 1);
+        barrierBlocks++;
+        
     } else if (buff == 3) {
         closeOverlayWindow();
-        console.log("add barrier block");
         openOverlayWindow = createElement('iframe').size(width / 2, height / 2)
         openOverlayWindow.position((width / 2) - (width * 0.5) / 2, (height / 2) - (height * 0.5) / 2)
         openOverlayWindow.attribute('src', './ui/targetSelect.html');
@@ -480,7 +480,7 @@ function buffPurchased(buff, cost) {
         //socket.emit("cooldownReduction", 60);
     } else if (buff = 4) {
         socket.emit("useCoins", cost);
-        socket.emit("revealRoom"); 
+        socket.emit("revealRoom");
     }
 }
 
@@ -543,10 +543,6 @@ function updateStatusConditions() {
     for (let status of statusconditions) {
         if (status == "cooldownReduction") {
             mapCooldownPeriod = 10;
-            //applyCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
-        } else if (status == "addBarrierBlock") {
-            barrierBlocks++;
-            //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
         } else if (status == "mute") {
             if (prevmute == 0) {
                 setInterval(function () {
