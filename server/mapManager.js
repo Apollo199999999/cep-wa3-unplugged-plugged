@@ -74,7 +74,7 @@ export default class MapManager {
         this.coinarr = [];
         this.coinWidth = 30;
         this.coinHeight = 30;
-        this.coinrate = 0.15;
+        this.coinrate = 0.25;
 
         // Limit the total number of coins spawned to avoid lag
         this.maxCoinsSpawned = 5;
