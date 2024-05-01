@@ -147,6 +147,7 @@ socket.on("Log", (msg) => {
 });
 let blockFrame;
 let timerFrame;
+let roomCodeFrame;
 
 function setup() {
     new Canvas("fullscreen");
@@ -181,14 +182,14 @@ function setup() {
     // have to jump thru hoops to draw our text
     // over our sprites...... by making a another
     // sprite. wow.
-    let text_layer = new Sprite();
-    text_layer.visible = false;
-    text_layer.collider = "none";
-    text_layer.update = () => {
-        textAlign(CENTER, CENTER);
-        textSize(32);
-        text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
-    };
+    // let text_layer = new Sprite();
+    // text_layer.visible = false;
+    // text_layer.collider = "none";
+    // text_layer.update = () => {
+    //     textAlign(CENTER, CENTER);
+    //     textSize(32);
+    //     text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
+    // };
 
     let minimap = new Sprite();
     minimap.visible = false;
@@ -217,6 +218,12 @@ function setup() {
     timerFrame.addClass('opacity-80 hover:opacity-100 rounded-lg border-2 transition ease-in-out border-primary bg-gray-800');
     timerFrame.position(width / 2 - 100, -5);
     timerFrame.attribute('src', './ui/timer.html');
+
+    // Create an iframe to display the room code
+    roomCodeFrame = createElement('iframe').size(200, 50);
+    roomCodeFrame.addClass('opacity-75 hover:opacity-100 rounded-lg border-2 transition ease-in-out border-primary bg-gray-800');
+    roomCodeFrame.position(-10, height - 30);
+    roomCodeFrame.attribute('src', './ui/roomCodeDisplay.html');
 
 }
 
@@ -311,6 +318,7 @@ function draw() {
         updateCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), cooldownReductionDuration);
         updateMuteCondition((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), muted, muted > 0);
         updateTimer((timerFrame.elt.contentDocument || timerFrame.elt.contentWindow.document), timeRemaining);
+        updateRoomCode((roomCodeFrame.elt.contentDocument || roomCodeFrame.elt.contentWindow.document), currentRoomCode, startGame);
 
         updateStatusConditions();
         highlightBlockDisplay(blockFrame.elt.contentDocument || blockFrame.elt.contentWindow.document, wallEditorMode);

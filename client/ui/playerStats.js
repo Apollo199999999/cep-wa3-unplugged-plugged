@@ -96,3 +96,14 @@ function updateTimer(frameDocument, timer) {
         
     } catch { }
 }
+
+function updateRoomCode(frameDocument, roomCode, isGameStarted) {
+    // Try catch because draw() will sometimes call before document has loaded
+    try {
+        let roomCodeElement = frameDocument.getElementById("roomcode");
+        roomCodeElement.innerHTML = "Room Code: " + roomCode;
+        if (isGameStarted) {
+            roomCodeElement.innerHTML = "Game Started";
+        }
+    } catch { }
+}
