@@ -77,7 +77,7 @@ export default class MapManager {
         this.coinrate = 0.25;
 
         // Limit the total number of coins spawned to avoid lag
-        this.maxCoinsSpawned = 5;
+        this.maxCoinsSpawned = 6;
     }
 
     generateMapWithCenterRoom(mapWidth, mapHeight, treasureRoomWidth, treasureRoomHeight) {
