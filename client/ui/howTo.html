@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dracula">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEP WA3</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+    <!-- client backend -->
+    <script src="mapRevocation.js"></script>
+</head>
+
+<body>
+    <div class="flex flex-col absolute z-[999] overflow-hidden bg-base-100 rounded-md border border-primary"
+        style="width: 800px; height: 520px">
+
+        <!-- Titlebar -->
+        <div class="flex bg-base-200 rounded-t-md text-lg w-full h-12 p-2 items-center">
+            <button class="btn btn-square btn-small" onclick="exit()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <p class="text-xl ml-2 font-bold">How to play</p>
+        </div>
+
+        <div class="p-4 overflow-y-auto">
+            <p>If you suspect that a player is a Saboteur, you can mute them for 7 minutes here (assuming that they aren't already muted).</p>
+
+            <div class="mt-4" id="user-radio-buttons">
+                <label class="label cursor-pointer">
+                    <span class="label-text">User 1</span>
+                    <input type="radio" name="usernames-radio" class="radio radio-primary"/>
+                </label>
+                <label class="label cursor-pointer">
+                    <span class="label-text">User 1</span>
+                    <input type="radio" name="usernames-radio" class="radio radio-primary"/>
+                </label>
+                <label class="label cursor-pointer">
+                    <span class="label-text">User 1</span>
+                    <input type="radio" name="usernames-radio" class="radio radio-primary"/>
+                </label>
+            </div>
+
+            <button class="mt-4 btn btn-primary" onclick="revokePlayer()">Revoke!</button>
+        </div>
+    </div>
+</body>
+
+</html>

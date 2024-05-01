@@ -182,7 +182,7 @@ function setup() {
     playerStatsFrame.attribute('src', './ui/playerStats.html');
 
     // Create an iframe to display what keys to press to change blocks
-    blockFrame = createElement('iframe').size(200, 300);
+    blockFrame = createElement('iframe').size(220, 330);
     blockFrame.addClass('opacity-75 hover:opacity-100');
     blockFrame.position(10, 10);
     blockFrame.attribute('src', './ui/blockKeyboardDisplay.html');
@@ -302,6 +302,7 @@ function mouseReleased() {
     }
 }
 
+
 function closeOverlayWindow() {
     if (openOverlayWindow != undefined) {
         openOverlayWindow.remove();
@@ -342,9 +343,8 @@ function examineBtnClicked() {
         openOverlayWindow = createElement('iframe').size(width * 0.8, height * 0.8);
         openOverlayWindow.position((width / 2) - (width * 0.8) / 2, (height / 2) - (height * 0.8) / 2);
         openOverlayWindow.attribute('src', './ui/shop.html');
-        console.log("Shop opened");
     } else if (overlayArea.type == "mapRevoke") {
-        // Map revoke area puzzle
+        // Map revoke area 
         if (playerRole == "dwarf") {
             openOverlayWindow = createElement('iframe').size(800, 520);
             openOverlayWindow.position((width / 2) - 800 / 2, (height / 2) - 550 / 2);
