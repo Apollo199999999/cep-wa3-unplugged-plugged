@@ -66,7 +66,7 @@ class MapBuilder {
         this.revealRoomTile.pos.y = 400
         this.revealRoomTile.collider = 'none';
         // this.revealRoomTile.layer = 1000000;
-        this.revealRoomTile.visible = true;
+        this.revealRoomTile.visible = false;
         this.revealRoomTile.img = "./images/textures/foundtreasureroom.png"
 
     }
@@ -82,7 +82,7 @@ class MapBuilder {
         this.revealRoomTile.pos.x = (mapManager.realTreasureRoomLocation.x * this.mapCellSize + this.mapX) + 32 * 3;
         this.revealRoomTile.pos.y = (mapManager.realTreasureRoomLocation.y * this.mapCellSize + this.mapY) + 32 * 4;
         // this.revealRoomTile.pos = createVector(this.realTreasureRoomLocation.x * this.mapCellSize + this.mapX, this.realTreasureRoomLocation.y * this.mapCellSize + this.mapY);
-        this.revealRoomTile.visible == true;
+        this.revealRoomTile.visible = true;
         this.revealRoomTile.layer = 1000000;
         // console.log(mapManager.realTreasureRoomLocation.x * this.mapCellSize + this.mapX, this.realTreasureRoomLocation.y * this.mapCellSize)
         // console.log(this.revealRoomTile);

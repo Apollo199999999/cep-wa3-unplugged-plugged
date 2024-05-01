@@ -110,7 +110,7 @@ socket.on("realTreasureRoom", (roomIndex) => {
         text:txt,
         imageUrl: "./images/shop/treasure-chest.png",
         imageWidth : 200,
-        imageHeigh : 200,
+        imageHeight : 200,
         animation:true
 
     });
@@ -121,7 +121,7 @@ socket.on("realTreasureRoom", (roomIndex) => {
 socket.on("Log", (msg) => {
     console.log(msg, "logger");
 });
-
+let blockFrame;
 
 function setup() {
     new Canvas("fullscreen");
@@ -182,7 +182,7 @@ function setup() {
     playerStatsFrame.attribute('src', './ui/playerStats.html');
 
     // Create an iframe to display what keys to press to change blocks
-    let blockFrame = createElement('iframe').size(200, 250);
+    blockFrame = createElement('iframe').size(200, 300);
     blockFrame.addClass('opacity-75 hover:opacity-100');
     blockFrame.position(10, 10);
     blockFrame.attribute('src', './ui/blockKeyboardDisplay.html');
@@ -204,6 +204,8 @@ function selectTile() {
 
     selectedTileIndex = Math.round(selectedTileIndex);
 }
+
+
 
 let interactionBtn;
 function draw() {
@@ -255,6 +257,7 @@ function draw() {
         updateMuteCondition((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), muted, muted > 0);
 
         updateStatusConditions();
+        highlightBlockDisplay(blockFrame.elt.contentDocument || blockFrame.elt.contentWindow.document, wallEditorMode);
     }
 }
 
