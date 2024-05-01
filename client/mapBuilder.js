@@ -341,7 +341,7 @@ class MapBuilder {
             let h = (this.realTreasureRoomLocation.height - 2) * this.mapCellSize;
 
             if (playerSprite.pos.x > x && playerSprite.pos.x < x + w && playerSprite.pos.y > y && playerSprite.pos.y < y + h) {
-                socket.emit("gameOver");
+                socket.emit("gameOver", "dwarf");
             }
         }
     }

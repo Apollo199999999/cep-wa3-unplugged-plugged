@@ -84,13 +84,8 @@ socket.on("removeClient", (id) => {
     }
 });
 
-socket.on("gameOver", (ownId, winId) => {
-    if (ownId == winId) {
-        window.location.href = "gameOver.html?player=" + localIGN;
-    }
-    else {
-        window.location.href = "gameOver.html?player=" + em.get(id).ign;
-    }
+socket.on("gameOver", (winTeam) => {
+    window.location.href = "gameOver.html?winTeam=" + winTeam;
 });
 
 socket.on("setMuteDuration", (duration) => {
