@@ -95,6 +95,10 @@ io.on("connection", (socket) => {
         for (let i = 0; i < rooms.length; i++) {
             if (rooms[i].id == roomCode) {
                 // Allow the client to join the existing room
+                if (rooms[i].gameStarted) {
+                    socket.emit("gameAlreadyStarted");
+                    return;
+                }
                 roomExists = true;
                 rooms[i].addClient(client);
             }
