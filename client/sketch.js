@@ -278,7 +278,7 @@ function draw() {
             timerFrame.addClass("border-red-500 border-2 border-offset-2");
         } else {
             if (timerFrame.hasClass("border-red-500")) {
-                timerFrame.removeClass("bordere=-red-500 border-2 border-offset-2");
+                timerFrame.removeClass("border-red-500 border-2 border-offset-2");
             }
         }
 
