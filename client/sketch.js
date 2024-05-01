@@ -64,6 +64,38 @@ socket.on('gameStarted', () => {
     // add a timer aft the game starts
 });
 
+socket.on("startingGameSoon", () => {
+    console.log("Game starting soon...");
+    interactionBtn.remove();
+        interactionBtn = undefined;
+        Swal.fire({
+            title: 'Game starting...',
+            html: 'Game will start in 5 seconds.',
+            timer: 5000, // milliseconds - 10 seconds for the example
+            timerProgressBar: true,
+            icon: 'success',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+                const content = Swal.getHtmlContainer();
+                const timerInterval = setInterval(() => {
+                    // Calculate remaining time
+                    const timeLeft = Swal.getTimerLeft();
+                    if (timeLeft !== null) {
+                        content.textContent = `Time remaining: ${Math.ceil(timeLeft / 1000)} seconds`;
+                    } else {
+                        clearInterval(timerInterval);
+                    }
+                }, 100);
+            },
+        });
+        setTimeout(() => {
+            socket.emit("startGame");
+            
+        }, 5000);
+});
+;
+
 socket.on("playerRole", (role) => {
     playerRole = role; 
     Swal.fire({
@@ -296,15 +328,33 @@ function draw() {
                         icon: "info"
                     });
                 } else {
+                    socket.emit("startingGameSoon");
+                    interactionBtn.remove();
+                    interactionBtn = undefined;
                     Swal.fire({
-                        title: "Game starting...",
-                        text: "The game will start in 5 seconds.",
-                        icon: "success"
+                        title: 'Game starting...',
+                        html: 'Game will start in 5 seconds.',
+                        timer: 5000, // milliseconds - 10 seconds for the example
+                        timerProgressBar: true,
+                        icon: 'success',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            const content = Swal.getHtmlContainer();
+                            const timerInterval = setInterval(() => {
+                                // Calculate remaining time
+                                const timeLeft = Swal.getTimerLeft();
+                                if (timeLeft !== null) {
+                                    content.textContent = `Time remaining: ${Math.ceil(timeLeft / 1000)} seconds`;
+                                } else {
+                                    clearInterval(timerInterval);
+                                }
+                            }, 100);
+                        },
                     });
                     setTimeout(() => {
                         socket.emit("startGame");
-                        interactionBtn.remove();
-                        interactionBtn = undefined;
+                        
                     }, 5000);
             }
             })

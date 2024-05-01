@@ -143,6 +143,14 @@ io.on("connection", (socket) => {
 
     });
 
+    socket.on("startingGameSoon", () => {   
+        if (client.room == null) return;
+        for (let c of client.room.clients) {
+            console.log("Starting game soon");
+            c.socket.emit("startingGameSoon");
+        }
+    });
+
     socket.on("startGame", () => {
         if (client.room == null) return;
         client.room.startGame();
