@@ -45,26 +45,17 @@ class Room {
 
     removeClient(c) {
         if (!this.clients.includes(c)) {
-            throw Error(`No client ${c.socket.id} in room`);
+            console.log(`No client ${c.socket.id} in room`);
         }
-        this.clients.splice(this.clients.indexOf(c), 1);
-        if (this.clients.length === 0) {
-            rooms.splice(rooms.indexOf(this), 1);
+        else {
+            this.clients.splice(this.clients.indexOf(c), 1);
+            if (this.clients.length === 0) {
+                rooms.splice(rooms.indexOf(this), 1);
+            }
         }
     }
     startGame() {
         this.gameStarted = true;
-        let timer = setInterval(() => {
-            this.timer -= 1;
-            if (this.timer == 0) {
-                for (let c of this.clients) {
-                    c.socket.emit("gameOver", "Saboteurs");
-                    clients.delete(c)
-                }
-                clearInterval(timer);
-                rooms.splice(rooms.indexOf(this), 1);
-            }
-        } , 1000);
     }
 }
 
@@ -143,7 +134,7 @@ io.on("connection", (socket) => {
 
     });
 
-    socket.on("startingGameSoon", () => {   
+    socket.on("startingGameSoon", () => {
         if (client.room == null) return;
         for (let c of client.room.clients) {
             console.log("Starting game soon");
@@ -159,9 +150,9 @@ io.on("connection", (socket) => {
         while (saboteurCount <= Math.floor(client.room.clients.length * 0.3)) {
             let randomIndex = Math.floor(Math.random() * client.room.clients.length);
             if (!playerroles.has(client.room.clients[randomIndex].socket.id)) {
-                    playerroles.set(client.room.clients[randomIndex].socket.id, "Saboteur");
-                    saboteurCount += 1;
-                }
+                playerroles.set(client.room.clients[randomIndex].socket.id, "Saboteur");
+                saboteurCount += 1;
+            }
         }
         for (let c of client.room.clients) {
             if (playerroles.has(c.socket.id)) {
@@ -235,7 +226,7 @@ io.on("connection", (socket) => {
         console.log(client.room.mapManager.realTreasureRoomIndex)
         client.socket.emit("realTreasureRoom", client.room.mapManager);
     });
-    
+
 
     socket.on("generateCoins", () => {
         if (client.room == null) return;
@@ -278,6 +269,17 @@ io.on("connection", (socket) => {
 function tick() {
     frameCount += 1;
     for (let room of rooms) {
+        if (room.gameStarted == true && frameCount % 60 == 0) {
+            room.timer -= 1;
+            if (room.timer == 0) {
+                for (let c of room.clients) {
+                    c.socket.emit("gameOver", "Saboteurs");
+                    room.removeClient(c);
+                }
+                continue;
+            }
+        }
+
         let allData = [...room.clients].map((c) => {
             return {
                 position: c.position,
@@ -288,6 +290,7 @@ function tick() {
                 timer: room.timer
             };
         });
+
         // Spawn coins at specified rate
         if (frameCount % Math.round(60 / room.mapManager.coinrate) == 0 && room.gameStarted) {
             room.mapManager.generateCoins();

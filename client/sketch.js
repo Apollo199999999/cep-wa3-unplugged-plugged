@@ -40,7 +40,8 @@ let mapCooldownTimer;
 // Player role, either saboteur or dwarf
 let playerRole;
 
-const socket = io.connect("ws://localhost:8001");
+// const socket = io.connect("ws://localhost:8001");
+const socket = io.connect("https://cep-wa3-unplugged-plugged-server.onrender.com");
 
 socket.on("buildMap", (mapManager) => {
     playerSprite = createPlayerSprite(localIGN);
