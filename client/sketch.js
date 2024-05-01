@@ -258,7 +258,7 @@ function draw() {
         // Check if player is near any usable map overlay, and if so, show a button for the user to interact with the area
         if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == true && interactionBtn == undefined && startGame == true) {
             interactionBtn = createButton('Examine');
-            interactionBtn.addClass('btn btn-primary w-32');
+            interactionBtn.addClass('flex m-0 my-2 p-4 scale-90 btn btn-primary hover:scale-100 text-center justify-self-center hover:border-2 hover:border-secondary hover:border-offset-2 overflow-visible w-32   ');
             interactionBtn.position(width / 2 - 64, height - 100);
             interactionBtn.mouseClicked(examineBtnClicked);
         }
@@ -268,7 +268,7 @@ function draw() {
         }
         if (startGame == false && interactionBtn == undefined) {
             interactionBtn = createButton('Start Game');
-            interactionBtn.addClass('btn btn-primary w-32');
+            interactionBtn.addClass('flex m-0 my-2 p-4 scale-90 btn btn-primary hover:scale-100 text-center justify-self-center hover:border-2 hover:border-secondary hover:border-offset-2 overflow-visible w-32');
             interactionBtn.position(width / 2 - 64, 100);
             interactionBtn.mouseClicked(() => {
                 socket.emit("startGame");
