@@ -320,7 +320,7 @@ function draw() {
                 if (em.entities.size < 3) {
                     Swal.fire({
                         title: "Not enough players...",
-                        text: "Not enough players to start the game. Please wait for more players to join.",
+                        text: "Not enough players to start the game. A minimum of 4 players are needed for the game to start. Please wait for more players to join.",
                         icon: "info"
                     });
                 } else {
