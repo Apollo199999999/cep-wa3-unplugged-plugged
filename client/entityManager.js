@@ -67,7 +67,7 @@ function createPlayerSprite(name) {
     // Manually draw the ign by overriding the draw function
     // Taking reference from https://github.com/quinton-ashley/p5play/blob/main/p5play.js
     playerSprite.draw = () => {
-        fill("black");
+        fill("white");
         textAlign(CENTER, CENTER);
         textSize(16);
         text(name, 0, -35);

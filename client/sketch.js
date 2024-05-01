@@ -202,13 +202,13 @@ function setup() {
     playerMapPos = createVector();
 
     // Create an iframe to display player stats
-    playerStatsFrame = createElement('iframe').size(340, 240);
+    playerStatsFrame = createElement('iframe').size(330, 230);
     playerStatsFrame.addClass('opacity-75 hover:opacity-100 transition ease-in-out rounded-md');
     playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
 
     // Create an iframe to display what keys to press to change blocks
-    blockFrame = createElement('iframe').size(220, 350);
+    blockFrame = createElement('iframe').size(220, 348);
     blockFrame.addClass('opacity-75 hover:opacity-100 overflow-visible rounded-md transition ease-in-out');
     blockFrame.addClass('overflow-visible')
     blockFrame.position(10, 10);
@@ -293,10 +293,7 @@ function draw() {
             interactionBtn.mouseClicked(() => {
                 socket.emit("startGame");
             });
-        } else if (startGame == true && interactionBtn != undefined) {
-            // interactionBtn.remove();
-            // interactionBtn = undefined;
-        }
+        } 
         if (timeRemaining < 60) {
             timerFrame.addClass("border-red-500");
             timerFrame.addClass("border-2");
@@ -307,6 +304,9 @@ function draw() {
                 // timerFrame.removeClass("border-2");
                 timerFrame.removeClass("border-offset-2")
             }
+        }
+        if (startGame){
+            roomCodeFrame.addClass("opacity-50");
         }
 
         // Update player stats (from playerStats.js)
