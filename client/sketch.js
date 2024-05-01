@@ -57,6 +57,8 @@ socket.on("buildMap", (mapManager) => {
 socket.on('gameStarted', () => {
     startGame = true;
     allowMapModification = true;
+    interactionBtn.remove();
+    interactionBtn = undefined;
     // add a timer aft the game starts
 });
 
@@ -187,13 +189,14 @@ function setup() {
 
     // Create an iframe to display player stats
     playerStatsFrame = createElement('iframe').size(340, 240);
-    playerStatsFrame.addClass('opacity-75 hover:opacity-100');
+    playerStatsFrame.addClass('opacity-75 hover:opacity-100 transition ease-in-out rounded-md');
     playerStatsFrame.position(width - 10 - playerStatsFrame.width, 10);
     playerStatsFrame.attribute('src', './ui/playerStats.html');
 
     // Create an iframe to display what keys to press to change blocks
-    blockFrame = createElement('iframe').size(220, 330);
-    blockFrame.addClass('opacity-75 hover:opacity-100');
+    blockFrame = createElement('iframe').size(220, 350);
+    blockFrame.addClass('opacity-75 hover:opacity-100 overflow-visible rounded-md transition ease-in-out');
+    blockFrame.addClass('overflow-visible')
     blockFrame.position(10, 10);
     blockFrame.attribute('src', './ui/blockKeyboardDisplay.html');
 
@@ -271,8 +274,8 @@ function draw() {
                 socket.emit("startGame");
             });
         } else if (startGame == true && interactionBtn != undefined) {
-            interactionBtn.remove();
-            interactionBtn = undefined;
+            // interactionBtn.remove();
+            // interactionBtn = undefined;
         }
         if (timeRemaining < 60) {
             timerFrame.addClass("border-red-500");
