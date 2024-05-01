@@ -89,10 +89,6 @@ socket.on("startingGameSoon", () => {
                 }, 100);
             },
         });
-        setTimeout(() => {
-            socket.emit("startGame");
-            
-        }, 5000);
 });
 ;
 
