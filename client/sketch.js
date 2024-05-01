@@ -202,14 +202,6 @@ function setup() {
     currentRoomCode = urlParams.get('roomCode');
     Object.freeze(currentRoomCode);
 
-    // Assign player role (each player has a 0.3 chance of being a saboteur)
-    let random = Math.random();
-    // if (random < 0.3) {
-    //     playerRole = "saboteur";
-    // } else {
-    //     playerRole = "dwarf";
-    // }
-
     camManager = new CameraManager(camera);
     em = new EntityManager();
     mapBuilder = new MapBuilder();
