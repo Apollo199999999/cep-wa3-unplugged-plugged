@@ -5,10 +5,12 @@ let camManager;
 let currentRoomCode = null;
 let localIGN = null;
 let coins = 0; // for now, coin addition is done on the server side
-let allowMapModification = true;
+let allowMapModification = false;
 let wallEditorMode = '-'; //for future use
 let breakDir = 0; //0 for up, 1 for left, 2 for down, 3 for right
 let playerMapPos;
+let startGame = false;
+let timeRemaining = 56;
 
 
 let statusconditions = [];
@@ -52,6 +54,12 @@ socket.on("buildMap", (mapManager) => {
     setupComplete = true;
 });
 
+socket.on('gameStarted', () => {
+    startGame = true;
+    allowMapModification = true;
+    // add a timer aft the game starts
+});
+
 socket.on("updateMap", (tileIndex, tileChar) => {
     mapBuilder.updateClickedTile(tileIndex, tileChar);
     mapBuilder.generateMapDiagram();
@@ -66,6 +74,7 @@ socket.on("playerDataUpdate", (id, playerData) => {
         if (data.id === id) {
             coins = data.coins;
             statusconditions = data.statusconditions;
+            timeRemaining = data.timer;
             continue;
         };
         if (!em.exists(data.id)) {
@@ -122,6 +131,7 @@ socket.on("Log", (msg) => {
     console.log(msg, "logger");
 });
 let blockFrame;
+let timerFrame;
 
 function setup() {
     new Canvas("fullscreen");
@@ -186,6 +196,12 @@ function setup() {
     blockFrame.addClass('opacity-75 hover:opacity-100');
     blockFrame.position(10, 10);
     blockFrame.attribute('src', './ui/blockKeyboardDisplay.html');
+
+    timerFrame = createElement('iframe').size(200, 60);
+    timerFrame.addClass('opacity-80 hover:opacity-100 rounded-lg border-2 border-primary bg-gray-800');
+    timerFrame.position(width / 2 - 100, -5);
+    timerFrame.attribute('src', './ui/timer.html');
+
 }
 
 
@@ -214,6 +230,7 @@ function draw() {
         move();
         interpolateOtherPlayers();
         camManager.update();
+        console.log(timeRemaining)
         socket.emit("position", playerSprite.pos.x, playerSprite.pos.y);
 
         // Prevent playersprite from becoming rotated on collision
@@ -236,7 +253,7 @@ function draw() {
         mapBuilder.checkPlayerInTreasureRoom(playerSprite);
 
         // Check if player is near any usable map overlay, and if so, show a button for the user to interact with the area
-        if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == true && interactionBtn == undefined) {
+        if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == true && interactionBtn == undefined && startGame == true) {
             interactionBtn = createButton('Examine');
             interactionBtn.addClass('btn btn-primary w-32');
             interactionBtn.position(width / 2 - 64, height - 100);
@@ -245,6 +262,24 @@ function draw() {
         else if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == false && interactionBtn != undefined) {
             interactionBtn.remove();
             interactionBtn = undefined;
+        }
+        if (startGame == false && interactionBtn == undefined) {
+            interactionBtn = createButton('Start Game');
+            interactionBtn.addClass('btn btn-primary w-32');
+            interactionBtn.position(width / 2 - 64, 100);
+            interactionBtn.mouseClicked(() => {
+                socket.emit("startGame");
+            });
+        } else if (startGame == true && interactionBtn != undefined) {
+            interactionBtn.remove();
+            interactionBtn = undefined;
+        }
+        if (timeRemaining < 60) {
+            timerFrame.addClass("border-red-500 border-2 border-offset-2");
+        } else {
+            if (timerFrame.hasClass("border-red-500")) {
+                timerFrame.removeClass("border-red-500 border-2 border-offset-2");
+            }
         }
 
         // Update player stats (from playerStats.js)
@@ -255,6 +290,7 @@ function draw() {
         updateBarrierBlocks((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), barrierBlocks);
         updateCooldownReduction((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), cooldownReductionDuration);
         updateMuteCondition((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document), muted, muted > 0);
+        updateTimer((timerFrame.elt.contentDocument || timerFrame.elt.contentWindow.document), timeRemaining);
 
         updateStatusConditions();
         highlightBlockDisplay(blockFrame.elt.contentDocument || blockFrame.elt.contentWindow.document, wallEditorMode);

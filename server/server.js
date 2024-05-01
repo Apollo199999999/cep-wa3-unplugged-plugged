@@ -31,6 +31,8 @@ class Room {
         this.clients = [];
         this.id = id;
         this.mapManager = new MapManager();
+        this.gameStarted = false;
+        this.timer = 1200;
     }
 
     addClient(c) {
@@ -49,6 +51,20 @@ class Room {
         if (this.clients.length === 0) {
             rooms.splice(rooms.indexOf(this), 1);
         }
+    }
+    startGame() {
+        this.gameStarted = true;
+        let timer = setInterval(() => {
+            this.timer -= 1;
+            if (this.timer == 0) {
+                for (let c of this.clients) {
+                    c.socket.emit("gameOver", "Saboteurs");
+                    clients.delete(c)
+                }
+                clearInterval(timer);
+                rooms.splice(rooms.indexOf(this), 1);
+            }
+        } , 1000);
     }
 }
 
@@ -121,6 +137,14 @@ io.on("connection", (socket) => {
             }
         }
 
+    });
+
+    socket.on("startGame", () => {
+        if (client.room == null) return;
+        client.room.startGame();
+        for (let c of client.room.clients) {
+            c.socket.emit("gameStarted");
+        }
     });
 
     socket.on("useCoins", (amount) => {
@@ -230,6 +254,7 @@ function tick() {
                 ign: c.ign,
                 coins: c.coins,
                 statusconditions: c.statusconditions,
+                timer: room.timer
             };
         });
         // Spawn coins at specified rate
