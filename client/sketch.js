@@ -102,7 +102,7 @@ socket.on("playerAlreadyMuted", (name) => {
     });
 });
 
-socket.on("realTreasureRoom", (roomIndex) => {
+socket.on("realTreasureRoom", (mapManager) => {
     // console.log(134312)
     txt = "The real treasure room has been revealed...";
     Swal.fire({
@@ -114,7 +114,7 @@ socket.on("realTreasureRoom", (roomIndex) => {
         animation: true
 
     });
-    mapBuilder.revealRoom(roomIndex);
+    mapBuilder.revealRoom(mapManager);
 })
 
 // used as a replacement for console.log on server side to log messages to client

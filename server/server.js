@@ -21,7 +21,7 @@ function Client(socket) {
     this.room = null;
     this.playerRole = null;
     this.position = { x: 0, y: 0 };
-    this.coins = 0;
+    this.coins = 100;
     this.statusconditions = [];
 }
 
@@ -203,7 +203,7 @@ io.on("connection", (socket) => {
 
     socket.on("gameOver", (winTeam) => {
         for (let c of client.room.clients) {
-            c.socket.emit("gameOver", "dwarf");
+            c.socket.emit("gameOver", winTeam);
             clients.delete(c)
         }
 

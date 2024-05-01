@@ -59,6 +59,7 @@ class MapBuilder {
         this.selectedtile.strokeWeight = 2;
         this.selectedtile.img = "./images/textures/selected.png";
 
+        // Related to revealing the real treasure room
         this.revealRoomTile = new Sprite();
         this.revealRoomTile.w = 5 * 32;
         this.revealRoomTile.h = 7 * 32;
@@ -68,6 +69,8 @@ class MapBuilder {
         // this.revealRoomTile.layer = 1000000;
         this.revealRoomTile.visible = false;
         this.revealRoomTile.img = "./images/textures/foundtreasureroom.png"
+
+        this.miniMapShowTreasure = false;
 
     }
 
@@ -81,11 +84,12 @@ class MapBuilder {
     revealRoom(mapManager){
         this.revealRoomTile.pos.x = (mapManager.realTreasureRoomLocation.x * this.mapCellSize + this.mapX) + 32 * 3;
         this.revealRoomTile.pos.y = (mapManager.realTreasureRoomLocation.y * this.mapCellSize + this.mapY) + 32 * 4;
-        // this.revealRoomTile.pos = createVector(this.realTreasureRoomLocation.x * this.mapCellSize + this.mapX, this.realTreasureRoomLocation.y * this.mapCellSize + this.mapY);
         this.revealRoomTile.visible = true;
         this.revealRoomTile.layer = 1000000;
-        // console.log(mapManager.realTreasureRoomLocation.x * this.mapCellSize + this.mapX, this.realTreasureRoomLocation.y * this.mapCellSize)
-        // console.log(this.revealRoomTile);
+
+        // Show real treasure room on the minimap
+        this.miniMapShowTreasure = true;
+        this.generateMapDiagram();
 
     }
 
@@ -272,6 +276,16 @@ class MapBuilder {
             let currTile = this.mapTiles[i];
             this.mapDiagram.fill(currTile.color);
             this.mapDiagram.rect((colNum) * this.w, rowNum * this.h, this.w, this.h);
+        }
+
+        if (this.miniMapShowTreasure == true) {
+            // Display the location of the real treasure room
+            for (let x = this.realTreasureRoomLocation.x + 1; x < this.realTreasureRoomLocation.x + this.realTreasureRoomLocation.width - 1; x++) {
+                for (let y = this.realTreasureRoomLocation.y + 1; y < this.realTreasureRoomLocation.y + this.realTreasureRoomLocation.height - 1; y++) {
+                    this.mapDiagram.fill("aqua");
+                    this.mapDiagram.rect(x * this.w, y * this.h, this.w, this.h);
+                }
+            }
         }
         pop();
     }
