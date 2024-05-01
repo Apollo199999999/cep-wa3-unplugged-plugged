@@ -275,12 +275,14 @@ function draw() {
             interactionBtn = undefined;
         }
         if (timeRemaining < 60) {
-            timerFrame.addClass("border-red-500 border-offset-2");
+            timerFrame.addClass("border-red-500");
+            timerFrame.addClass("border-2");
+            timerFrame.addClass("border-offset-2");
         } else {
             if (timerFrame.hasClass("border-red-500")) {
                 timerFrame.removeClass("border-red-500");
-                // timerFrame.removeClass('border-2');
-                timerFrame.removeClass('border-offset-2');
+                // timerFrame.removeClass("border-2");
+                timerFrame.removeClass("border-offset-2")
             }
         }
 

@@ -19,7 +19,7 @@
 
 <body>
     <div class="flex flex-col absolute z-[999] overflow-hidden bg-base-100 rounded-md border border-primary"
-        style="width: 800px; height: 520px">
+        style="width: 80vw; height: 80vh">
 
         <!-- Titlebar -->
         <div class="flex bg-base-200 rounded-t-md text-lg w-full h-12 p-2 items-center">
@@ -33,24 +33,65 @@
         </div>
 
         <div class="p-4 overflow-y-auto">
-            <p>If you suspect that a player is a Saboteur, you can mute them for 7 minutes here (assuming that they aren't already muted).</p>
+            <p class="text-lg font-bold mb-2">Welcome to Saboteur Escape Room!</p>
+            <h1 class="text-lg font-semibold">1. Overview: </h1>
+            <ul class="list-disc list-outside pl-4 mb-2">
+                <li>There are two player roles in this game: Saboteurs, and Dwarves.</li>
+                <li>Each player has been randomly assigned a role, and they do not know the roles of other players.</li>
+                <li>In this game, there are four rooms in total - the main room, where players spawn, and three treasure
+                    rooms.</li>
+                <li>Only one of the three treasure rooms are real.</li>
+                <li>The objective of the Dwarves is to reach the real treasure room before time runs out.</li>
+                <li>The objective of the Saboteurs is to prevent the Dwarves from reaching the real treasure room before
+                    time runs out.</li>
+                <li>If time runs out before the real treasure room is found, the Saboteurs win.</li>
+                <li>If any player finds the real treasure room, regardless if the player is a Dwarf or a Saboteur, the
+                    game automatically ends, and the Dwarves win.</li>
+            </ul>
 
-            <div class="mt-4" id="user-radio-buttons">
-                <label class="label cursor-pointer">
-                    <span class="label-text">User 1</span>
-                    <input type="radio" name="usernames-radio" class="radio radio-primary"/>
-                </label>
-                <label class="label cursor-pointer">
-                    <span class="label-text">User 1</span>
-                    <input type="radio" name="usernames-radio" class="radio radio-primary"/>
-                </label>
-                <label class="label cursor-pointer">
-                    <span class="label-text">User 1</span>
-                    <input type="radio" name="usernames-radio" class="radio radio-primary"/>
-                </label>
-            </div>
+            <h1 class="text-lg font-semibold">2. Gameplay: </h1>
 
-            <button class="mt-4 btn btn-primary" onclick="revokePlayer()">Revoke!</button>
+            <h1 class="text-md font-semibold">Basic Gameplay: </h1>
+            <ul class="list-disc list-outside pl-4 mb-2">
+                <li>During the game, both Saboteurs and Dwarves can place the following wall blocks, stone blocks,
+                    path blocks, and boundary blocks.</li>
+                <li class="mt-1">
+                    <img src="../images/textures/wall.png" class="float-left h-6 w-6 mr-2" />
+                    <p>Wall blocks:
+                        These blocks
+                        make up the walls of rooms, and can be broken by placing a path block on it.</p>
+                </li>
+                <li class="mt-1">
+                    <img src="../images/textures/path.png" class="float-left h-6 w-6 mr-2" />
+                    <p>Stone blocks:
+                        These blocks
+                        make up the area between rooms, and can be broken by placing a path block on it.</p>
+                </li>
+
+                <li class="mt-1">
+                    <img src="../images/textures/empty.png" class="float-left h-6 w-6 mr-2" />
+                    <p>Path blocks:
+                        These blocks can be used to dig paths through the stone and wall blocks, as players are allowed
+                        to walk on top of these blocks. These blocks make up the floor of the main room.</p>
+                </li>
+
+                <li class="mt-1">
+                    <img src="../images/textures/boundary.png" class="float-left h-6 w-6 mr-2" />
+                    <p>Boundary blocks:
+                        These blocks can be placed by both Saboteurs and Dwarves, but they can never be broken. For this
+                        reason, players can only place boundary blocks after purchasing boundary blocks at the shop
+                        using coins.</p>
+                </li>
+            </ul>
+
+            <h1 class="text-md font-semibold">The shop: </h1>
+            <ul class="list-disc list-outside pl-4 mb-2">
+                <li>During the game, players can purchase abilities and buffs through the shop, which can be seen below:
+                    <img src="../images/textures/boundary.png" class="float-left h-6 w-6 mr-2" />
+                </li>
+                
+            </ul>
+
         </div>
     </div>
 </body>
