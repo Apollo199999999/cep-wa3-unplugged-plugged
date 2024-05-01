@@ -198,7 +198,7 @@ function setup() {
     blockFrame.attribute('src', './ui/blockKeyboardDisplay.html');
 
     timerFrame = createElement('iframe').size(200, 60);
-    timerFrame.addClass('opacity-80 hover:opacity-100 rounded-lg border-2 border-primary bg-gray-800');
+    timerFrame.addClass('opacity-80 hover:opacity-100 rounded-lg border-2 transition ease-in-out border-primary bg-gray-800');
     timerFrame.position(width / 2 - 100, -5);
     timerFrame.attribute('src', './ui/timer.html');
 
@@ -230,7 +230,7 @@ function draw() {
         move();
         interpolateOtherPlayers();
         camManager.update();
-        console.log(timeRemaining)
+        // console.log(timeRemaining)
         socket.emit("position", playerSprite.pos.x, playerSprite.pos.y);
 
         // Prevent playersprite from becoming rotated on collision
@@ -275,10 +275,12 @@ function draw() {
             interactionBtn = undefined;
         }
         if (timeRemaining < 60) {
-            timerFrame.addClass("border-red-500 border-2 border-offset-2");
+            timerFrame.addClass("border-red-500 border-offset-2");
         } else {
             if (timerFrame.hasClass("border-red-500")) {
-                timerFrame.removeClass("border-red-500 border-2 border-offset-2");
+                timerFrame.removeClass("border-red-500");
+                // timerFrame.removeClass('border-2');
+                timerFrame.removeClass('border-offset-2');
             }
         }
 

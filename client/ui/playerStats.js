@@ -72,7 +72,7 @@ function updateTimer(frameDocument, timer) {
         let timermins = mins.toString();
         if (secs < 10) {
             timersecs = "0" + secs.toString();
-            console.log("less than 10")
+            // console.log("less than 10")
         }
         if (mins < 10) {
             timermins = "0" + mins.toString();
