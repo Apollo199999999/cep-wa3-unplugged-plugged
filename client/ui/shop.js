@@ -3,13 +3,13 @@
 function purchaseBuff(buff) {
     let cost = 0;
     if (buff == 1){ //reduce cooldown
-        cost = 20;
+        cost = 15;
     } else if (buff == 2){ // boundary block
-        cost = 40;
+        cost = 25;
     } else if (buff == 3){ // mute player
         cost = 30;
     } else if (buff == 4){ // reveal treasure room
-        cost = 40; 
+        cost = 35; 
     }
     window.parent.buffPurchased(buff, cost);
 }
