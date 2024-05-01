@@ -154,9 +154,12 @@ export default class MapManager {
 
         while (numTreasureRooms < 3) {
             const topLeftX = Math.floor(Math.random() * (mapWidth - treasureRoomWidth - 1)) + 1;
-            const topLeftY = Math.floor(Math.random() * (mapHeight - treasureRoomHeight - 1)) + 1;
+            // Rooms must spawn above the central room
+            const topLeftY = Math.floor(Math.random() * (this.centralRoomLocation.y - treasureRoomHeight - 1)) + 1;
 
-            if (canPlaceRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight) && (Math.abs(topLeftX - centralRoomLocation.x) - centralRoomWidth) ** 2 + (Math.abs(topLeftY - centralRoomLocation.y) - centralRoomHeight) ** 2 > 200) {
+            let vertDistBetwTreasureMainRm = Math.abs((topLeftY + treasureRoomHeight) - (this.centralRoomLocation.y));
+
+            if (canPlaceRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight) && vertDistBetwTreasureMainRm > 15) {
                 placeRoom(topLeftX, topLeftY, treasureRoomWidth, treasureRoomHeight, true);
 
                 if (numTreasureRooms == realTreasureRoomIndex) {

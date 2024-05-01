@@ -440,9 +440,9 @@ function buffPurchased(buff, cost) {
     // If the buff has been purchased, apply the buff
     if (buff == 1) {
         socket.emit("useCoins", cost);
-        socket.emit("cooldownReduction", 60);
+        socket.emit("cooldownReduction", 120);
         let initcooldownReductionDuration = cooldownReductionDuration;
-        cooldownReductionDuration = 60;
+        cooldownReductionDuration = 120;
         if (initcooldownReductionDuration == 0) {
             cooldownReductionTimer = setInterval(function () {
                 if (cooldownReductionDuration > 0) {
