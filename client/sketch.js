@@ -471,7 +471,7 @@ function targetSelectWindowClosed(target, id, cost) {
 }
 
 function targetSelected(target, id) {
-    console.log(target);
+    //console.log(target);
     socket.emit("mutePlayer", target, id, 180);
 }
 
@@ -536,17 +536,17 @@ function buffPurchased(buff, cost) {
 }
 
 function buildPlayers(cost) {
-    console.log("building players");
+    //console.log("building players");
     let names = [];
     //buildOnePlayer('dj');
     for (let [id, playerData] of em.entities) {
-        console.log(playerData.ign)
+        //console.log(playerData.ign)
         if (playerData.id === socket.id) {
             continue;
         }
         let name = playerData.ign;
         buildOnePlayer(name, id, cost);
-        console.log(name);
+        //console.log(name);
         names.push(name);
 
     }
@@ -555,7 +555,7 @@ function buildPlayers(cost) {
 }
 
 function buildOnePlayer(name, id, cost) {
-    console.log('building player')
+    //console.log('building player')
     let element = (openOverlayWindow.elt.contentDocument || openOverlayWindow.elt.contentWindow.document).getElementById("GRID");
     let player = createElement('div');
     player.parent(element);

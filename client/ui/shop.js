@@ -28,7 +28,7 @@ function chooseTarget() {
 // const element = openOverlayWindow.getElementById("GRID");
 function buildOnePlayer(name) {
     let element = document.getElementById("GRID");
-    console.log(element);
+    // console.log(element);
     let player = createDiv();
     player.parent(element);
     player.classList.add("w-full h-full items-center mt-4 mx-4 rounded bg-gray-800");

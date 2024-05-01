@@ -108,7 +108,7 @@ class MapBuilder {
             this.selectedtile.visible = true;
             this.selectedtile.layer = 999999;
             if (muted) {
-                console.log("Muted");
+                //console.log("Muted");
                 this.selectedtile.img = "./images/textures/selected_muted.png";
             } else {
                 this.selectedtile.img = "./images/textures/selected.png";
@@ -340,7 +340,7 @@ class MapBuilder {
             let coin = this.coins[i];
             if (dist(playerSprite.x, playerSprite.y, coin.x, coin.y) < 64) {
                 socket.emit("collectCoin", i, this.coins.length);
-                console.log("Coin collected");
+               //console.log("Coin collected");
             }
         }
     }

@@ -51,7 +51,7 @@ function updateMuteCondition(frameDocument, muteCondition, showMuteCondition) {
         let div  = frameDocument.getElementById("mutediv");
         // console.log(div.classList.contains("hidden"));
         if (!showMuteCondition && !div.classList.contains("hidden")) {
-            console.log("Hiding mute div");
+            // console.log("Hiding mute div");
             div.classList.add("hidden");
         } else if (showMuteCondition && div.classList.contains("hidden")) {
             div.classList.remove("hidden");
