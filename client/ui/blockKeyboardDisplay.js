@@ -23,23 +23,23 @@ function highlightBlockDisplay(frameDocument, wallEditorMode){
     if (empty.classList.contains("bg-primary")) {
         empty.classList.remove("bg-primary");
         empty.classList.remove("text-gray-800");
-        emptytext.classList.remove("font-semibold")
+        emptytext.classList.remove("font-bold")
         // empty.classList.remove('text-semibold')
     }
     if (path.classList.contains("bg-primary")) {
         path.classList.remove("bg-primary");
         path.classList.remove("text-gray-800");
-        pathtext.classList.remove("font-semibold")
+        pathtext.classList.remove("font-bold")
     }
     if (barrier.classList.contains("bg-primary")) {
         barrier.classList.remove("bg-primary");
         barrier.classList.remove("text-gray-800");
-        barriertext.classList.remove("font-semibold")
+        barriertext.classList.remove("font-bold")
     }   
     if (wall.classList.contains("bg-primary")) {
         wall.classList.remove("bg-primary");
         wall.classList.remove("text-gray-800");
-        walltext.classList.remove("font-semibold")
+        walltext.classList.remove("font-bold")
     }
 
     if (wallEditorMode == "*") { //wall
@@ -58,8 +58,10 @@ function highlightBlockDisplay(frameDocument, wallEditorMode){
     blockDisplay.classList.add("bg-primary");
     blockDisplay.classList.add("text-gray-800");
     blocktext.classList.add("font-bold");
+    // console.log(blocktext)
+    // blockDisplay.classList.add('text-bold')
 }
 
 function showHowTo() {
-    
+
 }
