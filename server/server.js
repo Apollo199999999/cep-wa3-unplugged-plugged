@@ -133,16 +133,6 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("mapRevoke", (socketid) => {
-        console.log(socketid);
-        for (let c of client.room.clients) {
-            if (c.socket.id == socketid) {
-                c.socket.emit("mapRevokeIncreaseCooldown");
-                break;
-            }
-        }
-    });
-
     socket.on("cooldownReduction", (duration) => {
         if (client.room == null) return;
         if (client.statusconditions.includes("cooldownReduction")) { //refresh cooldown reduction
@@ -180,14 +170,9 @@ io.on("connection", (socket) => {
                     client.socket.emit("playerAlreadyMuted", c.ign);
                     return;
                 }
-                // if (c.statusconditions.includes("mute")){
-                //     c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
-                //     c.statusconditions.push("mute");
-                //     setTimeout(() => {
-                //         c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
-                //     }, duration * 1000);
                 else {
                     c.statusconditions.push("mute");
+                    c.socket.emit("setMuteDuration", duration);
                     setTimeout(() => {
                         c.statusconditions.splice(c.statusconditions.indexOf("mute"), 1);
                     }, duration * 1000);

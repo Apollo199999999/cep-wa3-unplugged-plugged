@@ -93,8 +93,13 @@ socket.on("gameOver", (ownId, winId) => {
     }
 });
 
+socket.on("setMuteDuration", (duration) => {
+    muted = duration;
+});
+
+
 socket.on("playerAlreadyMuted", (name) => {
-    txt = name + " has already been muted.";
+    txt = name + " has already been muted. Try again later.";
     Swal.fire({
         title: "Player already muted...",
         text: txt,
@@ -402,37 +407,18 @@ function puzzleWindowClosed(puzzleSolved, puzzleType) {
     }
 }
 
-function revokeMapPlayer(socketid) {
+function revokeMapPlayer(socketid, username) {
     // Tell the server to increase this player's cooldown
-    socket.emit("mapRevoke", socketid);
+    socket.emit("mutePlayer", username, socketid, 7 * 60);
 }
-
-socket.on("mapRevokeIncreaseCooldown", () => {
-    clearInterval(mapCooldownTimer);
-    allowMapModification = false;
-    mapCooldownLeft += 7 * 60;
-
-    mapCooldownTimer = setInterval(function () {
-        if (mapCooldownLeft > 0) {
-            mapCooldownLeft -= 1;
-        }
-        else {
-            mapCooldownLeft = 0;
-            allowMapModification = true;
-            clearInterval(mapCooldownTimer);
-        }
-    }, 1000);
-
-});
-
 
 let targetSelectWindow;
 function targetSelectWindowClosed(target, id, cost) {
-
     closeOverlayWindow();
     targetSelected(target, id);
     socket.emit("useCoins", cost); //change to 20
 }
+
 function targetSelected(target, id) {
     console.log(target);
     socket.emit("mutePlayer", target, id, 180);
@@ -547,8 +533,6 @@ function buildOnePlayer(name, id, cost) {
 }
 
 
-
-
 let prevmute = 0;
 function updateStatusConditions() {
     // console.log(statusconditions);
@@ -565,7 +549,6 @@ function updateStatusConditions() {
             //applyBarrierBlock((playerStatsFrame.elt.contentDocument || playerStatsFrame.elt.contentWindow.document));
         } else if (status == "mute") {
             if (prevmute == 0) {
-                muted = 180;
                 setInterval(function () {
                     if (muted > 0) {
                         muted -= 1;

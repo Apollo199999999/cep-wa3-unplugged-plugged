@@ -3,16 +3,13 @@
 function purchaseBuff(buff) {
     let cost = 0;
     if (buff == 1){ //reduce cooldown
-        cost = 10;
-    } else if (buff == 2){ //increase coin rate
-        cost = 10;
-    } else if (buff == 3){ //add barrier block
         cost = 20;
-        //console.log("add barrier block");
-        //exit();
-
-    } else if (buff == 4){
-        cost = 20; 
+    } else if (buff == 2){ // boundary block
+        cost = 40;
+    } else if (buff == 3){ // mute player
+        cost = 30;
+    } else if (buff == 4){ // reveal treasure room
+        cost = 40; 
     }
     window.parent.buffPurchased(buff, cost);
 }
@@ -57,5 +54,5 @@ function buildOnePlayer(name) {
 
 function exit() {
     // Invoke callback function in sketch.js
-    window.parent.puzzleWindowClosed(false);
+    window.parent.closeOverlayWindow();
 }

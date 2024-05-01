@@ -5,7 +5,7 @@ function initialiseUsernames(frameDocument, emEntities) {
 
     // Create radio buttons
     for (let [id, playerData] of emEntities) {
-        let xmlString = '<label class="label cursor-pointer"><span class="label-text">' + playerData.ign + '</span><input type="radio" name="usernames-radio" data-socketid="' + id +  '" class="radio radio-primary"/></label>';
+        let xmlString = '<label class="label cursor-pointer"><span class="label-text">' + playerData.ign + '</span><input type="radio" name="usernames-radio" data-socketid="' + id +  '" data-username="' + playerData.ign + '" class="radio radio-primary"/></label>';
         let radioBtn = createElementFromHTML(xmlString);
         userRadioBtns.appendChild(radioBtn);
     }
@@ -35,8 +35,9 @@ function revokePlayer() {
     for (let radio of radios) {
         if (radio.checked) {
             let selectedSocketId = radio.dataset.socketid.toString();
+            let username = radio.dataset.username.toString();
             radioChecked = true;
-            window.parent.revokeMapPlayer(selectedSocketId);
+            window.parent.revokeMapPlayer(selectedSocketId, username);
             window.parent.closeOverlayWindow();
 
             break;
