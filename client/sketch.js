@@ -96,12 +96,12 @@ socket.on("removeClient", (id) => {
 });
 
 socket.on("gameAlreadyStarted", () => {
-        Swal.fire({
-        title: "Game already started...",
-        text: "The game has already started. Please wait for the next game to join.",
+    Swal.fire({
+        title: "Room already playing...",
+        text: "This room has already started playing. Please join or create another room to play.",
         icon: "info",
         confirmButtonText: "Return to Start Page"
-        }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = "index.html";
         }
@@ -177,19 +177,6 @@ function setup() {
 
     // Tell the client to register itself with the server event
     socket.emit("registerClient", localIGN, playerRole, currentRoomCode);
-
-    // p5play draws over our draw() loop, so we
-    // have to jump thru hoops to draw our text
-    // over our sprites...... by making a another
-    // sprite. wow.
-    // let text_layer = new Sprite();
-    // text_layer.visible = false;
-    // text_layer.collider = "none";
-    // text_layer.update = () => {
-    //     textAlign(CENTER, CENTER);
-    //     textSize(32);
-    //     text(`Room Code: ${currentRoomCode}`, 0, 50, width, 50);
-    // };
 
     let minimap = new Sprite();
     minimap.visible = false;
@@ -278,7 +265,7 @@ function draw() {
         // Check if player is near any usable map overlay, and if so, show a button for the user to interact with the area
         if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == true && interactionBtn == undefined && startGame == true) {
             interactionBtn = createButton('Examine');
-            interactionBtn.addClass('flex m-0 my-2 p-4 scale-90 btn btn-primary hover:scale-100 text-center justify-self-center hover:border-2 hover:border-secondary hover:border-offset-2 overflow-visible w-32   ');
+            interactionBtn.addClass('flex m-0 my-2 p-4 scale-90 btn btn-primary hover:scale-100 text-center justify-self-center hover:border-2 hover:border-secondary hover:border-offset-2 overflow-visible w-32');
             interactionBtn.position(width / 2 - 64, height - 100);
             interactionBtn.mouseClicked(examineBtnClicked);
         }
@@ -366,6 +353,11 @@ function mouseReleased() {
     }
 }
 
+function openHowToGuide() {
+    openOverlayWindow = createElement('iframe').size(width * 0.8, height * 0.8);
+    openOverlayWindow.position((width / 2) - (width * 0.8) / 2, (height / 2) - (height * 0.8) / 2);
+    openOverlayWindow.attribute('src', './ui/howTo.html');
+}
 
 function closeOverlayWindow() {
     if (openOverlayWindow != undefined) {
@@ -522,7 +514,7 @@ function buffPurchased(buff, cost) {
         // barrier block
         socket.emit("useCoins", cost);
         barrierBlocks++;
-        
+
     } else if (buff == 3) {
         closeOverlayWindow();
         openOverlayWindow = createElement('iframe').size(width / 2, height / 2)

@@ -1,4 +1,4 @@
-function highlightBlockDisplay(frameDocument, wallEditorMode){
+function highlightBlockDisplay(frameDocument, wallEditorMode) {
     //removes backgrounds from all blocks
     let blocktext;
     let empty = frameDocument.getElementById("backspace");
@@ -41,7 +41,7 @@ function highlightBlockDisplay(frameDocument, wallEditorMode){
         barrier.classList.remove("border-2");
         barrier.classList.remove("border-secondary");
         barriertext.classList.remove("font-bold")
-    }   
+    }
     if (wall.classList.contains("bg-primary")) {
         wall.classList.remove("bg-primary");
         wall.classList.remove("text-gray-800");
@@ -60,7 +60,7 @@ function highlightBlockDisplay(frameDocument, wallEditorMode){
         blockDisplay = blockFrame.elt.contentDocument.getElementById("b");
         blocktext = frameDocument.getElementById("btext");
     } else if (wallEditorMode == "-") {
-        blockDisplay = blockFrame.elt.contentDocument.getElementById("backspace");  
+        blockDisplay = blockFrame.elt.contentDocument.getElementById("backspace");
         blocktext = frameDocument.getElementById("backspacetext");
     }
     blockDisplay.classList.add("bg-primary");
@@ -73,5 +73,5 @@ function highlightBlockDisplay(frameDocument, wallEditorMode){
 }
 
 function showHowTo() {
-
+    window.parent.openHowToGuide();
 }

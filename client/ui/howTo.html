@@ -14,12 +14,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
     <!-- client backend -->
-    <script src="mapRevocation.js"></script>
+    <script src="howTo.js"></script>
 </head>
 
 <body>
     <div class="flex flex-col absolute z-[999] overflow-hidden bg-base-100 rounded-md border border-primary"
-        style="width: 80vw; height: 80vh">
+        style="width: 100vw; height: 100vh">
 
         <!-- Titlebar -->
         <div class="flex bg-base-200 rounded-t-md text-lg w-full h-12 p-2 items-center">
@@ -32,7 +32,7 @@
             <p class="text-xl ml-2 font-bold">How to play</p>
         </div>
 
-        <div class="p-4 overflow-y-auto">
+        <div class="m-4 overflow-y-auto">
             <p class="text-lg font-bold mb-2">Welcome to Saboteur Escape Room!</p>
             <h1 class="text-lg font-semibold">1. Overview: </h1>
             <ul class="list-disc list-outside pl-4 mb-2">
@@ -54,7 +54,9 @@
             <h1 class="text-md font-semibold">Basic Gameplay: </h1>
             <ul class="list-disc list-outside pl-4 mb-2">
                 <li>During the game, both Saboteurs and Dwarves can place the following wall blocks, stone blocks,
-                    path blocks, and boundary blocks.</li>
+                    path blocks, and boundary blocks. There will be a 30 second cooldown after placing 5 blocks
+                    (excluding boundary blocks placed). This cooldown can be reduced by purchasing a cooldown reduction
+                    from the shop.</li>
                 <li class="mt-1">
                     <img src="../images/textures/wall.png" class="float-left h-6 w-6 mr-2" />
                     <p>Wall blocks:
@@ -85,13 +87,47 @@
             </ul>
 
             <h1 class="text-md font-semibold">The shop: </h1>
-            <ul class="list-disc list-outside pl-4 mb-2">
-                <li>During the game, players can purchase abilities and buffs through the shop by walking up to the shop and clicking on the "Examine" button. The shop can be seen below:
-                    <img src="../images/guide/Shop.png" class="h-24 mr-2" />
+            <ul class="list-disc list-outside pl-4">
+                <li>During the game, players can purchase abilities and buffs using coins through the shop by walking up
+                    to the shop
+                    and clicking on the "Examine" button. The shop can be seen below:
+                    <img src="../images/guide/Shop.png" class="h-36 mt-2" />
                 </li>
-                
+
+                <li>The following abilities/buffs can be purchased:
+
+                </li>
+
+                <ul class="list-disc list-outside pl-4 mb-2">
+                    <li>Reducing map cooldown to 10 seconds for 2 minutes</li>
+                    <li>Placing one boundary block</li>
+                    <li>Preventing a player from placing/removing blocks for 3 minutes by "muting" them</li>
+                    <li>Viewing which treasure room is the real treasure room</li>
+
+                </ul>
             </ul>
 
+            <h1 class="text-md font-semibold">Coins: </h1>
+            <ul class="list-disc list-outside pl-4 mb-2">
+                <li>
+                    Players can obtain coins from coin spawners located at both corners of the main room. Coins can be
+                    used to purchase items from the shop, and coin spawning rates can be increased by solving puzzles.
+                </li>
+                <img src="../images/guide/Coins.png" class="h-36 mt-2" />
+            </ul>
+
+            <h1 class="text-md font-semibold">Puzzles: </h1>
+            <ul class="list-disc list-outside pl-4 mb-4">
+                <li>
+                    Two puzzles are available for players to solve in the main room, which will increase coin spawning
+                    rates. The exact increase in coin spawning rates depends on the puzzle solved, and is stated at the
+                    top of every puzzle. Once a player has solved a puzzle, they cannot solve that puzzle again,
+                    however, other players can still solve that puzzle.
+                </li>
+                <img src="../images/guide/Puzzles.png" class="h-36 mt-2" />
+            </ul>
+
+            <div class="divider divider-neutral">Finish</div>
         </div>
     </div>
 </body>
