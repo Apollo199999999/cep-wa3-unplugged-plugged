@@ -275,7 +275,7 @@ function draw() {
             interactionBtn.position(width / 2 - 64, height - 100);
             interactionBtn.mouseClicked(examineBtnClicked);
         }
-        else if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == false && interactionBtn != undefined) {
+        else if (mapBuilder.checkPlayerNearUsableObject(playerSprite) == false && interactionBtn != undefined && startGame == true) {
             interactionBtn.remove();
             interactionBtn = undefined;
         }
