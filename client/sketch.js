@@ -95,6 +95,19 @@ socket.on("removeClient", (id) => {
     }
 });
 
+socket.on("gameAlreadyStarted", () => {
+        Swal.fire({
+        title: "Game already started...",
+        text: "The game has already started. Please wait for the next game to join.",
+        icon: "info",
+        confirmButtonText: "Return to Start Page"
+        }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "index.html";
+        }
+    });
+});
+
 socket.on("gameOver", (winTeam) => {
     window.location.href = "gameOver.html?winTeam=" + winTeam;
 });
