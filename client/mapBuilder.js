@@ -76,8 +76,10 @@ class MapBuilder {
 
     setStartPos(mapManager, clientSprite) {
         // Spawn the client sprite inside the room
-        clientSprite.position.x = mapManager.numCols / 2 * mapManager.mapCellSize;
-        clientSprite.position.y = mapManager.cellSize * 52;
+        clientSprite.position.x = mapManager.cellSize * 28 ; //(width / 2) - (mapManager.numCols / 2)//* mapManager.mapCellSize;
+        clientSprite.position.y = mapManager.cellSize * 51
+        console.log(clientSprite.position)
+        // * mapManager.mapCellSize;
     }
 
 
@@ -103,16 +105,19 @@ class MapBuilder {
     displaySelectedTile(tileIndex, muted) {
         if (tileIndex != -1) {
             let currTile = this.mapTiles[tileIndex];
-            this.selectedtile.pos.x = currTile.x;
-            this.selectedtile.pos.y = currTile.y;
-            this.selectedtile.visible = true;
-            this.selectedtile.layer = 999999;
-            if (muted) {
-                //console.log("Muted");
-                this.selectedtile.img = "./images/textures/selected_muted.png";
-            } else {
-                this.selectedtile.img = "./images/textures/selected.png";
+            if (currTile){
+                this.selectedtile.pos.x = currTile.x;
+                this.selectedtile.pos.y = currTile.y;
+                this.selectedtile.visible = true;
+                this.selectedtile.layer = 999999;
+                if (muted) {
+                    //console.log("Muted");
+                    this.selectedtile.img = "./images/textures/selected_muted.png";
+                } else {
+                    this.selectedtile.img = "./images/textures/selected.png";
+                }
             }
+            
         }
     }
 
@@ -176,13 +181,13 @@ class MapBuilder {
 
         // Position tiles at the bottom center of the screen
         this.mapTiles = new Tiles(mapManager.mapTiles, // 2D array of tiles
-            (mapManager.numCols / 2) * mapManager.cellSize, // x to centralise map
-            (mapManager.numRows / 2 )* mapManager.cellSize, // y to position at top
+            0, // x to centralise map
+            0, // y to position at top
             mapManager.cellSize,
             mapManager.cellSize);
 
-        this.mapX = (mapManager.numCols / 2) * mapManager.cellSize;
-        this.mapY = (mapManager.numRows / 2) * mapManager.cellSize;
+        this.mapX = 0;//(width / 2) - (mapManager.numCols / 2) * mapManager.cellSize;
+        this.mapY = 0;//height - mapManager.numRows * mapManager.cellSize;
 
         // Obtain the real treasure room
         this.realTreasureRoomLocation = mapManager.realTreasureRoomLocation;
