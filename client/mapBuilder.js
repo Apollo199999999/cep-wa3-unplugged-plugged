@@ -76,8 +76,8 @@ class MapBuilder {
 
     setStartPos(mapManager, clientSprite) {
         // Spawn the client sprite inside the room
-        clientSprite.position.x = (width / 2) - (mapManager.numCols / 2);
-        clientSprite.position.y = height - mapManager.cellSize * 7;
+        clientSprite.position.x = mapManager.numCols / 2 * mapManager.mapCellSize;
+        clientSprite.position.y = mapManager.cellSize * 52;
     }
 
 
@@ -176,13 +176,13 @@ class MapBuilder {
 
         // Position tiles at the bottom center of the screen
         this.mapTiles = new Tiles(mapManager.mapTiles, // 2D array of tiles
-            (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize, // x to centralise map
-            height - mapManager.numRows * mapManager.cellSize, // y to position at top
+            (mapManager.numCols / 2) * mapManager.cellSize, // x to centralise map
+            (mapManager.numRows / 2 )* mapManager.cellSize, // y to position at top
             mapManager.cellSize,
             mapManager.cellSize);
 
-        this.mapX = (width / 2) - (mapManager.numCols / 2) * mapManager.cellSize;
-        this.mapY = height - mapManager.numRows * mapManager.cellSize;
+        this.mapX = (mapManager.numCols / 2) * mapManager.cellSize;
+        this.mapY = (mapManager.numRows / 2) * mapManager.cellSize;
 
         // Obtain the real treasure room
         this.realTreasureRoomLocation = mapManager.realTreasureRoomLocation;
