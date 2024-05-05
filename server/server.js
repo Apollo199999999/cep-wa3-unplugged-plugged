@@ -147,7 +147,7 @@ io.on("connection", (socket) => {
         client.room.startGame();
         let saboteurCount = 0;
         let playerroles = new Map();
-        while (saboteurCount <= Math.floor(client.room.clients.length * 0.3)) {
+        while (saboteurCount < Math.floor(client.room.clients.length * 0.3)) {
             let randomIndex = Math.floor(Math.random() * client.room.clients.length);
             if (!playerroles.has(client.room.clients[randomIndex].socket.id)) {
                 playerroles.set(client.room.clients[randomIndex].socket.id, "Saboteur");

@@ -469,7 +469,7 @@ function examineBtnClicked() {
         openOverlayWindow.attribute('src', './ui/shop.html');
     } else if (overlayArea.type == "mapRevoke") {
         // Map revoke area 
-        if (playerRole == "dwarf") {
+        if (playerRole == "Dwarf") {
             openOverlayWindow = createElement('iframe').size(800, 520);
             openOverlayWindow.position((width / 2) - 800 / 2, (height / 2) - 550 / 2);
             openOverlayWindow.attribute('src', './ui/mapRevocation.html');
